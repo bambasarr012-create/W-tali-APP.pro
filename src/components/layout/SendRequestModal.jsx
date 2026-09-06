@@ -1,0 +1,128 @@
+import React, { useState } from 'react';
+import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { sendRequest } from '../../services/firestoreService';
+import { X, Send, Sparkles, ShieldCheck, Heart } from 'lucide-react';
+
+export default function SendRequestModal() {
+  const { requestModalState, closeSendRequestModal, showToast } = useApp();
+  const { userProfile } = useAuth();
+  const { isOpen, targetProfile } = requestModalState;
+
+  const defaultMessage = "Assalamu alaikum, j'ai vu ton profil et ça m'intéresse. J'aimerais faire ta connaissance dans un cadre sérieux et respectueux.";
+  const [message, setMessage] = useState(defaultMessage);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (!isOpen || !targetProfile) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!userProfile) {
+      showToast("Veuillez d'abord compléter votre profil avant d'envoyer une demande.", "error");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await sendRequest(userProfile, targetProfile, message);
+      showToast(`Demande transmise avec succès à ${targetProfile.prenom} !`, "success");
+      closeSendRequestModal();
+      setMessage(defaultMessage);
+    } catch (err) {
+      showToast(err.message || "Erreur lors de l'envoi de la demande.", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A2F4A]/80 backdrop-blur-sm animate-fadeIn">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 overflow-hidden">
+        
+        {/* Header with Close */}
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-2 text-[#2D8659]">
+            <Heart className="w-5 h-5 fill-[#2D8659]" />
+            <span className="font-bold text-base text-[#0A2F4A]">Demande de Rencontre d'Honneur</span>
+          </div>
+          <button
+            onClick={closeSendRequestModal}
+            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Recipient Snapshot */}
+        <div className="flex items-center gap-4 my-5 p-3.5 rounded-2xl bg-[#F4F7F6] border border-[#E2E8F0]">
+          <img
+            src={targetProfile.photos && targetProfile.photos[0] ? targetProfile.photos[0] : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"}
+            alt={targetProfile.prenom}
+            className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-sm"
+          />
+          <div>
+            <div className="font-bold text-base text-[#0A2F4A] flex items-center gap-1.5">
+              <span>{targetProfile.prenom}, {targetProfile.age} ans</span>
+              <span className="text-xs text-[#2D8659] bg-[#EAF5EF] px-2 py-0.5 rounded-full font-medium">
+                {targetProfile.ville}
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 font-medium mt-0.5">
+              {targetProfile.profession}
+            </p>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider">
+                Votre message d'introduction
+              </label>
+              <button
+                type="button"
+                onClick={() => setMessage(defaultMessage)}
+                className="text-[11px] text-[#2D8659] hover:underline font-medium"
+              >
+                Texte suggéré
+              </button>
+            </div>
+            <textarea
+              rows={4}
+              required
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full p-3.5 rounded-2xl border border-slate-300 focus:border-[#2D8659] focus:ring-2 focus:ring-[#2D8659]/20 text-sm text-slate-800 outline-none leading-relaxed transition-all resize-none"
+              placeholder="Écrivez un message respectueux et sincère..."
+            />
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <ShieldCheck className="w-4 h-4 text-[#2D8659] flex-shrink-0" />
+            <span>Les échanges sont encadrés par la charte de bienséance et de respect mutuel Wétali.</span>
+          </div>
+
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={closeSendRequestModal}
+              className="w-1/3 py-3 rounded-2xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition-all"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-2/3 py-3 rounded-2xl bg-[#2D8659] text-white font-bold text-sm shadow-md hover:bg-[#236c47] transition-all flex items-center justify-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+              <span>{isSubmitting ? "Envoi en cours..." : "Envoyer la demande"}</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  );
+}
