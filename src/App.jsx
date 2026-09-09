@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppProvider, useApp } from './context/AppContext';
 
@@ -8,6 +8,7 @@ import SendRequestModal from './components/layout/SendRequestModal';
 import WeddingRingLogo from './components/common/WeddingRingLogo';
 
 import AuthPage from './components/auth/AuthPage';
+import LandingPage from './components/landing/LandingPage';
 import ProfileCreation from './components/profile/ProfileCreation';
 import HomePage from './components/home/HomePage';
 import ProfileDetailPage from './components/profile/ProfileDetailPage';
@@ -15,6 +16,22 @@ import RequestsPage from './components/requests/RequestsPage';
 import MatchesPage from './components/matches/MatchesPage';
 import ChatPage from './components/chat/ChatPage';
 import SettingsPage from './components/settings/SettingsPage';
+
+// Gate component: shows landing page first, then auth when user clicks CTA
+function LandingPageGate() {
+  const [showAuth, setShowAuth] = useState(false);
+
+  if (showAuth) {
+    return (
+      <div style={{ animation: 'lpFadeIn 0.4s ease' }}>
+        <style>{`@keyframes lpFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+        <AuthPage />
+      </div>
+    );
+  }
+
+  return <LandingPage onEnterApp={() => setShowAuth(true)} />;
+}
 
 function MainApp() {
   const { isAuthenticated, hasProfile, loading } = useAuth();
@@ -33,9 +50,9 @@ function MainApp() {
     );
   }
 
-  // 1. Non authentifié -> Afficher Auth Page
+  // 1. Non authentifié -> Afficher Landing Page puis Auth Page
   if (!isAuthenticated) {
-    return <AuthPage />;
+    return <LandingPageGate />;
   }
 
   // 2. Authentifié mais profil non complété -> Afficher Création de Profil
