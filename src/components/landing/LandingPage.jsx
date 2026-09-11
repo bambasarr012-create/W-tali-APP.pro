@@ -512,7 +512,7 @@ export default function LandingPage({ onEnterApp }) {
         tag: `Mariage`,
         title: `Les 7 questions essentielles à poser avant de s'engager`,
         meta: `Par l'équipe Wétali · 6 min de lecture · Conseils matrimoniaux`,
-        body: \`
+        body: `
           <p>Le mariage est l'une des décisions les plus importantes de votre vie. Avant de dire « oui », il est indispensable d'avoir des conversations honnêtes avec votre prétendant(e). Voici les 7 sujets que vous ne devez pas éviter.</p>
           <h3>1. La vision de la famille</h3>
           <p>Souhaitez-vous des enfants ? Combien ? Quel rôle chacun jouera-t-il dans l'éducation ? Ces questions semblent évidentes, mais beaucoup de couples les évitent par gêne — et le regrettent ensuite.</p>
@@ -530,13 +530,13 @@ export default function LandingPage({ onEnterApp }) {
           <h3>7. La gestion des conflits</h3>
           <p>Tout couple traverse des désaccords. La vraie question est : comment les gérez-vous ? La capacité à communiquer avec respect et à chercher un compromis est la clé de la longévité d'une union.</p>
           <p style="margin-top:1.5rem;padding:1rem;background:rgba(212,175,55,.08);border-radius:12px;border-left:3px solid #D4AF37"><strong>Conclusion :</strong> Ces conversations peuvent sembler difficiles au début, mais elles construisent la confiance. Sur Wétali, nos profils encouragent chaque membre à exprimer clairement ses valeurs et ses attentes dès le départ.</p>
-        \`
+        `
       },
       {
         tag: `Profil`,
         title: `Comment rédiger un profil matrimonial irrésistible`,
         meta: `Par l'équipe Wétali · 4 min de lecture · Conseils pratiques`,
-        body: \`
+        body: `
           <p>Sur Wétali, votre profil est votre carte de visite. C'est souvent la première — et parfois la seule — chose qu'un prétendant(e) verra avant de décider de vous contacter. Voici comment vous démarquer.</p>
           <h3>Soyez authentique, pas parfait</h3>
           <p>Il est tentant de se présenter sous son meilleur jour en édulcorant la réalité. Mais un profil honnête attire des personnes vraiment compatibles. Mentionnez vos vraies valeurs, votre style de vie actuel, et ce que vous cherchez réellement.</p>
@@ -554,13 +554,13 @@ export default function LandingPage({ onEnterApp }) {
           <h3>Ce qu'il ne faut pas écrire</h3>
           <blockquote>« Je n'aime pas les jeux » ou « Je cherche quelqu'un de sérieux » — tout le monde le dit. Montrez-le plutôt à travers vos valeurs et vos actions.</blockquote>
           <p>Votre profil doit donner envie d'en savoir plus. La concision et l'authenticité sont vos meilleurs alliés.</p>
-        \`
+        `
       },
       {
         tag: `Sécurité`,
         title: `5 signes qu'un profil matrimonial est sincère`,
         meta: `Par l'équipe Wétali · 5 min de lecture · Sécurité & confiance`,
-        body: \`
+        body: `
           <p>Dans la recherche d'un partenaire sérieux, savoir reconnaître les profils authentiques est une compétence précieuse. Voici 5 indicateurs fiables.</p>
           <h3>1. Le profil est vérifié ✓</h3>
           <p>Sur Wétali, la vérification d'identité est un gage de sérieux. Un profil vérifié signifie que la personne a accepté de fournir une pièce d'identité et que notre équipe a confirmé son authenticité. C'est le premier filtre de confiance.</p>
@@ -581,7 +581,7 @@ export default function LandingPage({ onEnterApp }) {
             <li>Aucune donnée personnelle partagée sans votre accord</li>
           </ul>
           <p style="margin-top:1.5rem;padding:1rem;background:rgba(212,175,55,.08);border-radius:12px;border-left:3px solid #D4AF37">Sur Wétali, votre sécurité n'est pas une option — c'est notre engagement fondamental.</p>
-        \`
+        `
       }
     ];
 
@@ -589,7 +589,7 @@ export default function LandingPage({ onEnterApp }) {
       const a = articles[index];
       const content = document.getElementById('article-content');
       if (content) {
-        content.innerHTML = \`<span class="article-tag">\${a.tag}</span><h1 class="article-title">\${a.title}</h1><div class="article-meta">\${a.meta}</div><div class="article-body">\${a.body}</div>\`;
+        content.innerHTML = `<span class="article-tag">${a.tag}</span><h1 class="article-title">${a.title}</h1><div class="article-meta">${a.meta}</div><div class="article-body">${a.body}</div>`;
       }
       document.getElementById('article-overlay')?.classList.add('show');
       document.body.style.overflow = 'hidden';
@@ -605,12 +605,12 @@ export default function LandingPage({ onEnterApp }) {
     };
 
     const steps = [
-      \`<div style="text-align:center;animation:fadeIn 1s"><div style="font-family:'Playfair Display',serif;font-size:4rem;font-weight:700;color:#D4AF37;animation:glowPulse 2s infinite">Wétali</div><div style="font-family:'Inter',sans-serif;font-size:1rem;color:rgba(255,251,240,.7);margin-top:8px;letter-spacing:.2em;text-transform:uppercase">Matrimonial Sénégalais</div></div>\`,
-      \`<div style="text-align:center;animation:fadeIn .8s"><div style="font-size:5rem;margin-bottom:16px">👫</div><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#FFFBF0;font-weight:600">Pour ceux qui cherchent vraiment</div></div>\`,
-      \`<div style="text-align:center;animation:fadeIn .8s"><div style="width:80px;height:80px;border-radius:50%;margin:0 auto 1rem;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-size:2rem;animation:pulseGold 2s infinite">✓</div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:#FFFBF0;font-weight:600">Profils Vérifiés</div><div style="font-family:'Inter',sans-serif;font-size:.9rem;color:rgba(255,251,240,.6);margin-top:8px">Inscription gratuite · Chat avec abonnement</div></div>\`,
-      \`<div style="width:80%;display:flex;flex-direction:column;gap:12px;animation:fadeIn .6s"><div style="display:flex;justify-content:flex-end"><div style="background:#1E3A8A;color:#FFFBF0;border-radius:18px 18px 4px 18px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%">Salaam, votre profil est remarquable 🌟</div></div><div style="display:flex;justify-content:flex-start"><div style="background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;border-radius:18px 18px 18px 4px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%;font-weight:500">Merci! Raconte-moi ta vision du mariage ✨</div></div><div style="display:flex;justify-content:flex-end"><div style="background:#1E3A8A;color:#FFFBF0;border-radius:18px 18px 4px 18px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%">Une union dans le respect et l'amour sincère 💎</div></div></div>\`,
-      \`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;animation:fadeIn .8s"><div style="position:absolute;left:10%;top:20%;font-size:24px;color:#D4AF37;animation:floatHeart 3s 0s infinite ease-in-out">♥</div><div style="position:absolute;left:80%;top:15%;font-size:18px;color:#D4AF37;animation:floatHeart 3s .3s infinite ease-in-out">♥</div><div style="position:absolute;left:20%;top:70%;font-size:22px;color:#D4AF37;animation:floatHeart 3s .6s infinite ease-in-out">♥</div><div style="position:absolute;left:75%;top:65%;font-size:20px;color:#D4AF37;animation:floatHeart 3s .2s infinite ease-in-out">♥</div><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#D4AF37;text-align:center">Des connexions sincères<br><span style="font-size:.9rem;color:rgba(255,251,240,.7);font-style:italic">au-delà des apparences</span></div></div>\`,
-      \`<div style="text-align:center;animation:matchPop .6s cubic-bezier(.34,1.56,.64,1)"><div style="display:flex;align-items:center;justify-content:center;margin-bottom:1rem"><div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-size:1.5rem;z-index:2;border:3px solid #0F172A">👩🏾</div><div style="margin-left:-10px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1E3A8A,#0F172A);display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:3px solid #D4AF37">👨🏾</div></div><div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#D4AF37;animation:glowPulse 1.5s infinite;letter-spacing:.1em">MATCH!</div><div style="font-family:'Inter',sans-serif;font-size:.85rem;color:rgba(255,251,240,.7);margin-top:8px">Compatibles à 94%</div></div>\`
+      `<div style="text-align:center;animation:fadeIn 1s"><div style="font-family:'Playfair Display',serif;font-size:4rem;font-weight:700;color:#D4AF37;animation:glowPulse 2s infinite">Wétali</div><div style="font-family:'Inter',sans-serif;font-size:1rem;color:rgba(255,251,240,.7);margin-top:8px;letter-spacing:.2em;text-transform:uppercase">Matrimonial Sénégalais</div></div>`,
+      `<div style="text-align:center;animation:fadeIn .8s"><div style="font-size:5rem;margin-bottom:16px">👫</div><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#FFFBF0;font-weight:600">Pour ceux qui cherchent vraiment</div></div>`,
+      `<div style="text-align:center;animation:fadeIn .8s"><div style="width:80px;height:80px;border-radius:50%;margin:0 auto 1rem;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-size:2rem;animation:pulseGold 2s infinite">✓</div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:#FFFBF0;font-weight:600">Profils Vérifiés</div><div style="font-family:'Inter',sans-serif;font-size:.9rem;color:rgba(255,251,240,.6);margin-top:8px">Inscription gratuite · Chat avec abonnement</div></div>`,
+      `<div style="width:80%;display:flex;flex-direction:column;gap:12px;animation:fadeIn .6s"><div style="display:flex;justify-content:flex-end"><div style="background:#1E3A8A;color:#FFFBF0;border-radius:18px 18px 4px 18px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%">Salaam, votre profil est remarquable 🌟</div></div><div style="display:flex;justify-content:flex-start"><div style="background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;border-radius:18px 18px 18px 4px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%;font-weight:500">Merci! Raconte-moi ta vision du mariage ✨</div></div><div style="display:flex;justify-content:flex-end"><div style="background:#1E3A8A;color:#FFFBF0;border-radius:18px 18px 4px 18px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%">Une union dans le respect et l'amour sincère 💎</div></div></div>`,
+      `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;animation:fadeIn .8s"><div style="position:absolute;left:10%;top:20%;font-size:24px;color:#D4AF37;animation:floatHeart 3s 0s infinite ease-in-out">♥</div><div style="position:absolute;left:80%;top:15%;font-size:18px;color:#D4AF37;animation:floatHeart 3s .3s infinite ease-in-out">♥</div><div style="position:absolute;left:20%;top:70%;font-size:22px;color:#D4AF37;animation:floatHeart 3s .6s infinite ease-in-out">♥</div><div style="position:absolute;left:75%;top:65%;font-size:20px;color:#D4AF37;animation:floatHeart 3s .2s infinite ease-in-out">♥</div><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#D4AF37;text-align:center">Des connexions sincères<br><span style="font-size:.9rem;color:rgba(255,251,240,.7);font-style:italic">au-delà des apparences</span></div></div>`,
+      `<div style="text-align:center;animation:matchPop .6s cubic-bezier(.34,1.56,.64,1)"><div style="display:flex;align-items:center;justify-content:center;margin-bottom:1rem"><div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-size:1.5rem;z-index:2;border:3px solid #0F172A">👩🏾</div><div style="margin-left:-10px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1E3A8A,#0F172A);display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:3px solid #D4AF37">👨🏾</div></div><div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#D4AF37;animation:glowPulse 1.5s infinite;letter-spacing:.1em">MATCH!</div><div style="font-family:'Inter',sans-serif;font-size:.85rem;color:rgba(255,251,240,.7);margin-top:8px">Compatibles à 94%</div></div>`
     ];
     let currentStep = 0;
     let demoInterval;
