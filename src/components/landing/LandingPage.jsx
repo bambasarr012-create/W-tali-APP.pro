@@ -1,5 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './LandingPage.css';
+import TermsPage from '../legal/TermsPage';
+import PrivacyPage from '../legal/PrivacyPage';
+import CGVPage from '../legal/CGVPage';
+import DPAPage from '../legal/DPAPage';
+import RulesPage from '../legal/RulesPage';
 import heroImg from '../../assets/senegalese_wedding_hero.jpg';
 
 const landingHtml = `
@@ -448,11 +453,11 @@ const landingHtml = `
       <div>
         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Légal</h4>
         <ul class="space-y-3 text-sm">
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Règlement</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Confidentialité</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Mentions légales</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">CGV</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Accord de traitement (DPA)</a></li>
+          <li><button onclick="openLegal('rules')" class="hover:text-[#D4AF37] transition-colors text-left w-full">Règlement</button></li>
+          <li><button onclick="openLegal('privacy')" class="hover:text-[#D4AF37] transition-colors text-left w-full">Confidentialité</button></li>
+          <li><button onclick="openLegal('terms')" class="hover:text-[#D4AF37] transition-colors text-left w-full">Mentions légales</button></li>
+          <li><button onclick="openLegal('cgv')" class="hover:text-[#D4AF37] transition-colors text-left w-full">CGV</button></li>
+          <li><button onclick="openLegal('dpa')" class="hover:text-[#D4AF37] transition-colors text-left w-full">Accord de traitement (DPA)</button></li>
         </ul>
       </div>
 
@@ -495,6 +500,8 @@ const landingHtml = `
 `;
 
 export default function LandingPage({ onEnterApp }) {
+  const [legalPage, setLegalPage] = useState(null);
+
   useEffect(() => {
     // Inject fonts
     const link = document.createElement('link');
@@ -552,6 +559,10 @@ export default function LandingPage({ onEnterApp }) {
     };
     window.closeAuth = () => {};
 
+    window.openLegal = (page) => {
+      setLegalPage(page);
+      window.scrollTo(0, 0);
+    };
     window.toggleFAQ = (btn) => {
       const answer = btn.nextElementSibling;
       const isOpen = answer.classList.contains('open');
@@ -705,8 +716,15 @@ export default function LandingPage({ onEnterApp }) {
       delete window.openArticle;
       delete window.closeArticle;
       delete window.handleArticleOverlayClick;
+      delete window.openLegal;
     };
   }, [onEnterApp]);
+
+  if (legalPage === 'terms') return <TermsPage onBack={() => setLegalPage(null)} />;
+  if (legalPage === 'privacy') return <PrivacyPage onBack={() => setLegalPage(null)} />;
+  if (legalPage === 'cgv') return <CGVPage onBack={() => setLegalPage(null)} />;
+  if (legalPage === 'dpa') return <DPAPage onBack={() => setLegalPage(null)} />;
+  if (legalPage === 'rules') return <RulesPage onBack={() => setLegalPage(null)} />;
 
   return <div dangerouslySetInnerHTML={{ __html: landingHtml }} />;
 }

@@ -59,11 +59,11 @@ const Footer = () => (
         <div>
           <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Légal</h4>
           <ul className="space-y-3 text-sm">
-            <li><span className="text-gray-400">Règlement</span></li>
-            <li><span className="text-gray-400">Confidentialité</span></li>
-            <li><span className="text-gray-400">Mentions légales</span></li>
-            <li><span className="text-gray-400">CGV</span></li>
-            <li><span className="text-gray-400">Accord de traitement (DPA)</span></li>
+            <li><button onClick={() => window.openLegal && window.openLegal('rules')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Règlement</button></li>
+            <li><button onClick={() => window.openLegal && window.openLegal('privacy')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Confidentialité</button></li>
+            <li><button onClick={() => window.openLegal && window.openLegal('terms')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Mentions légales</button></li>
+            <li><button onClick={() => window.openLegal && window.openLegal('cgv')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">CGV</button></li>
+            <li><button onClick={() => window.openLegal && window.openLegal('dpa')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Accord de traitement (DPA)</button></li>
           </ul>
         </div>
 
