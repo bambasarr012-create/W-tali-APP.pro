@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-[#F4F7F6] text-slate-800 antialiased font-sans selection:bg-[#2D8659] selection:text-white;
+    @apply bg-wetaliCream text-wetaliBlack antialiased font-sans selection:bg-wetaliBlue selection:text-wetaliCream;
   }
 }
 
