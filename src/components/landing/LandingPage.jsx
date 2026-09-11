@@ -383,12 +383,14 @@ const landingHtml = `
 </section>
 
 <!-- FOOTER -->
-<footer id="contact-section">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div style="display:inline-flex;justify-content:center;margin-bottom:.75rem">
-        <a class="logo" href="#" style="text-decoration:none">
-          <svg width="56" height="56" viewBox="0 0 100 100">
+<footer id="contact-section" class="bg-[#0F172A] text-gray-300 py-16 font-sans border-t-4 border-[#D4AF37]">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 mb-12">
+      
+      <!-- COL 1 -->
+      <div class="lg:col-span-1 flex flex-col items-start">
+        <a class="flex items-center gap-2 mb-4" href="#" style="text-decoration:none">
+          <svg width="40" height="40" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="46" fill="#0F172A" stroke="#D4AF37" stroke-width="4"/>
             <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5"/>
             <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5" opacity="0.8"/>
@@ -396,36 +398,87 @@ const landingHtml = `
             <polygon points="60,20 66,28 60,34 54,28" fill="#FFFBF0"/>
             <circle cx="60" cy="27" r="2.5" fill="#D4AF37"/>
           </svg>
-          <span class="logo-text" style="font-size:1.8rem">Wétali</span>
+          <span class="text-white font-serif font-bold text-2xl tracking-wide">Wétali</span>
         </a>
+        <p class="text-sm text-gray-400 leading-relaxed mb-6">
+          Ta moitié, par confiance et respect. La plateforme matrimoniale sérieuse pour la diaspora sénégalaise.
+        </p>
+        <button onclick="openAuth()" class="bg-[#D4AF37] hover:bg-[#b8962e] transition-colors text-black font-semibold text-sm py-2.5 px-5 rounded-full mb-6 w-full sm:w-auto text-left flex justify-between items-center group">
+          <span>Rejoindre Wétali</span>
+          <span class="transform group-hover:translate-x-1 transition-transform">→</span>
+        </button>
+        <div class="flex items-center gap-2 border border-[#D4AF37]/50 rounded-lg py-2 px-3 bg-transparent">
+          <svg class="w-5 h-5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.965 11.965 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          <div class="flex flex-col">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">RGPD</span>
+            <span class="text-xs text-[#D4AF37] font-semibold leading-none mt-1">100% Conforme</span>
+          </div>
+        </div>
       </div>
-      <p class="footer-tagline">Matrimonial sénégalais. L'union dans la dignité.</p>
-      <div class="footer-line"></div>
+
+      <!-- COL 2 -->
+      <div>
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Navigation</h4>
+        <ul class="space-y-3 text-sm">
+          <li><button onclick="scrollToId('hero')" class="hover:text-[#D4AF37] transition-colors">Accueil</button></li>
+          <li><button onclick="scrollToId('how-it-works')" class="hover:text-[#D4AF37] transition-colors">Comment ça marche</button></li>
+          <li><button onclick="scrollToId('pricing')" class="hover:text-[#D4AF37] transition-colors">Tarifs</button></li>
+          <li><button onclick="scrollToId('blog')" class="hover:text-[#D4AF37] transition-colors">Blog</button></li>
+          <li><button onclick="scrollToId('faq')" class="hover:text-[#D4AF37] transition-colors">FAQ</button></li>
+          <li><button onclick="scrollToId('contact-section')" class="hover:text-[#D4AF37] transition-colors">Contact</button></li>
+        </ul>
+      </div>
+
+      <!-- COL 3 -->
+      <div>
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Rencontre</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Paris</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Marseille</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Montréal</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre New York</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Londres</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Milan</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Bruxelles</a></li>
+          <li class="pt-2"><a href="#" class="text-[#D4AF37] hover:text-white font-medium transition-colors text-xs uppercase tracking-wide">Toutes les villes →</a></li>
+        </ul>
+      </div>
+
+      <!-- COL 4 -->
+      <div>
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Légal</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Règlement</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Confidentialité</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Mentions légales</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">CGV</a></li>
+          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Accord de traitement (DPA)</a></li>
+        </ul>
+      </div>
+
+      <!-- COL 5 -->
+      <div>
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Contact</h4>
+        <ul class="space-y-4 text-sm">
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-[#D4AF37] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <a href="mailto:contact@wetali.app" class="hover:text-[#D4AF37] transition-colors">contact@wetali.app</a>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-[#D4AF37] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span class="text-gray-400">Dakar, Sénégal</span>
+          </li>
+        </ul>
+      </div>
+      
     </div>
-    <div class="footer-grid">
-      <div>
-        <div class="footer-col-title">Utilisation</div>
-        <a href="#" class="footer-link" onclick="openAuth()">S'inscrire gratuitement</a>
-        <a href="#" class="footer-link" onclick="openAuth()">Se connecter</a>
-        <a href="#" class="footer-link" onclick="scrollToId('pricing')">Tarifs</a>
-        <a href="#" class="footer-link">Confidentialité</a>
-      </div>
-      <div>
-        <div class="footer-col-title">Infos</div>
-        <a href="#" class="footer-link">À propos</a>
-        <a href="#" class="footer-link" onclick="scrollToId('blog')">Magazine</a>
-        <a href="#" class="footer-link">Presse</a>
-        <a href="#" class="footer-link">Conditions d'utilisation</a>
-      </div>
-      <div>
-        <div class="footer-col-title">Contact</div>
-        <a href="mailto:contact@wetali.app" class="footer-link">contact@wetali.app</a>
-        <a href="#" class="footer-link">Instagram</a>
-        <a href="#" class="footer-link">Facebook</a>
-        <a href="#" class="footer-link">Twitter / X</a>
-      </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+      <div>© 2026 Wétali. Tous droits réservés.</div>
+      <div class="flex items-center gap-1">Fait avec <span class="text-red-500 text-sm">❤️</span> pour la diaspora</div>
+      <div>v1.0.0</div>
     </div>
-    <div class="footer-bottom"><p>© 2026 Wétali &nbsp;|&nbsp; <a href="#">Confidentialité</a> &nbsp;|&nbsp; <a href="#">Conditions</a></p></div>
   </div>
 </footer>
 
