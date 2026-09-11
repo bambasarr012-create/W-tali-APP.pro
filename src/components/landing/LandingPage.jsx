@@ -509,9 +509,9 @@ export default function LandingPage({ onEnterApp }) {
 
     const articles = [
       {
-        tag: "Mariage",
-        title: "Les 7 questions essentielles à poser avant de s'engager",
-        meta: "Par l'équipe Wétali · 6 min de lecture · Conseils matrimoniaux",
+        tag: `Mariage`,
+        title: `Les 7 questions essentielles à poser avant de s'engager`,
+        meta: `Par l'équipe Wétali · 6 min de lecture · Conseils matrimoniaux`,
         body: \`
           <p>Le mariage est l'une des décisions les plus importantes de votre vie. Avant de dire « oui », il est indispensable d'avoir des conversations honnêtes avec votre prétendant(e). Voici les 7 sujets que vous ne devez pas éviter.</p>
           <h3>1. La vision de la famille</h3>
@@ -533,9 +533,9 @@ export default function LandingPage({ onEnterApp }) {
         \`
       },
       {
-        tag: "Profil",
-        title: "Comment rédiger un profil matrimonial irrésistible",
-        meta: "Par l'équipe Wétali · 4 min de lecture · Conseils pratiques",
+        tag: `Profil`,
+        title: `Comment rédiger un profil matrimonial irrésistible`,
+        meta: `Par l'équipe Wétali · 4 min de lecture · Conseils pratiques`,
         body: \`
           <p>Sur Wétali, votre profil est votre carte de visite. C'est souvent la première — et parfois la seule — chose qu'un prétendant(e) verra avant de décider de vous contacter. Voici comment vous démarquer.</p>
           <h3>Soyez authentique, pas parfait</h3>
@@ -557,9 +557,9 @@ export default function LandingPage({ onEnterApp }) {
         \`
       },
       {
-        tag: "Sécurité",
-        title: "5 signes qu'un profil matrimonial est sincère",
-        meta: "Par l'équipe Wétali · 5 min de lecture · Sécurité & confiance",
+        tag: `Sécurité`,
+        title: `5 signes qu'un profil matrimonial est sincère`,
+        meta: `Par l'équipe Wétali · 5 min de lecture · Sécurité & confiance`,
         body: \`
           <p>Dans la recherche d'un partenaire sérieux, savoir reconnaître les profils authentiques est une compétence précieuse. Voici 5 indicateurs fiables.</p>
           <h3>1. Le profil est vérifié ✓</h3>
