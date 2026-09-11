@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wétali — Application Matrimoniale d'Élite pour la Diaspora Sénégalaise</title>
+  <meta name="description" content="Application matrimoniale d'exception dédiée aux Sénégalais de la diaspora à Paris, Dakar, Montréal, New York en quête d'une union d'honneur." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%231E3A8A' stroke='%23D4AF37' stroke-width='3'/%3E%3Cellipse cx='38' cy='58' rx='20' ry='20' fill='none' stroke='%23D4AF37' stroke-width='6'/%3E%3Cellipse cx='60' cy='46' rx='20' ry='20' fill='none' stroke='%23FFE27A' stroke-width='6'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;overflow-x:hidden;background:#FFFBF0}
+
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes floatHeart{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+    @keyframes pulseGold{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.4)}50%{box-shadow:0 0 0 12px rgba(212,175,55,0)}}
+    @keyframes matchPop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+    @keyframes glowPulse{0%,100%{text-shadow:0 0 10px rgba(212,175,55,.5)}50%{text-shadow:0 0 30px rgba(212,175,55,1),0 0 60px rgba(212,175,55,.5)}}
+    @keyframes goldGlow{0%,100%{box-shadow:0 0 40px rgba(212,175,55,.4)}50%{box-shadow:0 0 70px rgba(212,175,55,.7),0 0 120px rgba(212,175,55,.2)}}
+    @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+
+    .inview{transition:all .9s cubic-bezier(.4,0,.2,1)}
+    .inview-hidden{opacity:0;transform:translateY(40px)}
+    .inview-visible{opacity:1;transform:translateY(0)}
+
+    /* NAVBAR */
+    #navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 2rem;transition:all .5s cubic-bezier(.4,0,.2,1);background:rgba(255,251,240,.15);backdrop-filter:blur(16px)}
+    #navbar.scrolled{background:rgba(15,23,42,.97);border-bottom:1px solid rgba(212,175,55,.2);box-shadow:0 4px 30px rgba(0,0,0,.3)}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px}
+    .nav-menu{display:flex;align-items:center;gap:2.5rem}
+    .nav-link{background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500;color:#0F172A;letter-spacing:.03em;transition:color .3s;padding:4px 0}
+    #navbar.scrolled .nav-link{color:rgba(255,251,240,.85)}
+    .nav-link:hover{color:#D4AF37!important}
+    .nav-cta{background:linear-gradient(135deg,#D4AF37 0%,#B8960C 100%);color:#0F172A;border:none;cursor:pointer;padding:10px 28px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.05em;box-shadow:0 4px 20px rgba(212,175,55,.4);transition:all .3s}
+    .nav-cta:hover{transform:scale(1.05);box-shadow:0 6px 30px rgba(212,175,55,.6)}
+    .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:#0F172A;flex-direction:column;gap:5px}
+    #navbar.scrolled .hamburger{color:#FFFBF0}
+    .hamburger span{display:block;width:24px;height:2px;background:currentColor;border-radius:2px;transition:all .3s}
+    #drawer{position:fixed;top:0;right:0;bottom:0;width:280px;z-index:999;background:#0F172A;border-left:1px solid rgba(212,175,55,.3);transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:6rem 2rem 2rem;gap:1.5rem}
+    #drawer.open{transform:translateX(0)}
+    #drawer-overlay{display:none;position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.5)}
+    #drawer-overlay.show{display:block}
+    .drawer-link{background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:1.1rem;font-weight:500;color:#FFFBF0;text-align:left;padding:12px 0;border-bottom:1px solid rgba(212,175,55,.15);transition:color .3s}
+    .drawer-cta{margin-top:1rem;background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;border:none;cursor:pointer;padding:14px 28px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:1rem}
+    .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .logo-text{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.4rem;color:#0F172A;letter-spacing:.04em}
+    #navbar.scrolled .logo-text{color:#FFFBF0}
+    .bg-glow{position:absolute;pointer-events:none;border-radius:50%}
+
+    /* HERO */
+    #hero{min-height:100vh;background:linear-gradient(135deg,#FFFBF0 0%,#F5EFE0 50%,#EDE4CE 100%);display:flex;align-items:center;overflow:hidden;position:relative;padding-top:72px}
+    .hero-inner{max-width:1200px;margin:0 auto;padding:4rem 2rem;width:100%}
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(212,175,55,.05));border:1px solid rgba(212,175,55,.4);border-radius:50px;padding:6px 16px;margin-bottom:1.5rem}
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:#D4AF37;display:inline-block}
+    .hero-badge-text{font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;color:#B8960C;letter-spacing:.1em;text-transform:uppercase}
+    .hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(3.5rem,7vw,6rem);line-height:1.05;color:#0F172A;margin:0 0 1.5rem;font-weight:700}
+    .hero-title em{color:#1E3A8A;font-style:italic}
+    .hero-desc{font-family:'Inter',sans-serif;font-size:1.15rem;color:#4B5563;line-height:1.7;margin-bottom:2rem;max-width:440px}
+    .hero-features{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2.5rem}
+    .hero-feature{display:flex;align-items:center;gap:10px}
+    .hero-feature-icon{color:#D4AF37;font-size:.9rem}
+    .hero-feature-text{font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500;color:#374151}
+    .hero-cta-wrap{display:flex;flex-direction:column;gap:.75rem;align-items:flex-start}
+    .hero-btn{background:linear-gradient(135deg,#D4AF37 0%,#C09B2A 100%);color:#0F172A;border:none;cursor:pointer;padding:16px 40px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:.03em;box-shadow:0 8px 32px rgba(212,175,55,.45);transition:all .3s}
+    .hero-btn:hover{transform:scale(1.05);box-shadow:0 12px 48px rgba(212,175,55,.7)}
+    .hero-note{font-family:'Inter',sans-serif;font-size:.78rem;color:#9CA3AF;padding-left:8px}
+
+    /* Hero Image — belle photo SVG fallback */
+    .hero-img-wrap{position:relative}
+    .hero-img-border{position:absolute;inset:-12px;border:3px solid #D4AF37;border-radius:24px;z-index:0;box-shadow:0 0 40px rgba(212,175,55,.2),inset 0 0 40px rgba(212,175,55,.05)}
+    .hero-img-corner{position:absolute;width:24px;height:24px;border:3px solid #D4AF37;border-radius:4px;z-index:2}
+    .hero-img-box{border-radius:20px;overflow:hidden;aspect-ratio:4/5;position:relative;z-index:1;background:linear-gradient(135deg,#1E3A8A 0%,#0F172A 100%)}
+    .hero-img-box img{width:100%;height:100%;object-fit:cover;transition:opacity .8s}
+    .hero-img-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1E3A8A 0%,#0A1F4A 60%,#0F172A 100%);position:absolute;inset:0}
+    .hero-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,23,42,.3) 0%,transparent 60%)}
+
+    /* STAT BAR */
+    #stat-bar{background:#0F172A;padding:3rem 2rem}
+    .stat-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:wrap}
+    .stat-item{text-align:center;padding:.5rem 3rem}
+    .stat-value{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#D4AF37;line-height:1}
+    .stat-label{font-family:'Inter',sans-serif;font-size:.85rem;color:rgba(255,251,240,.6);margin-top:6px;text-transform:uppercase;letter-spacing:.1em}
+    .stat-sep{width:1px;height:50px;background:linear-gradient(to bottom,transparent,#D4AF37,transparent);opacity:.5}
+
+    /* SECTIONS */
+    .section-label{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#D4AF37;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+    .section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);color:#0F172A;font-weight:700}
+    .section-head{text-align:center;margin-bottom:4rem}
+
+    /* FEATURES */
+    #decouvrir{background:#FFFBF0;padding:100px 2rem}
+    .features-inner{max-width:1200px;margin:0 auto}
+    .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+    .features-col{display:flex;flex-direction:column;gap:1.5rem}
+    .feature-card{background:#FFFFFF;border:1px solid rgba(212,175,55,.2);border-radius:20px;padding:1.75rem;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);transition:all .3s;cursor:default}
+    .feature-card:hover{box-shadow:0 20px 60px rgba(0,0,0,.12);transform:scale(1.015)}
+    .feature-card.large{padding:2.5rem;min-height:380px}
+    .feature-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(30,58,138,.15),rgba(30,58,138,.05));border:1px solid rgba(30,58,138,.3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.25rem;color:#1E3A8A}
+    .feature-icon.gold{background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(212,175,55,.05));border-color:rgba(212,175,55,.3);color:#D4AF37}
+    .feature-card-title{font-family:'Playfair Display',serif;font-size:1.15rem;color:#0F172A;margin-bottom:.75rem;font-weight:700}
+    .feature-card-title.large{font-size:1.4rem}
+    .feature-card-desc{font-family:'Inter',sans-serif;font-size:.92rem;color:#6B7280;line-height:1.7}
+    .feature-highlight{display:inline-flex;align-items:center;gap:6px;margin-top:1.5rem;background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(212,175,55,.05));border:1px solid rgba(212,175,55,.3);border-radius:50px;padding:5px 14px}
+    .feature-highlight span:first-child{width:6px;height:6px;border-radius:50%;background:#D4AF37;display:inline-block}
+    .feature-highlight span:last-child{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:600;color:#B8960C}
+    .offset{margin-left:2rem}
+
+    /* VISION */
+    #vision{background:#0F172A;padding:120px 2rem;position:relative;overflow:hidden;text-align:center}
+    .vision-inner{max-width:900px;margin:0 auto;position:relative}
+    .vision-title{font-family:'Cormorant Garamond','Playfair Display',serif;font-size:clamp(2rem,5vw,4rem);font-weight:600;line-height:1.2;color:#FFFBF0;letter-spacing:-.01em}
+    .vision-title em{color:#D4AF37;font-style:normal}
+    .vision-desc{font-family:'Inter',sans-serif;font-size:1.1rem;color:rgba(255,251,240,.7);line-height:1.8;max-width:600px;margin:2rem auto 0}
+    .vision-line{width:0;height:2px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:2.5rem auto 0;transition:width 1.2s cubic-bezier(.4,0,.2,1) .5s}
+
+    /* DEMO */
+    #demo{background:linear-gradient(180deg,#FFFBF0 0%,#F5EFE0 100%);padding:100px 2rem}
+    .demo-inner{max-width:1000px;margin:0 auto}
+    .demo-frame{position:relative;padding:3px;border-radius:24px;background:linear-gradient(135deg,#D4AF37,#8B6914,#D4AF37);box-shadow:0 0 60px rgba(212,175,55,.35),0 30px 80px rgba(0,0,0,.3)}
+    .demo-frame-inner{background:#0F172A;border-radius:22px;overflow:hidden}
+    .demo-topbar{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border-bottom:1px solid rgba(212,175,55,.3);padding:12px 20px;display:flex;align-items:center;gap:10px}
+    .demo-dot{width:10px;height:10px;border-radius:50%}
+    .demo-url-bar{flex:1;display:flex;justify-content:center}
+    .demo-url{background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:50px;padding:3px 20px;display:flex;align-items:center;gap:6px}
+    .demo-url-dot{width:6px;height:6px;border-radius:50%;background:#D4AF37}
+    .demo-url-text{font-family:'Inter',sans-serif;font-size:.72rem;color:rgba(212,175,55,.8);letter-spacing:.05em}
+    .demo-screen{background:linear-gradient(135deg,#1E3A8A 0%,#0F172A 100%);height:480px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .screen-content{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
+    .demo-base1{display:flex;justify-content:center;margin-top:-1px}
+    .demo-base1 div{width:60%;height:14px;background:linear-gradient(to bottom,#1a1a2e,#0a0a14);border-radius:0 0 8px 8px;border-top:1px solid rgba(212,175,55,.2)}
+    .demo-base2{display:flex;justify-content:center}
+    .demo-base2 div{width:70%;height:6px;background:linear-gradient(to bottom,#0a0a14,#050508);border-radius:0 0 4px 4px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+
+    /* HOW IT WORKS */
+    #how-it-works{background:#0F172A;padding:100px 2rem;position:relative;overflow:hidden}
+    .how-inner{max-width:700px;margin:0 auto}
+    .how-steps{position:relative}
+    .how-line{position:absolute;left:2.5rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,transparent,rgba(212,175,55,.4) 10%,rgba(212,175,55,.4) 90%,transparent)}
+    .how-steps-list{display:flex;flex-direction:column;gap:3rem}
+    .how-step{display:flex;align-items:flex-start;gap:2rem}
+    .how-step-num{width:52px;height:52px;min-width:52px;border-radius:50%;border:2px solid #D4AF37;background:rgba(212,175,55,.1);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:#D4AF37;position:relative;z-index:1;box-shadow:0 0 20px rgba(212,175,55,.2)}
+    .how-step-body{padding-top:8px}
+    .how-step-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .how-step-title{font-family:'Playfair Display',serif;font-size:1.25rem;color:#FFFBF0;font-weight:600}
+    .how-step-desc{font-family:'Inter',sans-serif;font-size:.92rem;color:rgba(255,251,240,.6);line-height:1.7}
+
+    /* TESTIMONIALS */
+    #testimonials{background:#FFFBF0;padding:100px 2rem}
+    .testi-inner{max-width:1100px;margin:0 auto}
+    .testi-grid{display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:auto auto;gap:1.5rem;align-items:start}
+    .testi-card{background:#FFFFFF;border:1px solid rgba(212,175,55,.2);border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:all .3s}
+    .testi-card:hover{box-shadow:0 20px 60px rgba(0,0,0,.12),0 0 0 2px rgba(212,175,55,.3);transform:scale(1.02)}
+    .testi-card.tall{grid-row:1/span 2}
+    .testi-top-bar{height:4px;background:linear-gradient(to right,#D4AF37,#1E3A8A)}
+    .testi-body{padding:1.75rem 2rem}
+    .testi-big-quote{font-family:'Playfair Display',serif;font-size:3rem;color:#D4AF37;line-height:1;margin-bottom:.5rem;opacity:.5}
+    .testi-text{font-family:'Inter',sans-serif;font-size:1rem;color:#374151;line-height:1.8;font-style:italic;margin-bottom:1.5rem}
+    .testi-author{display:flex;align-items:center;gap:12px}
+    .testi-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1E3A8A,#D4AF37);display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:2px solid rgba(212,175,55,.3)}
+    .testi-name{font-family:'Inter',sans-serif;font-weight:600;color:#0F172A;font-size:.9rem}
+    .testi-loc{font-family:'Inter',sans-serif;font-size:.78rem;color:#9CA3AF}
+
+    /* PRICING — nouveau design */
+    #pricing{background:#0F172A;padding:100px 2rem}
+    .pricing-inner{max-width:1000px;margin:0 auto}
+    .pricing-note{font-family:'Inter',sans-serif;font-size:.95rem;color:rgba(255,251,240,.6);text-align:center;margin-top:-2rem;margin-bottom:3rem;line-height:1.7}
+    .pricing-note strong{color:#D4AF37}
+    .pricing-cards{display:flex;gap:2rem;align-items:stretch;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+    .price-card{background:rgba(255,255,255,.04);backdrop-filter:blur(10px);border:1px solid rgba(212,175,55,.2);border-radius:24px;padding:2.5rem 2rem;width:300px;display:flex;flex-direction:column}
+    .price-card.premium{background:linear-gradient(135deg,rgba(30,58,138,.6),rgba(15,23,42,.9));border-color:rgba(212,175,55,.5);position:relative;box-shadow:0 20px 60px rgba(212,175,55,.15);transform:translateY(-1rem)}
+    .price-badge{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;padding:4px 20px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(212,175,55,.5);white-space:nowrap}
+    .price-name{font-family:'Playfair Display',serif;font-size:1.3rem;color:#FFFBF0;font-weight:600;margin-bottom:4px}
+    .price-tagline{font-family:'Inter',sans-serif;font-size:.8rem;color:rgba(255,251,240,.5);margin-bottom:1.25rem}
+    .price-value{font-family:'Playfair Display',serif;font-size:2.5rem;color:#D4AF37;font-weight:700;margin-bottom:1.5rem}
+    .price-value small{font-size:1rem;font-weight:400;font-family:'Inter',sans-serif;color:rgba(255,251,240,.5)}
+    .price-value.italic-price{font-size:1.5rem;font-style:italic}
+    .price-divider{height:1px;background:linear-gradient(to right,transparent,rgba(212,175,55,.3),transparent);margin:1.25rem 0}
+    .price-section-title{font-family:'Inter',sans-serif;font-size:.72rem;font-weight:700;color:#D4AF37;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem}
+    .price-feature{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .price-feature-check{color:#D4AF37;flex-shrink:0}
+    .price-feature-check.locked{color:#6B7280}
+    .price-feature-text{font-family:'Inter',sans-serif;font-size:.88rem;color:rgba(255,251,240,.7)}
+    .price-feature-text.premium-feat{color:rgba(255,251,240,.9);font-weight:500}
+    .price-feature-text.locked-text{color:#4B5563;text-decoration:line-through}
+    .price-btn{margin-top:auto;padding-top:1.5rem;border:none;cursor:pointer;padding:12px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:600;font-size:.9rem;transition:all .3s;width:100%}
+    .price-btn.outline{background:transparent;border:1px solid #D4AF37;color:#D4AF37;margin-top:1.5rem}
+    .price-btn.outline:hover{background:rgba(212,175,55,.1)}
+    .price-btn.filled{background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;box-shadow:0 8px 30px rgba(212,175,55,.4);font-weight:700;margin-top:1.5rem}
+    .price-btn.filled:hover{transform:scale(1.03);box-shadow:0 12px 40px rgba(212,175,55,.6)}
+    .price-lock-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.15);border-radius:50px;padding:3px 10px;font-family:'Inter',sans-serif;font-size:.7rem;color:rgba(212,175,55,.6);margin-bottom:1rem}
+
+    /* FAQ */
+    #faq{background:#FFFBF0;padding:100px 2rem}
+    .faq-inner{max-width:700px;margin:0 auto}
+    .faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .faq-item{border:1px solid rgba(212,175,55,.2);border-radius:16px;overflow:hidden}
+    .faq-btn{width:100%;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:transparent;border:none;cursor:pointer;text-align:left;transition:background .3s}
+    .faq-btn.open{background:rgba(212,175,55,.08)}
+    .faq-q{font-family:'Inter',sans-serif;font-weight:600;font-size:.95rem;color:#0F172A}
+    .faq-btn.open .faq-q{color:#1E3A8A}
+    .faq-icon{color:#D4AF37;font-size:1.2rem;transition:transform .3s;display:inline-block}
+    .faq-btn.open .faq-icon{transform:rotate(45deg)}
+    .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+    .faq-answer.open{max-height:300px}
+    .faq-answer-inner{padding:0 1.5rem 1.25rem;font-family:'Inter',sans-serif;font-size:.9rem;color:#6B7280;line-height:1.7}
+
+    /* BLOG — vrais articles */
+    #blog{background:#F5EFE0;padding:100px 2rem}
+    .blog-inner{max-width:1200px;margin:0 auto}
+    .blog-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1rem}
+    .blog-link{font-family:'Inter',sans-serif;font-size:.85rem;color:#1E3A8A;font-weight:600;text-decoration:none;border-bottom:1px solid #1E3A8A}
+    .blog-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:2rem}
+    .blog-card{border-radius:20px;overflow:hidden;background:#FFFFFF;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:all .3s;cursor:pointer;display:flex;flex-direction:column}
+    .blog-card:hover{box-shadow:0 24px 60px rgba(0,0,0,.15);transform:translateY(-6px)}
+    .blog-card.featured{grid-row:span 1}
+    .blog-img-wrap{height:220px;overflow:hidden;position:relative;background:linear-gradient(135deg,#1E3A8A,#0F172A);display:flex;align-items:center;justify-content:center}
+    .blog-img-wrap.short{height:160px}
+    .blog-emoji-cover{font-size:4rem;opacity:.8}
+    .blog-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+    .blog-card:hover .blog-img-wrap img{transform:scale(1.06)}
+    .blog-tag{position:absolute;top:12px;left:12px;background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;padding:4px 12px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em}
+    .blog-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.25) 0%,transparent 60%)}
+    .blog-body{padding:1.5rem;display:flex;flex-direction:column;flex:1}
+    .blog-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:#0F172A;font-weight:700;margin-bottom:.6rem;line-height:1.4}
+    .blog-title.big{font-size:1.3rem}
+    .blog-excerpt{font-family:'Inter',sans-serif;font-size:.85rem;color:#6B7280;line-height:1.7;margin-bottom:1rem;flex:1}
+    .blog-meta{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+    .blog-time{font-family:'Inter',sans-serif;font-size:.75rem;color:#9CA3AF}
+    .blog-read{font-family:'Inter',sans-serif;font-size:.82rem;color:#1E3A8A;font-weight:600}
+
+    /* ARTICLE MODAL */
+    #article-overlay{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);overflow-y:auto;padding:2rem}
+    #article-overlay.show{display:flex;justify-content:center;align-items:flex-start;animation:fadeIn .3s}
+    .article-box{background:#FFFBF0;border-radius:24px;max-width:720px;width:100%;padding:3rem;position:relative;margin:auto}
+    .article-close{position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;font-size:1.5rem;color:#9CA3AF;transition:color .3s}
+    .article-close:hover{color:#0F172A}
+    .article-tag{display:inline-block;background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;padding:4px 14px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
+    .article-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2rem);color:#0F172A;font-weight:700;line-height:1.25;margin-bottom:1rem}
+    .article-meta{font-family:'Inter',sans-serif;font-size:.82rem;color:#9CA3AF;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(212,175,55,.2)}
+    .article-body{font-family:'Inter',sans-serif;font-size:1rem;color:#374151;line-height:1.85}
+    .article-body h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:#0F172A;font-weight:700;margin:1.75rem 0 .75rem}
+    .article-body p{margin-bottom:1.1rem}
+    .article-body ul{padding-left:1.5rem;margin-bottom:1.1rem}
+    .article-body ul li{margin-bottom:.5rem}
+    .article-body blockquote{border-left:3px solid #D4AF37;padding-left:1.25rem;font-style:italic;color:#6B7280;margin:1.5rem 0}
+
+    /* CTA FINAL */
+    #cta-final{background:#0F172A;padding:120px 2rem;text-align:center;position:relative;overflow:hidden}
+    .cta-inner{max-width:700px;margin:0 auto;position:relative}
+    .cta-title{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,5rem);color:#FFFBF0;font-weight:700;margin-bottom:1rem;line-height:1.1}
+    .cta-desc{font-family:'Inter',sans-serif;font-size:1.1rem;color:rgba(255,251,240,.7);margin-bottom:3rem;line-height:1.7}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .cta-btn-main{background:linear-gradient(135deg,#D4AF37,#B8960C);border:none;cursor:pointer;padding:16px 40px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:1rem;color:#0F172A;box-shadow:0 0 40px rgba(212,175,55,.4);transition:all .3s;animation:goldGlow 2.5s infinite}
+    .cta-btn-main:hover{transform:scale(1.06)}
+    .cta-btn-sec{background:transparent;border:1px solid rgba(255,251,240,.4);cursor:pointer;padding:16px 40px;border-radius:50px;font-family:'Inter',sans-serif;font-weight:600;font-size:1rem;color:#FFFBF0;transition:all .3s}
+    .cta-btn-sec:hover{border-color:#D4AF37;color:#D4AF37}
+
+    /* FOOTER */
+    footer{background:#FFFBF0;border-top:1px solid rgba(212,175,55,.2);padding:4rem 2rem 2rem}
+    .footer-inner{max-width:1000px;margin:0 auto}
+    .footer-top{text-align:center;margin-bottom:3rem}
+    .footer-tagline{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#6B7280;font-style:italic;letter-spacing:.05em}
+    .footer-line{width:40px;height:2px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:1.25rem auto 0}
+    .footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-bottom:3rem;text-align:center}
+    .footer-col-title{font-family:'Playfair Display',serif;font-weight:600;color:#0F172A;margin-bottom:1rem;font-size:.95rem}
+    .footer-link{display:block;margin-bottom:.6rem;font-family:'Inter',sans-serif;font-size:.85rem;color:#6B7280;text-decoration:none;transition:color .3s}
+    .footer-link:hover{color:#D4AF37}
+    .footer-bottom{border-top:1px solid rgba(212,175,55,.15);padding-top:1.5rem;text-align:center;font-family:'Inter',sans-serif;font-size:.78rem;color:#9CA3AF}
+    .footer-bottom a{color:#9CA3AF;text-decoration:none}
+
+    /* AUTH OVERLAY */
+    #auth-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+    #auth-overlay.show{display:flex;animation:fadeIn .4s}
+    .auth-box{background:#0F172A;border:1px solid rgba(212,175,55,.3);border-radius:24px;padding:3rem 2.5rem;max-width:440px;width:90%;position:relative;text-align:center}
+    .auth-close{position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:rgba(255,251,240,.5);font-size:1.5rem;transition:color .3s}
+    .auth-close:hover{color:#D4AF37}
+    .auth-title{font-family:'Playfair Display',serif;font-size:2rem;color:#FFFBF0;font-weight:700;margin-bottom:.5rem}
+    .auth-subtitle{font-family:'Inter',sans-serif;font-size:.9rem;color:rgba(255,251,240,.6);margin-bottom:2rem;line-height:1.6}
+    .auth-note{font-family:'Inter',sans-serif;font-size:.78rem;color:rgba(255,251,240,.4);margin-top:1rem}
+
+    @media(max-width:768px){
+      .nav-menu{display:none}
+      .hamburger{display:flex}
+      .hero-grid{grid-template-columns:1fr!important;gap:2rem!important}
+      .hero-img-wrap{order:-1}
+      .features-grid{grid-template-columns:1fr!important}
+      .offset{margin-left:0}
+      .testi-grid{grid-template-columns:1fr!important;grid-template-rows:auto!important}
+      .testi-card.tall{grid-row:auto!important}
+      .blog-grid{grid-template-columns:1fr!important}
+      .footer-grid{grid-template-columns:1fr!important;gap:1.5rem!important}
+      .stat-item{padding:.5rem 1.5rem}
+      .stat-sep{display:none}
+      .pricing-cards{flex-direction:column;align-items:center}
+      .price-card.premium{transform:translateY(0)}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="#">
+      <svg width="44" height="44" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="#0F172A" stroke="#D4AF37" stroke-width="4"/>
+        <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5"/>
+        <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5" opacity="0.8"/>
+        <path d="M 37 39 A 18 18 0 0 1 52 43" fill="none" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+        <polygon points="60,20 66,28 60,34 54,28" fill="#FFFBF0"/>
+        <circle cx="60" cy="27" r="2.5" fill="#D4AF37"/>
+      </svg>
+      <span class="logo-text">Wétali</span>
+    </a>
+    <div class="nav-menu">
+      <button class="nav-link" onclick="scrollToId('decouvrir')">Découvrir</button>
+      <button class="nav-link" onclick="scrollToId('how-it-works')">Comment ça marche</button>
+      <button class="nav-link" onclick="scrollToId('pricing')">Tarifs</button>
+      <button class="nav-link" onclick="scrollToId('contact-section')">Contact</button>
+      <button class="nav-cta" onclick="openAuth()">Accéder à Wétali</button>
+    </div>
+    <button class="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="drawer">
+  <button class="drawer-link" onclick="scrollToId('decouvrir')">Découvrir</button>
+  <button class="drawer-link" onclick="scrollToId('how-it-works')">Comment ça marche</button>
+  <button class="drawer-link" onclick="scrollToId('pricing')">Tarifs</button>
+  <button class="drawer-link" onclick="scrollToId('contact-section')">Contact</button>
+  <button class="drawer-cta" onclick="openAuth()">Accéder à Wétali</button>
+</div>
+<div id="drawer-overlay" onclick="toggleDrawer()"></div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="bg-glow" style="top:-100px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(212,175,55,.12) 0%,transparent 70%)"></div>
+  <div class="bg-glow" style="bottom:-50px;left:-50px;width:400px;height:400px;background:radial-gradient(circle,rgba(30,58,138,.08) 0%,transparent 70%)"></div>
+  <div class="hero-inner">
+    <div class="hero-grid">
+      <div class="inview inview-hidden" id="hero-text">
+        <div class="hero-badge"><span class="hero-badge-dot"></span><span class="hero-badge-text">Matrimonial Premium</span></div>
+        <h1 class="hero-title">Wétali.<br><em>Sérieux.</em></h1>
+        <p class="hero-desc">Une plateforme matrimoniale pour Sénégalais de la diaspora qui cherchent vraiment leur moitié.</p>
+        <div class="hero-features">
+          <div class="hero-feature"><span class="hero-feature-icon">✦</span><span class="hero-feature-text">Inscription 100% gratuite</span></div>
+          <div class="hero-feature"><span class="hero-feature-icon">◈</span><span class="hero-feature-text">Profils vérifiés & sérieux</span></div>
+          <div class="hero-feature"><span class="hero-feature-icon">⬡</span><span class="hero-feature-text">Chat & messagerie sécurisés</span></div>
+        </div>
+        <div class="hero-cta-wrap">
+          <button class="hero-btn" onclick="openAuth()">Créer mon profil gratuit</button>
+          <span class="hero-note">Inscription gratuite · Confidentiel · Chat disponible avec abonnement</span>
+        </div>
+      </div>
+      <!-- Image Hero avec fallback élégant -->
+      <div class="inview inview-hidden hero-img-wrap" style="transition-delay:.2s">
+        <div class="hero-img-border"></div>
+        <div class="hero-img-corner" style="top:-16px;left:-16px"></div>
+        <div class="hero-img-corner" style="top:-16px;right:-16px"></div>
+        <div class="hero-img-corner" style="bottom:-16px;left:-16px"></div>
+        <div class="hero-img-corner" style="bottom:-16px;right:-16px"></div>
+        <div class="hero-img-box" id="hero-img-box">
+          <!-- Fallback visuel élégant toujours visible -->
+          <div class="hero-img-fallback" id="hero-fallback">
+            <div style="text-align:center;padding:2rem">
+              <svg width="120" height="120" viewBox="0 0 100 100" style="margin-bottom:1.5rem">
+                <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(212,175,55,0.3)" stroke-width="2"/>
+                <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="3"/>
+                <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="3" opacity="0.7"/>
+                <path d="M 37 39 A 18 18 0 0 1 52 43" fill="none" stroke="#D4AF37" stroke-width="3.5" stroke-linecap="round"/>
+                <polygon points="60,20 66,28 60,34 54,28" fill="rgba(255,251,240,0.8)"/>
+                <circle cx="60" cy="27" r="2.5" fill="#D4AF37"/>
+              </svg>
+              <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#D4AF37;margin-bottom:.5rem">Wétali</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:rgba(255,251,240,0.7);font-style:italic">L'union dans la dignité</div>
+              <div style="margin-top:1.5rem;display:flex;justify-content:center;gap:1rem">
+                <div style="text-align:center"><div style="font-size:2rem">👩🏾</div><div style="font-family:'Inter',sans-serif;font-size:.7rem;color:rgba(212,175,55,0.7);margin-top:4px">Mariama · Paris</div></div>
+                <div style="width:1px;background:rgba(212,175,55,0.3)"></div>
+                <div style="text-align:center"><div style="font-size:2rem">👨🏾</div><div style="font-family:'Inter',sans-serif;font-size:.7rem;color:rgba(212,175,55,0.7);margin-top:4px">Ibrahima · Dakar</div></div>
+              </div>
+            </div>
+          </div>
+          <img id="hero-photo"
+            src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80"
+            alt="Couple sénégalais élégant"
+            style="opacity:0;position:absolute;inset:0"
+            onload="this.style.opacity='1';document.getElementById('hero-fallback').style.display='none'"
+            onerror="this.style.display='none'">
+          <div class="hero-img-overlay"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT BAR -->
+<section id="stat-bar">
+  <div class="stat-inner">
+    <div class="stat-item inview inview-hidden"><div class="stat-value">2 500+</div><div class="stat-label">Membres actifs</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item inview inview-hidden" style="transition-delay:.15s"><div class="stat-value">500+</div><div class="stat-label">Mariages réussis</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item inview inview-hidden" style="transition-delay:.3s"><div class="stat-value">100%</div><div class="stat-label">Profils vérifiés</div></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="decouvrir">
+  <div class="features-inner">
+    <div class="section-head inview inview-hidden">
+      <p class="section-label">Excellence</p>
+      <h2 class="section-title">Pourquoi choisir Wétali?</h2>
+    </div>
+    <div class="features-grid">
+      <div class="features-col">
+        <div class="feature-card large inview inview-hidden" style="transition-delay:.1s">
+          <div class="feature-icon">✦</div>
+          <h3 class="feature-card-title large">Profils Vérifiés</h3>
+          <p class="feature-card-desc">Chaque membre passe par un processus de vérification rigoureux. Ici, vous rencontrez de vraies personnes avec de vraies intentions.</p>
+        </div>
+        <div class="offset">
+          <div class="feature-card inview inview-hidden" style="transition-delay:.25s">
+            <div class="feature-icon gold">◈</div>
+            <h3 class="feature-card-title">Matching Intelligent</h3>
+            <p class="feature-card-desc">Notre algorithme analyse vos valeurs, votre vision du mariage et votre culture pour vous présenter des profils vraiment compatibles.</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card large inview inview-hidden" style="transition-delay:.15s">
+        <div class="feature-icon">⬡</div>
+        <h3 class="feature-card-title large">Chat Sécurisé &amp; Respectueux</h3>
+        <p class="feature-card-desc">Échangez en toute confiance dans un environnement modéré. Nos équipes veillent à ce que chaque interaction reste dans le respect et la dignité.</p>
+        <div class="feature-highlight"><span></span><span>Modération active 24/7</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="bg-glow" style="top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(30,58,138,.3) 0%,transparent 70%)"></div>
+  <div class="vision-inner">
+    <p class="vision-title inview inview-hidden">Pas un swipe.<br><em>Une rencontre.</em></p>
+    <p class="vision-desc inview inview-hidden" style="transition-delay:.3s">On a créé Wétali pour ceux qui cherchent une vraie moitié, pas une distraction.</p>
+    <div class="vision-line" id="vision-line"></div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="demo-inner">
+    <div class="section-head inview inview-hidden">
+      <p class="section-label">En action</p>
+      <h2 class="section-title" style="font-size:clamp(1.8rem,3.5vw,2.8rem)">Wétali, c'est du respect et de la confiance</h2>
+      <p style="font-family:'Inter',sans-serif;font-size:1rem;color:#6B7280;margin-top:.75rem">Regarde comment ça fonctionne</p>
+    </div>
+    <div class="inview inview-hidden" style="transition-delay:.3s">
+      <div class="demo-frame">
+        <div class="demo-frame-inner">
+          <div class="demo-topbar">
+            <div class="demo-dot" style="background:#D4AF37;box-shadow:0 0 6px #D4AF3780"></div>
+            <div class="demo-dot" style="background:#C09B2A;box-shadow:0 0 6px #C09B2A80"></div>
+            <div class="demo-dot" style="background:#A8891A;box-shadow:0 0 6px #A8891A80"></div>
+            <div class="demo-url-bar"><div class="demo-url"><div class="demo-url-dot"></div><span class="demo-url-text">wetali.app</span></div></div>
+          </div>
+          <div class="demo-screen"><div class="screen-content" id="screen-content"></div></div>
+        </div>
+      </div>
+      <div class="demo-base1"><div></div></div>
+      <div class="demo-base2"><div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(212,175,55,.2),transparent)"></div>
+  <div class="how-inner">
+    <div class="section-head inview inview-hidden">
+      <p class="section-label">Le parcours</p>
+      <h2 class="section-title" style="color:#FFFBF0;font-size:clamp(1.8rem,3.5vw,2.8rem)">Comment ça marche</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-line"></div>
+      <div class="how-steps-list">
+        <div class="how-step inview inview-hidden" style="transition-delay:.15s">
+          <div class="how-step-num">01</div>
+          <div class="how-step-body"><div class="how-step-head"><span>✍️</span><h3 class="how-step-title">Inscris-toi gratuitement</h3></div><p class="how-step-desc">Crée ton profil complet avec tes valeurs, ta vision du mariage et ta culture. Simple et rapide.</p></div>
+        </div>
+        <div class="how-step inview inview-hidden" style="transition-delay:.3s">
+          <div class="how-step-num">02</div>
+          <div class="how-step-body"><div class="how-step-head"><span>🔍</span><h3 class="how-step-title">Découvre des profils compatibles</h3></div><p class="how-step-desc">Notre algorithme te propose des profils vérifiés qui partagent tes valeurs et tes aspirations.</p></div>
+        </div>
+        <div class="how-step inview inview-hidden" style="transition-delay:.45s">
+          <div class="how-step-num">03</div>
+          <div class="how-step-body"><div class="how-step-head"><span>💬</span><h3 class="how-step-title">Active ton abonnement pour échanger</h3></div><p class="how-step-desc">Le chat et la messagerie sont disponibles avec un abonnement. Une barrière qui garantit le sérieux de chaque membre.</p></div>
+        </div>
+        <div class="how-step inview inview-hidden" style="transition-delay:.6s">
+          <div class="how-step-num">04</div>
+          <div class="how-step-body"><div class="how-step-head"><span>💍</span><h3 class="how-step-title">Rencontre ta moitié</h3></div><p class="how-step-desc">Échangez, découvrez-vous, et construisez quelque chose de beau ensemble.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testi-inner">
+    <div class="section-head inview inview-hidden">
+      <p class="section-label">Témoignages</p>
+      <h2 class="section-title">Ils ont trouvé l'amour</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card tall inview inview-hidden" style="transition-delay:.1s">
+        <div class="testi-top-bar"></div>
+        <div class="testi-body">
+          <div class="testi-big-quote">"</div>
+          <p class="testi-text">Wétali m'a aidé à trouver quelqu'un de sérieux. On s'est mariés en juin dernier. Alhamdulillah! L'abonnement vaut vraiment le prix, les profils sont tous vérifiés et les intentions sont claires dès le début.</p>
+          <div class="testi-author"><div class="testi-avatar">👩🏾‍🦱</div><div><div class="testi-name">Amara D.</div><div class="testi-loc">Paris, France</div></div></div>
+        </div>
+      </div>
+      <div class="testi-card inview inview-hidden" style="transition-delay:.25s">
+        <div class="testi-top-bar"></div>
+        <div class="testi-body">
+          <div class="testi-big-quote">"</div>
+          <p class="testi-text">Enfin une app où les profils sont vrais et les intentions claires!</p>
+          <div class="testi-author"><div class="testi-avatar">👩🏾</div><div><div class="testi-name">Sophia K.</div><div class="testi-loc">Montréal, Canada</div></div></div>
+        </div>
+      </div>
+      <div class="testi-card inview inview-hidden" style="transition-delay:.4s">
+        <div class="testi-top-bar"></div>
+        <div class="testi-body">
+          <div class="testi-big-quote">"</div>
+          <p class="testi-text">L'abonnement m'a semblé logique — seuls ceux qui cherchent vraiment paient. Ça change tout!</p>
+          <div class="testi-author"><div class="testi-avatar">👨🏾</div><div><div class="testi-name">Mamadou S.</div><div class="testi-loc">New York, USA</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING — inscription gratuite, usage payant -->
+<section id="pricing">
+  <div class="pricing-inner">
+    <div class="section-head inview inview-hidden">
+      <p class="section-label">Accès</p>
+      <h2 class="section-title" style="color:#FFFBF0">Accéder à Wétali</h2>
+    </div>
+    <p class="pricing-note inview inview-hidden"><strong>L'inscription est entièrement gratuite.</strong><br>Le chat, la messagerie et les échanges sont réservés aux membres abonnés — une garantie de sérieux pour tous.</p>
+    <div class="pricing-cards">
+      <!-- GRATUIT -->
+      <div class="price-card inview inview-hidden" style="transition-delay:.1s">
+        <div class="price-name">Inscription</div>
+        <div class="price-tagline">Pour commencer</div>
+        <div class="price-value">Gratuit <small>pour toujours</small></div>
+        <div class="price-section-title">Inclus</div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text">Créer ton profil complet</span></div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text">Parcourir les profils vérifiés</span></div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text">Voir les suggestions de l'algorithme</span></div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text">Ajouter en favoris</span></div>
+        <div class="price-divider"></div>
+        <div class="price-lock-badge">🔒 Nécessite un abonnement</div>
+        <div class="price-feature"><span class="price-feature-check locked">✗</span><span class="price-feature-text locked-text">Messagerie &amp; Chat</span></div>
+        <div class="price-feature"><span class="price-feature-check locked">✗</span><span class="price-feature-text locked-text">Envoyer des demandes</span></div>
+        <div class="price-feature"><span class="price-feature-check locked">✗</span><span class="price-feature-text locked-text">Voir qui t'a liké</span></div>
+        <button class="price-btn outline" onclick="openAuth()">Créer mon profil</button>
+      </div>
+      <!-- PREMIUM -->
+      <div class="price-card premium inview inview-hidden" style="transition-delay:.2s">
+        <div class="price-badge">✦ ABONNEMENT</div>
+        <div class="price-name">Expérience Complète</div>
+        <div class="price-tagline">Pour trouver vraiment</div>
+        <div class="price-value italic-price">Tarif à venir</div>
+        <div class="price-section-title">Tout le gratuit +</div>
+        <div class="price-feature"><span class="price-feature-check">✦</span><span class="price-feature-text premium-feat">Chat &amp; messagerie illimités</span></div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text premium-feat">Envoyer des demandes</span></div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text premium-feat">Voir qui t'a liké</span></div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text premium-feat">Profil mis en avant</span></div>
+        <div class="price-feature"><span class="price-feature-check">✓</span><span class="price-feature-text premium-feat">Support prioritaire</span></div>
+        <button class="price-btn filled" onclick="openAuth()">Je suis intéressé →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="faq-inner">
+    <div class="section-head inview inview-hidden">
+      <h2 class="section-title">Questions fréquentes</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item inview inview-hidden" style="transition-delay:.1s">
+        <button class="faq-btn" onclick="toggleFAQ(this)"><span class="faq-q">L'inscription est vraiment gratuite?</span><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Oui, l'inscription et la création de profil sont entièrement gratuites et le resteront toujours. Vous pouvez parcourir les profils et utiliser notre algorithme de matching sans payer. Le chat, la messagerie et l'envoi de demandes nécessitent un abonnement.</div></div>
+      </div>
+      <div class="faq-item inview inview-hidden" style="transition-delay:.2s">
+        <button class="faq-btn" onclick="toggleFAQ(this)"><span class="faq-q">Pourquoi l'abonnement rend le service plus sérieux?</span><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Un abonnement payant garantit que chaque personne qui vous contacte a fait une démarche volontaire et sérieuse. Cela élimine les profils fantaisistes et assure que vos échanges sont toujours avec des personnes réellement motivées.</div></div>
+      </div>
+      <div class="faq-item inview inview-hidden" style="transition-delay:.3s">
+        <button class="faq-btn" onclick="toggleFAQ(this)"><span class="faq-q">Comment se faire vérifier?</span><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Envoyez une pièce d'identité valide via notre formulaire sécurisé. Notre équipe valide votre profil sous 24-48h. La vérification est gratuite et renforce la confiance de la communauté.</div></div>
+      </div>
+      <div class="faq-item inview inview-hidden" style="transition-delay:.4s">
+        <button class="faq-btn" onclick="toggleFAQ(this)"><span class="faq-q">Mes données sont-elles sécurisées?</span><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Absolument. Nous utilisons un chiffrement de bout en bout et ne partageons jamais vos données personnelles avec des tiers. Votre confidentialité est notre priorité absolue.</div></div>
+      </div>
+      <div class="faq-item inview inview-hidden" style="transition-delay:.5s">
+        <button class="faq-btn" onclick="toggleFAQ(this)"><span class="faq-q">Peut-on se désabonner à tout moment?</span><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Oui, vous pouvez vous désabonner à tout moment depuis les paramètres de votre compte. Votre profil reste actif en mode gratuit. Aucun frais caché, aucune contrainte.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG / MAGAZINE -->
+<section id="blog">
+  <div class="blog-inner">
+    <div class="blog-header inview inview-hidden">
+      <div><p class="section-label">Magazine</p><h2 class="section-title" style="font-size:clamp(1.8rem,3vw,2.5rem)">À lire</h2></div>
+      <a href="#" class="blog-link">Tous les articles →</a>
+    </div>
+    <div class="blog-grid">
+      <!-- Article 1 — FEATURED -->
+      <div class="blog-card featured inview inview-hidden" onclick="openArticle(0)">
+        <div class="blog-img-wrap" style="height:280px;background:linear-gradient(135deg,#1E3A8A,#0A1F4A)">
+          <div class="blog-emoji-cover" style="font-size:5rem">💍</div>
+          <span class="blog-tag">Mariage</span>
+          <div class="blog-img-overlay"></div>
+        </div>
+        <div class="blog-body">
+          <h3 class="blog-title big">Les 7 questions essentielles à poser avant de s'engager</h3>
+          <p class="blog-excerpt">Avant de prendre une décision aussi importante que le mariage, certaines conversations s'imposent. Voici les sujets que vous devez aborder avec votre prétendant(e) pour éviter les malentendus et construire sur des bases solides.</p>
+          <div class="blog-meta"><span class="blog-time">6 min de lecture</span><span class="blog-read">Lire l'article →</span></div>
+        </div>
+      </div>
+      <!-- Article 2 -->
+      <div class="blog-card inview inview-hidden" style="transition-delay:.15s" onclick="openArticle(1)">
+        <div class="blog-img-wrap short" style="background:linear-gradient(135deg,#2D8659,#1a5c3a)">
+          <div class="blog-emoji-cover">✍️</div>
+          <span class="blog-tag">Profil</span>
+          <div class="blog-img-overlay"></div>
+        </div>
+        <div class="blog-body">
+          <h3 class="blog-title">Comment rédiger un profil matrimonial irrésistible</h3>
+          <p class="blog-excerpt">Votre profil est votre première impression. Voici comment présenter votre personnalité, vos valeurs et vos intentions avec authenticité et élégance.</p>
+          <div class="blog-meta"><span class="blog-time">4 min de lecture</span><span class="blog-read">Lire →</span></div>
+        </div>
+      </div>
+      <!-- Article 3 -->
+      <div class="blog-card inview inview-hidden" style="transition-delay:.3s" onclick="openArticle(2)">
+        <div class="blog-img-wrap short" style="background:linear-gradient(135deg,#7C3AED,#4C1D95)">
+          <div class="blog-emoji-cover">👁️</div>
+          <span class="blog-tag">Sécurité</span>
+          <div class="blog-img-overlay"></div>
+        </div>
+        <div class="blog-body">
+          <h3 class="blog-title">5 signes qu'un profil matrimonial est sincère</h3>
+          <p class="blog-excerpt">Dans la recherche d'un partenaire sérieux, savoir reconnaître les signaux d'authenticité peut vous éviter de perdre du temps et de l'énergie.</p>
+          <div class="blog-meta"><span class="blog-time">5 min de lecture</span><span class="blog-read">Lire →</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="cta-final">
+  <div class="bg-glow" style="top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(212,175,55,.12) 0%,transparent 70%)"></div>
+  <div class="cta-inner">
+    <h2 class="cta-title inview inview-hidden">Tu es prêt(e)?</h2>
+    <p class="cta-desc inview inview-hidden" style="transition-delay:.2s">Rejoins des milliers de Sénégalais qui cherchent leur moitié sérieusement.<br><strong style="color:#D4AF37">Inscription gratuite.</strong> Chat disponible avec abonnement.</p>
+    <div class="cta-btns inview inview-hidden" style="transition-delay:.35s">
+      <button class="cta-btn-main" onclick="openAuth()">Créer mon profil gratuit</button>
+      <button class="cta-btn-sec" onclick="scrollToId('pricing')">Voir les tarifs</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact-section">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div style="display:inline-flex;justify-content:center;margin-bottom:.75rem">
+        <a class="logo" href="#" style="text-decoration:none">
+          <svg width="56" height="56" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="#0F172A" stroke="#D4AF37" stroke-width="4"/>
+            <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5"/>
+            <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5" opacity="0.8"/>
+            <path d="M 37 39 A 18 18 0 0 1 52 43" fill="none" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+            <polygon points="60,20 66,28 60,34 54,28" fill="#FFFBF0"/>
+            <circle cx="60" cy="27" r="2.5" fill="#D4AF37"/>
+          </svg>
+          <span class="logo-text" style="font-size:1.8rem">Wétali</span>
+        </a>
+      </div>
+      <p class="footer-tagline">Matrimonial sénégalais. L'union dans la dignité.</p>
+      <div class="footer-line"></div>
+    </div>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-col-title">Utilisation</div>
+        <a href="#" class="footer-link" onclick="openAuth()">S'inscrire gratuitement</a>
+        <a href="#" class="footer-link" onclick="openAuth()">Se connecter</a>
+        <a href="#" class="footer-link" onclick="scrollToId('pricing')">Tarifs</a>
+        <a href="#" class="footer-link">Confidentialité</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Infos</div>
+        <a href="#" class="footer-link">À propos</a>
+        <a href="#" class="footer-link" onclick="scrollToId('blog')">Magazine</a>
+        <a href="#" class="footer-link">Presse</a>
+        <a href="#" class="footer-link">Conditions d'utilisation</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <a href="mailto:contact@wetali.app" class="footer-link">contact@wetali.app</a>
+        <a href="#" class="footer-link">Instagram</a>
+        <a href="#" class="footer-link">Facebook</a>
+        <a href="#" class="footer-link">Twitter / X</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 Wétali &nbsp;|&nbsp; <a href="#">Confidentialité</a> &nbsp;|&nbsp; <a href="#">Conditions</a></p></div>
+  </div>
+</footer>
+
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <svg width="56" height="56" viewBox="0 0 100 100" style="margin-bottom:1rem">
+      <circle cx="50" cy="50" r="46" fill="#1E3A8A" stroke="#D4AF37" stroke-width="4"/>
+      <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5"/>
+      <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5" opacity="0.8"/>
+      <path d="M 37 39 A 18 18 0 0 1 52 43" fill="none" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <h2 class="auth-title">Rejoindre Wétali</h2>
+    <p class="auth-subtitle">L'application est en cours de développement.<br>Laisse ton email pour être notifié en priorité au lancement — <strong style="color:#D4AF37">c'est gratuit.</strong></p>
+    <button class="cta-btn-main" style="width:100%;animation:none;display:block" onclick="closeAuth()">M'inscrire gratuitement ✦</button>
+    <p class="auth-note">Inscription gratuite · Chat disponible avec abonnement</p>
+  </div>
+</div>
+
+<!-- ARTICLE MODAL -->
+<div id="article-overlay" onclick="handleArticleOverlayClick(event)">
+  <div class="article-box" id="article-box">
+    <button class="article-close" onclick="closeArticle()">✕</button>
+    <div id="article-content"></div>
+  </div>
+</div>
+
+<script>
+// === ARTICLES DATA ===
+const articles = [
+  {
+    tag: "Mariage",
+    title: "Les 7 questions essentielles à poser avant de s'engager",
+    meta: "Par l'équipe Wétali · 6 min de lecture · Conseils matrimoniaux",
+    body: `
+      <p>Le mariage est l'une des décisions les plus importantes de votre vie. Avant de dire « oui », il est indispensable d'avoir des conversations honnêtes avec votre prétendant(e). Voici les 7 sujets que vous ne devez pas éviter.</p>
+      <h3>1. La vision de la famille</h3>
+      <p>Souhaitez-vous des enfants ? Combien ? Quel rôle chacun jouera-t-il dans l'éducation ? Ces questions semblent évidentes, mais beaucoup de couples les évitent par gêne — et le regrettent ensuite.</p>
+      <h3>2. Le rapport à la religion et aux pratiques</h3>
+      <p>Dans la communauté sénégalaise, la foi occupe souvent une place centrale. Comment votre partenaire pratique-t-il l'islam ? Quelle importance accordez-vous au dahira, à la prière en commun, aux fêtes religieuses ? La compatibilité spirituelle est une fondation solide.</p>
+      <h3>3. L'organisation financière du foyer</h3>
+      <p>Qui gérera les finances ? Les comptes seront-ils partagés ou séparés ? Quelle est la contribution attendue de chacun ? Ces discussions évitent les malentendus et les conflits futurs.</p>
+      <h3>4. La relation avec les familles</h3>
+      <blockquote>En Afrique, on ne marie pas seulement deux personnes, on unit deux familles.</blockquote>
+      <p>Quelle place occupera la belle-famille dans votre vie quotidienne ? Les attentes sont-elles claires des deux côtés ? Discuter de cela en amont évite des tensions inutiles.</p>
+      <h3>5. Le lieu de vie</h3>
+      <p>Vivrez-vous en France, au Sénégal, ou ailleurs ? L'un de vous prévoit-il de rentrer au pays un jour ? La mobilité géographique peut créer de vraies tensions si elle n'est pas anticipée.</p>
+      <h3>6. Les rôles dans le couple</h3>
+      <p>Les attentes de chacun concernant les rôles domestiques, professionnels et parentaux doivent être alignées. Évitez les suppositions — exprimez clairement ce que vous attendez.</p>
+      <h3>7. La gestion des conflits</h3>
+      <p>Tout couple traverse des désaccords. La vraie question est : comment les gérez-vous ? La capacité à communiquer avec respect et à chercher un compromis est la clé de la longévité d'une union.</p>
+      <p style="margin-top:1.5rem;padding:1rem;background:rgba(212,175,55,.08);border-radius:12px;border-left:3px solid #D4AF37"><strong>Conclusion :</strong> Ces conversations peuvent sembler difficiles au début, mais elles construisent la confiance. Sur Wétali, nos profils encouragent chaque membre à exprimer clairement ses valeurs et ses attentes dès le départ.</p>
+    `
+  },
+  {
+    tag: "Profil",
+    title: "Comment rédiger un profil matrimonial irrésistible",
+    meta: "Par l'équipe Wétali · 4 min de lecture · Conseils pratiques",
+    body: `
+      <p>Sur Wétali, votre profil est votre carte de visite. C'est souvent la première — et parfois la seule — chose qu'un prétendant(e) verra avant de décider de vous contacter. Voici comment vous démarquer.</p>
+      <h3>Soyez authentique, pas parfait</h3>
+      <p>Il est tentant de se présenter sous son meilleur jour en édulcorant la réalité. Mais un profil honnête attire des personnes vraiment compatibles. Mentionnez vos vraies valeurs, votre style de vie actuel, et ce que vous cherchez réellement.</p>
+      <h3>Exprimez vos valeurs clairement</h3>
+      <p>Au lieu d'écrire « Je suis gentil et sérieux » (ce que tout le monde dit), soyez spécifique :</p>
+      <ul>
+        <li>« La prière du Fajr est une priorité pour moi »</li>
+        <li>« Je suis très attaché à ma famille à Thiès »</li>
+        <li>« Je cherche quelqu'un avec qui construire un foyer calme et équilibré »</li>
+      </ul>
+      <h3>Parlez de votre vision du mariage</h3>
+      <p>Décrivez brièvement ce que le mariage représente pour vous. Est-ce un projet de vie commun ? Une alliance de familles ? Une aventure à deux ? Cela aide l'autre à savoir si vos visions sont alignées.</p>
+      <h3>La photo : naturelle et respectueuse</h3>
+      <p>Une photo claire, souriante, habillée avec élégance fait toute la différence. Évitez les selfies flous ou les photos de groupe où on ne sait pas qui vous êtes. Sur Wétali, les photos sont vérifiées pour garantir l'authenticité.</p>
+      <h3>Ce qu'il ne faut pas écrire</h3>
+      <blockquote>« Je n'aime pas les jeux » ou « Je cherche quelqu'un de sérieux » — tout le monde le dit. Montrez-le plutôt à travers vos valeurs et vos actions.</blockquote>
+      <p>Votre profil doit donner envie d'en savoir plus. La concision et l'authenticité sont vos meilleurs alliés.</p>
+    `
+  },
+  {
+    tag: "Sécurité",
+    title: "5 signes qu'un profil matrimonial est sincère",
+    meta: "Par l'équipe Wétali · 5 min de lecture · Sécurité & confiance",
+    body: `
+      <p>Dans la recherche d'un partenaire sérieux, savoir reconnaître les profils authentiques est une compétence précieuse. Voici 5 indicateurs fiables.</p>
+      <h3>1. Le profil est vérifié ✓</h3>
+      <p>Sur Wétali, la vérification d'identité est un gage de sérieux. Un profil vérifié signifie que la personne a accepté de fournir une pièce d'identité et que notre équipe a confirmé son authenticité. C'est le premier filtre de confiance.</p>
+      <h3>2. Le profil est complet et cohérent</h3>
+      <p>Une personne sérieuse prend le temps de remplir son profil entièrement. Si les informations sont vagues, contradictoires ou superficielles, c'est un signe de manque d'engagement ou d'honnêteté.</p>
+      <h3>3. Les intentions sont clairement exprimées</h3>
+      <p>Un profil sincère indique clairement ce qu'il recherche : mariage, cadre familial, valeurs religieuses. L'ambiguïté volontaire est souvent un signal d'alerte.</p>
+      <h3>4. La communication est respectueuse et progressive</h3>
+      <p>Une personne sérieuse ne se précipite pas. Elle prend le temps de se découvrir mutuellement, respecte vos limites et ne demande pas d'informations personnelles (numéro de téléphone, adresse) dès les premiers échanges.</p>
+      <h3>5. La famille est mentionnée naturellement</h3>
+      <blockquote>Dans notre culture, quelqu'un qui cherche vraiment parle de sa famille, de ses origines, de son environnement — pas uniquement de lui-même.</blockquote>
+      <p>Une personne ancrée dans des valeurs familiales saines en parle spontanément. C'est souvent un très bon signe de maturité et de sérieux.</p>
+      <h3>Ce que fait Wétali pour vous protéger</h3>
+      <ul>
+        <li>Vérification d'identité pour chaque membre</li>
+        <li>Modération des messages par notre équipe</li>
+        <li>Signalement rapide de tout comportement suspect</li>
+        <li>Aucune donnée personnelle partagée sans votre accord</li>
+      </ul>
+      <p style="margin-top:1.5rem;padding:1rem;background:rgba(212,175,55,.08);border-radius:12px;border-left:3px solid #D4AF37">Sur Wétali, votre sécurité n'est pas une option — c'est notre engagement fondamental.</p>
+    `
+  }
+];
+
+// === CORE FUNCTIONS ===
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+function scrollToId(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('show');
+}
+
+function toggleDrawer() {
+  document.getElementById('drawer').classList.toggle('open');
+  document.getElementById('drawer-overlay').classList.toggle('show');
+}
+
+function openAuth() {
+  document.getElementById('auth-overlay').classList.add('show');
+}
+function closeAuth() {
+  document.getElementById('auth-overlay').classList.remove('show');
+}
+document.getElementById('auth-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAuth();
+});
+
+function toggleFAQ(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  document.querySelectorAll('.faq-answer.open').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-btn.open').forEach(b => b.classList.remove('open'));
+  if (!isOpen) { answer.classList.add('open'); btn.classList.add('open'); }
+}
+
+function openArticle(index) {
+  const a = articles[index];
+  document.getElementById('article-content').innerHTML = `
+    <span class="article-tag">${a.tag}</span>
+    <h1 class="article-title">${a.title}</h1>
+    <div class="article-meta">${a.meta}</div>
+    <div class="article-body">${a.body}</div>
+  `;
+  document.getElementById('article-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeArticle() {
+  document.getElementById('article-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function handleArticleOverlayClick(e) {
+  if (e.target === document.getElementById('article-overlay')) closeArticle();
+}
+
+// Intersection Observer
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.remove('inview-hidden');
+      entry.target.classList.add('inview-visible');
+      if (entry.target.id === 'vision-line') entry.target.style.width = '80px';
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.inview').forEach(el => observer.observe(el));
+const vl = document.getElementById('vision-line');
+if (vl) observer.observe(vl);
+
+// Demo animation
+const steps = [
+  `<div style="text-align:center;animation:fadeIn 1s"><div style="font-family:'Playfair Display',serif;font-size:4rem;font-weight:700;color:#D4AF37;animation:glowPulse 2s infinite">Wétali</div><div style="font-family:'Inter',sans-serif;font-size:1rem;color:rgba(255,251,240,.7);margin-top:8px;letter-spacing:.2em;text-transform:uppercase">Matrimonial Sénégalais</div></div>`,
+  `<div style="text-align:center;animation:fadeIn .8s"><div style="font-size:5rem;margin-bottom:16px">👫</div><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#FFFBF0;font-weight:600">Pour ceux qui cherchent vraiment</div></div>`,
+  `<div style="text-align:center;animation:fadeIn .8s"><div style="width:80px;height:80px;border-radius:50%;margin:0 auto 1rem;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-size:2rem;animation:pulseGold 2s infinite">✓</div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:#FFFBF0;font-weight:600">Profils Vérifiés</div><div style="font-family:'Inter',sans-serif;font-size:.9rem;color:rgba(255,251,240,.6);margin-top:8px">Inscription gratuite · Chat avec abonnement</div></div>`,
+  `<div style="width:80%;display:flex;flex-direction:column;gap:12px;animation:fadeIn .6s"><div style="display:flex;justify-content:flex-end"><div style="background:#1E3A8A;color:#FFFBF0;border-radius:18px 18px 4px 18px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%">Salaam, votre profil est remarquable 🌟</div></div><div style="display:flex;justify-content:flex-start"><div style="background:linear-gradient(135deg,#D4AF37,#B8960C);color:#0F172A;border-radius:18px 18px 18px 4px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%;font-weight:500">Merci! Raconte-moi ta vision du mariage ✨</div></div><div style="display:flex;justify-content:flex-end"><div style="background:#1E3A8A;color:#FFFBF0;border-radius:18px 18px 4px 18px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:.85rem;max-width:60%">Une union dans le respect et l'amour sincère 💎</div></div></div>`,
+  `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;animation:fadeIn .8s"><div style="position:absolute;left:10%;top:20%;font-size:24px;color:#D4AF37;animation:floatHeart 3s 0s infinite ease-in-out">♥</div><div style="position:absolute;left:80%;top:15%;font-size:18px;color:#D4AF37;animation:floatHeart 3s .3s infinite ease-in-out">♥</div><div style="position:absolute;left:20%;top:70%;font-size:22px;color:#D4AF37;animation:floatHeart 3s .6s infinite ease-in-out">♥</div><div style="position:absolute;left:75%;top:65%;font-size:20px;color:#D4AF37;animation:floatHeart 3s .2s infinite ease-in-out">♥</div><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#D4AF37;text-align:center">Des connexions sincères<br><span style="font-size:.9rem;color:rgba(255,251,240,.7);font-style:italic">au-delà des apparences</span></div></div>`,
+  `<div style="text-align:center;animation:matchPop .6s cubic-bezier(.34,1.56,.64,1)"><div style="display:flex;align-items:center;justify-content:center;margin-bottom:1rem"><div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-size:1.5rem;z-index:2;border:3px solid #0F172A">👩🏾</div><div style="margin-left:-10px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1E3A8A,#0F172A);display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:3px solid #D4AF37">👨🏾</div></div><div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#D4AF37;animation:glowPulse 1.5s infinite;letter-spacing:.1em">MATCH!</div><div style="font-family:'Inter',sans-serif;font-size:.85rem;color:rgba(255,251,240,.7);margin-top:8px">Compatibles à 94%</div></div>`
+];
+
+let currentStep = 0;
+const sc = document.getElementById('screen-content');
+sc.innerHTML = steps[0];
+
+function nextStep() {
+  currentStep = (currentStep + 1) % steps.length;
+  sc.style.opacity = 0;
+  setTimeout(() => { sc.innerHTML = steps[currentStep]; sc.style.opacity = 1; }, 300);
+}
+
+const demoObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      setTimeout(() => setInterval(nextStep, 4000), 800);
+      demoObs.disconnect();
+    }
+  });
+}, { threshold: 0.2 });
+demoObs.observe(document.getElementById('demo'));
+</script>
+</body>
+</html>
