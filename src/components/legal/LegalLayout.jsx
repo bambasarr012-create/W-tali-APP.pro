@@ -45,13 +45,14 @@ const Footer = () => (
         <div>
           <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Rencontre</h4>
           <ul className="space-y-3 text-sm">
-            <li><span className="text-gray-400">Rencontre Paris</span></li>
-            <li><span className="text-gray-400">Rencontre Marseille</span></li>
-            <li><span className="text-gray-400">Rencontre Montréal</span></li>
-            <li><span className="text-gray-400">Rencontre New York</span></li>
-            <li><span className="text-gray-400">Rencontre Londres</span></li>
-            <li><span className="text-gray-400">Rencontre Milan</span></li>
-            <li><span className="text-gray-400">Rencontre Bruxelles</span></li>
+            <li><button onClick={() => window.openCity && window.openCity('paris')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Rencontre Paris</button></li>
+            <li><button onClick={() => window.openCity && window.openCity('marseille')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Rencontre Marseille</button></li>
+            <li><button onClick={() => window.openCity && window.openCity('montreal')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Rencontre Montréal</button></li>
+            <li><button onClick={() => window.openCity && window.openCity('newyork')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Rencontre New York</button></li>
+            <li><button onClick={() => window.openCity && window.openCity('londres')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Rencontre Londres</button></li>
+            <li><button onClick={() => window.openCity && window.openCity('milan')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Rencontre Milan</button></li>
+            <li><button onClick={() => window.openCity && window.openCity('bruxelles')} className="text-gray-400 hover:text-[#D4AF37] transition-colors text-left w-full">Rencontre Bruxelles</button></li>
+            <li className="pt-2"><button onClick={() => window.openCity && window.openCity('all')} className="text-[#D4AF37] hover:text-white font-medium transition-colors text-xs uppercase tracking-wide text-left w-full">Toutes les villes →</button></li>
           </ul>
         </div>
 

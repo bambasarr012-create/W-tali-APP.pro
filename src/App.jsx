@@ -9,6 +9,8 @@ import WeddingRingLogo from './components/common/WeddingRingLogo';
 
 import AuthPage from './components/auth/AuthPage';
 import LandingPage from './components/landing/LandingPage';
+import CityLandingPage from './components/landing/CityLandingPage';
+import CitiesListPage from './components/landing/CitiesListPage';
 import ProfileCreation from './components/profile/ProfileCreation';
 import HomePage from './components/home/HomePage';
 import ProfileDetailPage from './components/profile/ProfileDetailPage';
@@ -20,17 +22,33 @@ import SettingsPage from './components/settings/SettingsPage';
 // Gate component: shows landing page first, then auth when user clicks CTA
 function LandingPageGate() {
   const [showAuth, setShowAuth] = useState(false);
+  const [activeCity, setActiveCity] = useState(null); // 'paris' etc. or 'all'
 
   if (showAuth) {
     return (
       <div style={{ animation: 'lpFadeIn 0.4s ease' }}>
         <style>{`@keyframes lpFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-        <AuthPage />
+        <AuthPage onBack={() => setShowAuth(false)} />
       </div>
     );
   }
 
-  return <LandingPage onEnterApp={() => setShowAuth(true)} />;
+  if (activeCity === 'all') {
+    return <CitiesListPage onBack={() => setActiveCity(null)} onNavCity={setActiveCity} />;
+  }
+
+  if (activeCity) {
+    return (
+      <CityLandingPage 
+        ville={activeCity} 
+        onBack={() => setActiveCity(null)}
+        onSignup={() => setShowAuth(true)}
+        onNavCity={setActiveCity}
+      />
+    );
+  }
+
+  return <LandingPage onEnterApp={() => setShowAuth(true)} onNavCity={setActiveCity} />;
 }
 
 function MainApp() {

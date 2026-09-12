@@ -438,14 +438,14 @@ const landingHtml = `
       <div>
         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Rencontre</h4>
         <ul class="space-y-3 text-sm">
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Paris</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Marseille</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Montréal</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre New York</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Londres</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Milan</a></li>
-          <li><a href="#" class="hover:text-[#D4AF37] transition-colors">Rencontre Bruxelles</a></li>
-          <li class="pt-2"><a href="#" class="text-[#D4AF37] hover:text-white font-medium transition-colors text-xs uppercase tracking-wide">Toutes les villes →</a></li>
+          <li><button onclick="openCity('paris')" class="text-left w-full hover:text-[#D4AF37] transition-colors">Rencontre Paris</button></li>
+          <li><button onclick="openCity('marseille')" class="text-left w-full hover:text-[#D4AF37] transition-colors">Rencontre Marseille</button></li>
+          <li><button onclick="openCity('montreal')" class="text-left w-full hover:text-[#D4AF37] transition-colors">Rencontre Montréal</button></li>
+          <li><button onclick="openCity('newyork')" class="text-left w-full hover:text-[#D4AF37] transition-colors">Rencontre New York</button></li>
+          <li><button onclick="openCity('londres')" class="text-left w-full hover:text-[#D4AF37] transition-colors">Rencontre Londres</button></li>
+          <li><button onclick="openCity('milan')" class="text-left w-full hover:text-[#D4AF37] transition-colors">Rencontre Milan</button></li>
+          <li><button onclick="openCity('bruxelles')" class="text-left w-full hover:text-[#D4AF37] transition-colors">Rencontre Bruxelles</button></li>
+          <li class="pt-2"><button onclick="openCity('all')" class="text-left w-full text-[#D4AF37] hover:text-white font-medium transition-colors text-xs uppercase tracking-wide">Toutes les villes →</button></li>
         </ul>
       </div>
 
@@ -499,7 +499,7 @@ const landingHtml = `
 </div>
 `;
 
-export default function LandingPage({ onEnterApp }) {
+export default function LandingPage({ onEnterApp, onNavCity }) {
   const [legalPage, setLegalPage] = useState(null);
 
   useEffect(() => {
@@ -562,6 +562,9 @@ export default function LandingPage({ onEnterApp }) {
     window.openLegal = (page) => {
       setLegalPage(page);
       window.scrollTo(0, 0);
+    };
+    window.openCity = (city) => {
+      if (onNavCity) onNavCity(city);
     };
     window.toggleFAQ = (btn) => {
       const answer = btn.nextElementSibling;
@@ -717,8 +720,9 @@ export default function LandingPage({ onEnterApp }) {
       delete window.closeArticle;
       delete window.handleArticleOverlayClick;
       delete window.openLegal;
+      delete window.openCity;
     };
-  }, [onEnterApp]);
+  }, [onEnterApp, onNavCity]);
 
   if (legalPage === 'terms') return <TermsPage onBack={() => setLegalPage(null)} />;
   if (legalPage === 'privacy') return <PrivacyPage onBack={() => setLegalPage(null)} />;

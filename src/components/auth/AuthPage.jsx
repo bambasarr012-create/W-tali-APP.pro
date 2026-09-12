@@ -6,7 +6,7 @@ import WeddingRingLogo from '../common/WeddingRingLogo';
 import RulesPage from '../legal/RulesPage';
 import PrivacyPage from '../legal/PrivacyPage';
 
-export default function AuthPage() {
+export default function AuthPage({ onBack }) {
   const { login, signup } = useAuth();
   const { showToast, setCurrentView } = useApp();
 
@@ -76,7 +76,7 @@ export default function AuthPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Logo en haut */}
-        <div className="relative z-10 flex items-center gap-3">
+        <div className="relative z-10 flex items-center gap-3 cursor-pointer" onClick={onBack}>
           <WeddingRingLogo size="sm" />
           <span className="font-serif font-bold text-3xl text-white">Wétali</span>
         </div>
@@ -122,15 +122,23 @@ export default function AuthPage() {
 
       {/* Colonne DROITE (60%) */}
       <div className="w-full lg:w-[60%] flex flex-col justify-center items-center p-6 sm:p-12 relative">
-        <div className="w-full max-w-md">
+        {/* Bouton Retour (Desktop & Mobile) */}
+        <button 
+          onClick={onBack}
+          className="absolute top-6 right-6 lg:top-8 lg:right-12 text-sm font-medium text-slate-400 hover:text-[#0F172A] transition-colors flex items-center gap-2 z-20"
+        >
+          <span>←</span> Retour à l'accueil
+        </button>
+
+        <div className="w-full max-w-md mt-6 lg:mt-0">
           {/* Logo Mobile */}
-          <div className="lg:hidden flex justify-center mb-8">
+          <div className="lg:hidden flex justify-center mb-8 cursor-pointer" onClick={onBack}>
             <WeddingRingLogo size="lg" />
           </div>
 
           {/* En-tête formulaire */}
           <div className="text-center mb-8">
-            <div className="hidden lg:flex justify-center mb-6">
+            <div className="hidden lg:flex justify-center mb-6 cursor-pointer" onClick={onBack}>
               <WeddingRingLogo size="md" />
             </div>
             <p className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-widest mb-3">
