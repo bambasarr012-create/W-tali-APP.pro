@@ -19,6 +19,8 @@ import MatchesPage from './components/matches/MatchesPage';
 import ChatPage from './components/chat/ChatPage';
 import SettingsPage from './components/settings/SettingsPage';
 import SubscriptionPage from './components/subscription/SubscriptionPage';
+import VisitorsPage from './components/visitors/VisitorsPage';
+import FavoritesPage from './components/favorites/FavoritesPage';
 
 // Gate component: shows landing page first, then auth when user clicks CTA
 function LandingPageGate() {
@@ -138,6 +140,8 @@ function MainApp() {
         {currentView === 'matches' && <MatchesPage />}
         {currentView === 'chat' && <ChatPage />}
         {currentView === 'settings' && <SettingsPage />}
+        {currentView === 'visitors' && <VisitorsPage />}
+        {currentView === 'favorites' && <FavoritesPage />}
         {currentView === 'profile-create' && <ProfileCreation />}
       </main>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Compass, Heart, UserCheck, MessageCircle, User } from 'lucide-react';
+import { Compass, Heart, UserCheck, MessageCircle, User, Eye, Star } from 'lucide-react';
 
 export default function BottomNav() {
   const { currentView, setCurrentView, pendingRequestsCount, matchesCount } = useApp();
@@ -9,13 +9,15 @@ export default function BottomNav() {
     { id: 'home', label: 'Découvrir', icon: Compass },
     { id: 'matches', label: 'Matchs', icon: Heart, badge: matchesCount > 0 ? matchesCount : null },
     { id: 'requests', label: 'Demandes', icon: UserCheck, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
+    { id: 'visitors', label: 'Visiteurs', icon: Eye, badge: 2 },
+    { id: 'favorites', label: 'Favoris', icon: Star },
     { id: 'chat', label: 'Messages', icon: MessageCircle },
-    { id: 'settings', label: 'Mon Profil', icon: User }
+    { id: 'settings', label: 'Profil', icon: User }
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-lg px-2 py-1.5 md:py-2">
-      <div className="max-w-md mx-auto flex items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-lg">
+      <div className="max-w-2xl mx-auto flex items-center justify-between gap-1 overflow-x-auto px-2 py-1.5 md:py-2 no-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
         {navItems.map(item => {
           const Icon = item.icon;
           const isActive = currentView === item.id || (item.id === 'home' && currentView === 'profile-detail');
@@ -27,7 +29,7 @@ export default function BottomNav() {
                 setCurrentView(item.id);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ${
+              className={`relative flex-shrink-0 flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'text-[#2D8659] font-bold scale-105'
                   : 'text-slate-500 hover:text-[#0A2F4A]'
