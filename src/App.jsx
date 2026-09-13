@@ -18,6 +18,7 @@ import RequestsPage from './components/requests/RequestsPage';
 import MatchesPage from './components/matches/MatchesPage';
 import ChatPage from './components/chat/ChatPage';
 import SettingsPage from './components/settings/SettingsPage';
+import SubscriptionPage from './components/subscription/SubscriptionPage';
 
 // Gate component: shows landing page first, then auth when user clicks CTA
 function LandingPageGate() {
@@ -83,7 +84,32 @@ function MainApp() {
     );
   }
 
-  // 3. Authentifié avec Profil -> Afficher vue active + navigation
+  // 3. Authentifié avec Profil mais PAS d'abonnement actif -> Bloquer sur Abonnement
+  const hasActiveSubscription = userProfile?.subscriptionStatus === 'active';
+  
+  if (hasProfile && !hasActiveSubscription) {
+    // Si la personne clique sur Paramètres depuis le header on peut la laisser y accéder pour se déconnecter
+    if (currentView === 'settings') {
+      return (
+        <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans flex flex-col">
+          <Header />
+          <main className="flex-1">
+            <SettingsPage />
+          </main>
+        </div>
+      );
+    }
+    
+    // Sinon elle est bloquée sur l'abonnement
+    return (
+      <div className="min-h-screen bg-[#F4F7F6]">
+        <Header />
+        <SubscriptionPage />
+      </div>
+    );
+  }
+
+  // 4. Authentifié avec Profil ET Abonnement -> Afficher vue active + navigation
   return (
     <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans flex flex-col">
       <Header />

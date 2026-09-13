@@ -46,6 +46,13 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = async (profileData) => {
+    // Ensure subscription fields default to none if missing
+    if (profileData && !profileData.subscriptionStatus) {
+      profileData.subscriptionStatus = 'none';
+      profileData.subscriptionTier = null;
+      profileData.subscriptionEnd = null;
+    }
+
     const saved = await saveUserProfile(profileData);
     setUserProfile(saved);
     if (user) {
@@ -54,6 +61,20 @@ export function AuthProvider({ children }) {
       localStorage.setItem('wetali_auth_user', JSON.stringify(updatedUser));
     }
     return saved;
+  };
+
+  const updateSubscription = async (tier, months) => {
+    if (!userProfile) return;
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + months);
+    
+    const updatedProfile = {
+      ...userProfile,
+      subscriptionStatus: 'active',
+      subscriptionTier: tier,
+      subscriptionEnd: endDate.toISOString()
+    };
+    return await updateProfile(updatedProfile);
   };
 
   return (
@@ -65,6 +86,7 @@ export function AuthProvider({ children }) {
       signup,
       logout,
       updateProfile,
+      updateSubscription,
       isAuthenticated: !!user,
       hasProfile: !!userProfile
     }}>
