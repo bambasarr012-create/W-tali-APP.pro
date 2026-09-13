@@ -16,17 +16,40 @@ import {
   Server, 
   Sparkles,
   MapPin,
-  Briefcase
+  Briefcase,
+  Volume2,
+  EyeOff
 } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { user, userProfile, logout } = useAuth();
+  const { user, userProfile, logout, updateProfile } = useAuth();
   const { showToast, setCurrentView } = useApp();
 
   const [activeSection, setActiveSection] = useState('profile'); // 'profile' | 'firebase'
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [firebaseConfig, setFirebaseConfig] = useState(getStoredFirebaseConfig());
   const [savingConfig, setSavingConfig] = useState(false);
+
+  const [preferences, setPreferences] = useState({
+    blurPhotos: userProfile?.preferences?.blurPhotos || false,
+    soundEnabled: userProfile?.preferences?.soundEnabled !== false, // default true
+  });
+
+  const togglePreference = async (key) => {
+    const newValue = !preferences[key];
+    setPreferences(prev => ({ ...prev, [key]: newValue }));
+    
+    if (userProfile && updateProfile) {
+      await updateProfile({
+        ...userProfile,
+        preferences: {
+          ...preferences,
+          [key]: newValue
+        }
+      });
+      showToast("Préférence mise à jour", "success");
+    }
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -181,6 +204,47 @@ export default function SettingsPage() {
                 <span>Modifier mon profil complet</span>
               </button>
 
+            </div>
+
+            {/* Préférences */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <h3 className="font-bold text-sm text-[#0A2F4A]">Préférences</h3>
+              
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#EAF5EF] flex items-center justify-center">
+                    <EyeOff className="w-4 h-4 text-[#2D8659]" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">Flouter mes photos</div>
+                    <div className="text-[10px] text-slate-500">Floute vos photos publiques jusqu'à ce qu'une demande soit acceptée.</div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => togglePreference('blurPhotos')}
+                  className={`w-11 h-6 rounded-full flex items-center transition-colors px-1 ${preferences.blurPhotos ? 'bg-[#2D8659]' : 'bg-slate-300'}`}
+                >
+                  <div className={`w-4 h-4 rounded-full bg-white transition-transform duration-200 ${preferences.blurPhotos ? 'transform translate-x-5' : ''}`} />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#FFFBF0] flex items-center justify-center">
+                    <Volume2 className="w-4 h-4 text-[#D4AF37]" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">Sons activés</div>
+                    <div className="text-[10px] text-slate-500">Joue un son lors des notifications ou messages reçus.</div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => togglePreference('soundEnabled')}
+                  className={`w-11 h-6 rounded-full flex items-center transition-colors px-1 ${preferences.soundEnabled ? 'bg-[#2D8659]' : 'bg-slate-300'}`}
+                >
+                  <div className={`w-4 h-4 rounded-full bg-white transition-transform duration-200 ${preferences.soundEnabled ? 'transform translate-x-5' : ''}`} />
+                </button>
+              </div>
             </div>
 
             {/* Account Danger Zone / Actions */}
