@@ -237,3 +237,20 @@ export const VISION_MARIAGE_OPTIONS = [
   { value: "moyen_terme", label: "Moyen terme (6-12 mois)", desc: "Temps d'échange sérieux avant fiançailles/mariage" },
   { value: "long_terme", label: "Long terme (1-2 ans)", desc: "Construction progressive et cadrée" }
 ];
+
+export const VALEURS_OPTIONS = [
+  "Fonder une famille",
+  "Compagnon de vie",
+  "Stabilité",
+  "Spiritualité",
+  "Grandir ensemble"
+];
+
+export const CRITERES_OPTIONS = [
+  "Pratiquant(e)",
+  "Bienveillant(e)",
+  "Sincère",
+  "Ambitieux(se)",
+  "Famille d'abord",
+  "Cultivé(e)"
+];
