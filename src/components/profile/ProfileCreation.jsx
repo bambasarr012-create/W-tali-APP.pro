@@ -147,7 +147,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
         }
         return true;
       case 2:
-        if (!formData.prenom || !formData.age || !formData.ville || !formData.telephone || !formData.email) {
+        if (!formData.prenom || !formData.age || !formData.pays || !formData.ville || !formData.telephone || !formData.email) {
           showToast("Veuillez remplir tous les champs obligatoires (Étape 2).", "error");
           return false;
         }
@@ -377,18 +377,50 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
 
               <div>
                 <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
-                  Ville de résidence <span className="text-rose-500">*</span>
+                  Pays de résidence <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  required
+                  value={formData.pays}
+                  onChange={(e) => setFormData({ ...formData, pays: e.target.value })}
+                  className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none bg-white"
+                >
+                  <option value="France">France</option>
+                  <option value="Canada">Canada</option>
+                  <option value="USA">USA</option>
+                  <option value="Royaume-Uni">Royaume-Uni</option>
+                  <option value="Italie">Italie</option>
+                  <option value="Belgique">Belgique</option>
+                  <option value="Sénégal">Sénégal</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
+                  Ville <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     required
+                    list="villes-suggestions"
                     value={formData.ville}
                     onChange={(e) => setFormData({ ...formData, ville: e.target.value })}
-                    placeholder="Ex: Paris"
+                    placeholder="Ex: Paris, Montréal..."
                     className="w-full pl-9 pr-3 py-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none"
                   />
+                  <datalist id="villes-suggestions">
+                    <option value="Paris" />
+                    <option value="Marseille" />
+                    <option value="Montréal" />
+                    <option value="New York" />
+                    <option value="Londres" />
+                    <option value="Milan" />
+                    <option value="Bruxelles" />
+                    <option value="Dakar" />
+                  </datalist>
                 </div>
               </div>
 
