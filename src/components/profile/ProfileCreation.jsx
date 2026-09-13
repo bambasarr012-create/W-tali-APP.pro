@@ -32,6 +32,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
 
   const [step, setStep] = useState(1);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [bioGeneratedAuto, setBioGeneratedAuto] = useState(false);
   const totalSteps = 7;
 
   const [formData, setFormData] = useState({
@@ -170,8 +171,29 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
     }
   };
 
+  const generateBio = () => {
+    const { ville, profession, valeurs, criteres } = formData;
+    const selectedVision = VISION_MARIAGE_OPTIONS.find(v => v.value === formData.visionMariage);
+    const visionTxt = selectedVision ? selectedVision.label.toLowerCase() : 'fonder un foyer';
+    
+    let text = `Je suis à ${ville} et je travaille en tant que ${profession}. `;
+    text += `Je recherche avant tout à ${visionTxt}. `;
+    
+    if (valeurs.length > 0) {
+      text += `Mes valeurs principales sont : ${valeurs.join(', ')}. `;
+    }
+    if (criteres.length > 0) {
+      text += `Je souhaiterais rencontrer quelqu'un qui est ${criteres.join(', ')}.`;
+    }
+    return text.trim();
+  };
+
   const nextStep = () => {
     if (validateStep(step)) {
+      if (step === 5 && !formData.bio) {
+        setFormData(prev => ({ ...prev, bio: generateBio() }));
+        setBioGeneratedAuto(true);
+      }
       setStep(prev => Math.min(prev + 1, totalSteps));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -654,6 +676,14 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
                     {formData.bio.length}/200
                   </span>
                 </div>
+                {bioGeneratedAuto && (
+                  <div className="bg-[#FFFBF0] border border-[#D4AF37]/30 text-[#0A2F4A] text-xs p-3 rounded-xl mb-3 flex gap-2 items-start shadow-sm">
+                    <Sparkles className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                    <p>
+                      <strong>On a généré automatiquement ta bio</strong> à partir de tes choix ! Tu peux la modifier librement pour la rendre encore plus personnelle.
+                    </p>
+                  </div>
+                )}
                 <textarea
                   rows={3}
                   maxLength={200}

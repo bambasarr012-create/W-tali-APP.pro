@@ -12,7 +12,9 @@ import {
   Sparkles, 
   MessageCircle, 
   Heart, 
-  Info 
+  Info,
+  Mic,
+  Square
 } from 'lucide-react';
 import VerifiedBadge from '../common/VerifiedBadge';
 
@@ -24,6 +26,11 @@ export default function ChatPage() {
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   const partner = activeMatch?.otherUser || {
     id: "partner_demo",
@@ -56,6 +63,58 @@ export default function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Timer pour l'enregistrement
+  useEffect(() => {
+    let interval;
+    if (isRecording) {
+      interval = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRecording]);
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      mediaRecorderRef.current.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        audioChunksRef.current = [];
+        
+        const reader = new FileReader();
+        reader.readAsDataURL(audioBlob);
+        reader.onloadend = async () => {
+          setIsSending(true);
+          await sendMessage(chatId, userProfile?.id || 'current_user', '', { type: 'audio', audioData: reader.result });
+          setIsSending(false);
+        };
+      };
+      
+      audioChunksRef.current = [];
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+    } catch (err) {
+      console.error("Microphone access denied", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      setIsRecording(false);
+    }
+  };
 
   const handleSend = async (e) => {
     if (e) e.preventDefault();
@@ -161,7 +220,11 @@ export default function ChatPage() {
                     : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
                 }`}
               >
-                <p className="whitespace-pre-wrap">{msg.text}</p>
+                {msg.type === 'audio' ? (
+                  <audio src={msg.audioData} controls className="h-10 w-48 max-w-full" />
+                ) : (
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                )}
                 
                 {/* Timestamp & Read Receipts */}
                 <div
@@ -204,20 +267,47 @@ export default function ChatPage() {
 
       {/* Input Bar */}
       <form onSubmit={handleSend} className="flex items-center gap-2 pt-1 flex-shrink-0">
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          placeholder="Écrivez votre message..."
-          className="flex-1 p-3.5 rounded-2xl border border-slate-300 focus:border-[#2D8659] focus:ring-2 focus:ring-[#2D8659]/20 text-xs sm:text-sm text-slate-800 outline-none transition-all shadow-sm"
-        />
-        <button
-          type="submit"
-          disabled={!inputText.trim() || isSending}
-          className="p-3.5 rounded-2xl bg-[#2D8659] hover:bg-[#236c47] text-white shadow-md transition-all disabled:opacity-50 flex items-center justify-center flex-shrink-0"
-        >
-          <Send className="w-5 h-5" />
-        </button>
+        {isRecording ? (
+          <div className="flex-1 flex items-center justify-between p-3.5 rounded-2xl bg-rose-50 border border-rose-200 shadow-sm text-rose-600 font-medium text-sm animate-pulse">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
+              Enregistrement... {formatTime(recordingTime)}
+            </div>
+            <button 
+              type="button" 
+              onClick={stopRecording} 
+              className="text-rose-600 hover:text-rose-800"
+            >
+              <Square className="w-5 h-5 fill-rose-600" />
+            </button>
+          </div>
+        ) : (
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Écrivez votre message..."
+            className="flex-1 p-3.5 rounded-2xl border border-slate-300 focus:border-[#2D8659] focus:ring-2 focus:ring-[#2D8659]/20 text-xs sm:text-sm text-slate-800 outline-none transition-all shadow-sm"
+          />
+        )}
+        
+        {!isRecording && !inputText.trim() ? (
+          <button
+            type="button"
+            onClick={startRecording}
+            className="p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-[#0A2F4A] shadow-sm transition-all flex items-center justify-center flex-shrink-0"
+          >
+            <Mic className="w-5 h-5" />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={(!inputText.trim() && !isRecording) || isSending}
+            className="p-3.5 rounded-2xl bg-[#2D8659] hover:bg-[#236c47] text-white shadow-md transition-all disabled:opacity-50 flex items-center justify-center flex-shrink-0"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+        )}
       </form>
 
     </div>

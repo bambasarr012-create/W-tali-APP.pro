@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getAllProfiles } from '../../services/firestoreService';
 import { useAuth } from '../../context/AuthContext';
 import ProfileCard from '../profile/ProfileCard';
-import { Search, RotateCcw, SlidersHorizontal, MapPin, Users, Heart, Sparkles, Filter } from 'lucide-react';
+import AICoachWidget from './AICoachWidget';
+import { Search, RotateCcw, SlidersHorizontal, MapPin, Users, Heart, Sparkles, Filter, Lightbulb, Quote } from 'lucide-react';
 
 export default function HomePage() {
   const { userProfile } = useAuth();
@@ -258,6 +259,44 @@ export default function HomePage() {
           ))}
         </div>
       )}
+
+      {/* Daily Tips / Quotes */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12 border-t border-slate-100 pt-8">
+        {/* Rappel du Jour */}
+        <div className="bg-[#FFFBF0] rounded-3xl p-6 border border-[#D4AF37]/30 shadow-sm relative overflow-hidden group">
+          <Quote className="absolute -bottom-4 -right-4 w-24 h-24 text-[#D4AF37]/10 transform -rotate-12 group-hover:scale-110 transition-transform duration-500" />
+          <div className="relative z-10">
+            <h3 className="font-serif font-bold text-lg text-[#0A2F4A] mb-3 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm">
+                <Quote className="w-4 h-4 text-[#D4AF37]" />
+              </span>
+              Rappel du jour
+            </h3>
+            <p className="text-slate-700 italic text-sm leading-relaxed">
+              "Le mariage est la moitié de la foi. Avance avec sincérité, patience et confiance en ton destin."
+            </p>
+          </div>
+        </div>
+
+        {/* Conseil du Jour */}
+        <div className="bg-[#EAF5EF] rounded-3xl p-6 border border-[#2D8659]/20 shadow-sm relative overflow-hidden group">
+          <Lightbulb className="absolute -bottom-4 -right-4 w-24 h-24 text-[#2D8659]/10 transform rotate-12 group-hover:scale-110 transition-transform duration-500" />
+          <div className="relative z-10">
+            <h3 className="font-serif font-bold text-lg text-[#0A2F4A] mb-3 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm">
+                <Lightbulb className="w-4 h-4 text-[#2D8659]" />
+              </span>
+              Conseil du jour
+            </h3>
+            <p className="text-slate-700 text-sm leading-relaxed font-medium">
+              <span className="text-[#2D8659] font-bold">Implique ta famille.</span> Le mariage concerne aussi les familles. Garde-les informées de ta démarche pour garantir une union sereine.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Coach IA Widget */}
+      <AICoachWidget />
 
     </div>
   );

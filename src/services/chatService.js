@@ -70,8 +70,8 @@ function notifyChatSubscribers(chatId) {
   }
 }
 
-export async function sendMessage(chatId, senderId, text) {
-  if (!text || !text.trim()) return null;
+export async function sendMessage(chatId, senderId, text, options = {}) {
+  if ((!text || !text.trim()) && !options.audioData) return null;
 
   const key = getChatStorageKey(chatId);
   const raw = localStorage.getItem(key);
@@ -80,7 +80,9 @@ export async function sendMessage(chatId, senderId, text) {
   const newMessage = {
     id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
     senderId: senderId || 'current_user',
-    text: text.trim(),
+    text: text ? text.trim() : '',
+    type: options.type || 'text',
+    audioData: options.audioData || null,
     timestamp: new Date().toISOString(),
     read: false // Affiche ✓ puis passe à ✓✓
   };
