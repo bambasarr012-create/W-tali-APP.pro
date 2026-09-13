@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { getReceivedRequests, getSentRequests, acceptRequest, rejectRequest, subscribeToCollection } from '../../services/firestoreService';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { UserCheck, Check, X, MessageCircle, Clock, Heart, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
+import { UserCheck, Check, X, MessageCircle, Clock, Heart, ShieldCheck,  Inbox, 
+  MapPin, 
+  Briefcase 
+} from 'lucide-react';
+import VerifiedBadge from '../common/VerifiedBadge';
 
 export default function RequestsPage() {
   const { userProfile } = useAuth();
@@ -151,11 +155,16 @@ export default function RequestsPage() {
                       onClick={() => sender.id && viewProfileDetail(sender)}
                       className="flex items-center gap-4 cursor-pointer group"
                     >
-                      <img
-                        src={senderPhoto}
-                        alt={sender.prenom}
-                        className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-100 group-hover:border-[#2D8659] shadow-sm transition-colors"
-                      />
+                      <div className="relative">
+                        <img
+                          src={senderPhoto}
+                          alt={sender.prenom}
+                          className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-100 group-hover:border-[#2D8659] shadow-sm transition-colors"
+                        />
+                        {sender.profileStatus === 'verified' && (
+                          <VerifiedBadge size="sm" className="absolute -top-1.5 -right-1.5" />
+                        )}
+                      </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-serif font-bold text-lg text-[#0A2F4A] group-hover:text-[#2D8659] transition-colors">
@@ -246,11 +255,16 @@ export default function RequestsPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={targetPhoto}
-                        alt={target.prenom || "Profil"}
-                        className="w-12 h-12 rounded-xl object-cover"
-                      />
+                      <div className="relative">
+                        <img
+                          src={targetPhoto}
+                          alt={target.prenom || "Profil"}
+                          className="w-12 h-12 rounded-xl object-cover"
+                        />
+                        {target.profileStatus === 'verified' && (
+                          <VerifiedBadge size="sm" className="absolute -top-1 -right-1" />
+                        )}
+                      </div>
                       <div>
                         <h4 className="font-bold text-sm text-[#0A2F4A]">
                           Demande envoyée à {target.prenom || "Membre Wétali"}

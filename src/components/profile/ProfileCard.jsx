@@ -2,7 +2,8 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { calculatePointsCommuns } from '../../services/firestoreService';
-import { MapPin, Briefcase, Heart, Sparkles, ShieldCheck, ChevronRight } from 'lucide-react';
+import { MapPin, Briefcase, Heart, Sparkles, ChevronRight } from 'lucide-react';
+import VerifiedBadge from '../common/VerifiedBadge';
 
 export default function ProfileCard({ profile }) {
   const { viewProfileDetail, openSendRequestModal } = useApp();
@@ -31,10 +32,11 @@ export default function ProfileCard({ profile }) {
 
         {/* Top Badges */}
         <div className="absolute top-3 inset-x-3 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1 bg-[#0A2F4A]/80 backdrop-blur-md text-[#D4AF37] text-[11px] font-bold px-2.5 py-1 rounded-full border border-[#D4AF37]/30 shadow-sm">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Vérifié</span>
-          </span>
+          {profile.profileStatus === 'verified' ? (
+            <VerifiedBadge size="md" />
+          ) : (
+            <div></div>
+          )}
 
           <span className="inline-flex items-center gap-1 bg-white/90 backdrop-blur-md text-[#0A2F4A] text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
             <MapPin className="w-3 h-3 text-[#2D8659]" />

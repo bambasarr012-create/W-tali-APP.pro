@@ -193,21 +193,12 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
         id: userProfile?.id || user?.uid || 'current_user',
         age: parseInt(formData.age, 10),
         visionMariageLabel: selectedVision ? selectedVision.label : formData.visionMariage,
-        verified: true,
+        profileStatus: 'pending',
         updatedAt: new Date().toISOString()
       };
 
       await updateProfile(profileToSave);
       setShowConfirmation(true);
-      
-      // Après l'écran de succès, on redirige
-      setTimeout(() => {
-        if (onComplete) {
-          onComplete();
-        } else {
-          setCurrentView('home');
-        }
-      }, 3000);
 
     } catch (err) {
       showToast(err.message || "Erreur lors de l'enregistrement", "error");
@@ -222,12 +213,20 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
         <div className="w-20 h-20 bg-[#EAF5EF] rounded-full flex items-center justify-center mb-6 shadow-inner animate-bounce">
           <ShieldCheck className="w-10 h-10 text-[#2D8659]" />
         </div>
-        <h2 className="font-serif font-bold text-3xl text-[#0A2F4A] mb-4">Profil envoyé avec succès !</h2>
+        <h2 className="font-serif font-bold text-3xl text-[#0A2F4A] mb-4">Profil envoyé ✓</h2>
         <p className="text-slate-600 mb-8 max-w-md mx-auto">
           Vos informations sont en cours de vérification par notre équipe. 
           Ce processus prend généralement entre 12 et 24 heures pour garantir la qualité de la communauté Wétali.
         </p>
-        <div className="w-8 h-8 border-4 border-[#2D8659] border-t-transparent rounded-full animate-spin"></div>
+        <button
+          onClick={() => {
+            if (onComplete) onComplete();
+            else setCurrentView('home');
+          }}
+          className="py-3 px-8 rounded-xl bg-[#0A2F4A] text-[#D4AF37] font-bold shadow-lg shadow-[#0A2F4A]/20 transition-all hover:bg-[#061C2C]"
+        >
+          Accéder à la plateforme
+        </button>
       </div>
     );
   }

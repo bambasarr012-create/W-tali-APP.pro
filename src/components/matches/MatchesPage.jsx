@@ -3,6 +3,7 @@ import { getMatches, subscribeToCollection } from '../../services/firestoreServi
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { Heart, MessageCircle, MapPin, Sparkles, ShieldCheck, ChevronRight, User } from 'lucide-react';
+import VerifiedBadge from '../common/VerifiedBadge';
 
 export default function MatchesPage() {
   const { userProfile } = useAuth();
@@ -95,6 +96,9 @@ export default function MatchesPage() {
                       alt={partner.prenom}
                       className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-100 group-hover:border-[#2D8659] shadow-sm transition-colors"
                     />
+                    {partner.profileStatus === 'verified' && (
+                      <VerifiedBadge size="sm" className="absolute -top-1.5 -right-1.5" />
+                    )}
                     <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow"></span>
                   </div>
 

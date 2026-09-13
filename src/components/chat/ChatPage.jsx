@@ -14,6 +14,7 @@ import {
   Heart, 
   Info 
 } from 'lucide-react';
+import VerifiedBadge from '../common/VerifiedBadge';
 
 export default function ChatPage() {
   const { activeMatch, setCurrentView, viewProfileDetail } = useApp();
@@ -104,6 +105,9 @@ export default function ChatPage() {
                 alt={partner.prenom}
                 className="w-10 h-10 rounded-full object-cover border-2 border-slate-100 group-hover:border-[#2D8659] transition-colors"
               />
+              {partner.profileStatus === 'verified' && (
+                <VerifiedBadge size="sm" className="absolute -top-1 -right-1" />
+              )}
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white"></span>
             </div>
             <div>

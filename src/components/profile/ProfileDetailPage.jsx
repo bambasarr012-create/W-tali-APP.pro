@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { calculatePointsCommuns } from '../../services/firestoreService';
+import VerifiedBadge from '../common/VerifiedBadge';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -128,8 +129,9 @@ export default function ProfileDetailPage() {
           {/* Header Title & Location */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-5">
             <div>
-              <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[#0A2F4A]">
-                {selectedProfile.prenom}, {selectedProfile.age} ans
+              <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[#0A2F4A] flex items-center gap-3">
+                <span>{selectedProfile.prenom}, {selectedProfile.age} ans</span>
+                {selectedProfile.profileStatus === 'verified' && <VerifiedBadge size="lg" />}
               </h1>
               <div className="flex items-center gap-3 text-sm text-slate-600 font-medium mt-1">
                 <span className="flex items-center gap-1 text-[#2D8659] font-semibold">
