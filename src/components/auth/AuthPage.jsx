@@ -7,7 +7,7 @@ import RulesPage from '../legal/RulesPage';
 import PrivacyPage from '../legal/PrivacyPage';
 
 export default function AuthPage({ onBack }) {
-  const { login, signup } = useAuth();
+  const { login, signup, loginGoogle } = useAuth();
   const { showToast, setCurrentView } = useApp();
 
   const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'forgot'
@@ -55,9 +55,25 @@ export default function AuthPage({ onBack }) {
     }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     if (mode === 'signup' && !acceptTerms) return;
-    showToast("Connexion Google non disponible en mode démo.", "info");
+    
+    setError('');
+    setLoading(true);
+    
+    try {
+      const user = await loginGoogle();
+      showToast("Connexion avec Google réussie ! Bienvenue sur Wétali.", "success");
+      if (!user.hasCompletedProfile) {
+        setCurrentView('profile-create');
+      } else {
+        setCurrentView('home');
+      }
+    } catch (err) {
+      setError(err.message || "Une erreur est survenue lors de la connexion Google.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (legalView === 'rules') {

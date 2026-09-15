@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getStoredAuthUser, signupUser, loginUser, logoutUser } from '../services/authService';
+import { getStoredAuthUser, signupUser, loginUser, logoutUser, loginWithGoogle } from '../services/authService';
 import { getCurrentStoredProfile, saveUserProfile } from '../services/firestoreService';
 
 const AuthContext = createContext(null);
@@ -45,6 +45,16 @@ export function AuthProvider({ children }) {
     setUserProfile(null);
   };
 
+  const loginGoogle = async () => {
+    const authUser = await loginWithGoogle();
+    setUser(authUser);
+    const profile = getCurrentStoredProfile();
+    if (profile) {
+      setUserProfile(profile);
+    }
+    return authUser;
+  };
+
   const updateProfile = async (profileData) => {
     // Ensure subscription fields default to none if missing
     if (profileData && !profileData.subscriptionStatus) {
@@ -85,6 +95,7 @@ export function AuthProvider({ children }) {
       login,
       signup,
       logout,
+      loginGoogle,
       updateProfile,
       updateSubscription,
       isAuthenticated: !!user,

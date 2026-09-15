@@ -58,3 +58,15 @@ export async function logoutUser() {
   localStorage.removeItem(AUTH_USER_KEY);
   return true;
 }
+
+export async function loginWithGoogle() {
+  const existingProfile = localStorage.getItem('wetali_current_profile');
+  const user = {
+    uid: "google_user_" + Date.now(),
+    email: "utilisateur.google@gmail.com",
+    hasCompletedProfile: !!existingProfile
+  };
+
+  localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  return user;
+}
