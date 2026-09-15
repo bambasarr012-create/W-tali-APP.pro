@@ -36,8 +36,8 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
   const totalSteps = 7;
 
   const [formData, setFormData] = useState({
-    prenom: userProfile?.prenom || '',
-    nom: userProfile?.nom || '',
+    prenom: userProfile?.prenom || (user?.displayName ? user.displayName.split(' ')[0] : ''),
+    nom: userProfile?.nom || (user?.displayName ? user.displayName.split(' ').slice(1).join(' ') : ''),
     age: userProfile?.age || '',
     genre: userProfile?.genre || 'H',
     ville: userProfile?.ville || '',
@@ -53,7 +53,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
     interets: userProfile?.interets || [],
     valeurs: userProfile?.valeurs || [],
     criteres: userProfile?.criteres || [],
-    photos: userProfile?.photos || []
+    photos: userProfile?.photos || (user?.photoURL ? [user.photoURL] : [])
   });
 
   const [uploading, setUploading] = useState(false);
@@ -65,10 +65,10 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
     if (formData.photos.length === 0 && !isEditing) {
       setFormData(prev => ({
         ...prev,
-        photos: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80']
+        photos: user?.photoURL ? [user.photoURL] : ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80']
       }));
     }
-  }, [formData.photos.length, isEditing]);
+  }, [formData.photos.length, isEditing, user?.photoURL]);
 
   const handlePhotoUpload = async (e) => {
     const files = Array.from(e.target.files);
