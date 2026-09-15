@@ -80,10 +80,10 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* ========================================== */
-      /* SECTION MON PROFIL                         */
-      /* ========================================== */
-      isEditingProfile ? (
+      {/* ========================================== */}
+      {/* SECTION MON PROFIL                         */}
+      {/* ========================================== */}
+      {isEditingProfile ? (
           <div className="space-y-4">
             <button
               onClick={() => setIsEditingProfile(false)}
