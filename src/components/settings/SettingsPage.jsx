@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { getStoredFirebaseConfig, saveStoredFirebaseConfig } from '../../services/firebase';
 import ProfileCreation from '../profile/ProfileCreation';
 import { 
   User, 
@@ -13,7 +12,6 @@ import {
   ShieldCheck, 
   Edit3, 
   Key, 
-  Server, 
   Sparkles,
   MapPin,
   Briefcase,
@@ -25,10 +23,7 @@ export default function SettingsPage() {
   const { user, userProfile, logout, updateProfile } = useAuth();
   const { showToast, setCurrentView } = useApp();
 
-  const [activeSection, setActiveSection] = useState('profile'); // 'profile' | 'firebase'
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [firebaseConfig, setFirebaseConfig] = useState(getStoredFirebaseConfig());
-  const [savingConfig, setSavingConfig] = useState(false);
 
   const [preferences, setPreferences] = useState({
     blurPhotos: userProfile?.preferences?.blurPhotos || false,
@@ -57,18 +52,7 @@ export default function SettingsPage() {
     setCurrentView('home');
   };
 
-  const handleSaveFirebaseConfig = (e) => {
-    e.preventDefault();
-    setSavingConfig(true);
-    try {
-      saveStoredFirebaseConfig(firebaseConfig);
-      showToast("Configuration Firebase enregistrée avec succès !", "success");
-    } catch (e) {
-      showToast("Erreur d'enregistrement de la configuration.", "error");
-    } finally {
-      setSavingConfig(false);
-    }
-  };
+
 
   const handleResetData = () => {
     if (window.confirm("Êtes-vous sûr de vouloir réinitialiser vos données locales de démonstration ?")) {
@@ -93,40 +77,13 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        {/* Section Tabs */}
-        <div className="flex bg-[#F0F4F2] p-1 rounded-2xl border border-slate-200">
-          <button
-            type="button"
-            onClick={() => setActiveSection('profile')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-              activeSection === 'profile'
-                ? 'bg-white text-[#2D8659] shadow-sm'
-                : 'text-slate-600 hover:text-[#0A2F4A]'
-            }`}
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Mon Profil</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveSection('firebase')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-              activeSection === 'firebase'
-                ? 'bg-white text-[#0A2F4A] shadow-sm'
-                : 'text-slate-600 hover:text-[#0A2F4A]'
-            }`}
-          >
-            <Server className="w-3.5 h-3.5" />
-            <span>Firebase Cloud</span>
-          </button>
         </div>
       </div>
 
-      {activeSection === 'profile' ? (
-        /* ========================================== */
-        /* SECTION MON PROFIL                         */
-        /* ========================================== */
-        isEditingProfile ? (
+      {/* ========================================== */
+      /* SECTION MON PROFIL                         */
+      /* ========================================== */
+      isEditingProfile ? (
           <div className="space-y-4">
             <button
               onClick={() => setIsEditingProfile(false)}
@@ -272,106 +229,7 @@ export default function SettingsPage() {
             </div>
           </div>
         )
-      ) : (
-        /* ========================================== */
-        /* SECTION FIREBASE CONFIGURATION             */
-        /* ========================================== */
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAF5EF] text-[#2D8659] text-xs font-bold">
-              <Database className="w-3.5 h-3.5" />
-              <span>Firebase Cloud Integration</span>
-            </div>
-            <h2 className="font-serif font-bold text-xl text-[#0A2F4A]">
-              Branchez votre propre projet Firebase (Optionnel)
-            </h2>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              L'application fonctionne immédiatement en mode temps réel hybride. Pour synchroniser avec votre propre console Firebase (Firestore, Auth, Storage), collez vos identifiants ci-dessous.
-            </p>
-          </div>
-
-          <form onSubmit={handleSaveFirebaseConfig} className="space-y-4">
-            
-            <div>
-              <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1">
-                API Key
-              </label>
-              <input
-                type="text"
-                value={firebaseConfig.apiKey || ''}
-                onChange={(e) => setFirebaseConfig({ ...firebaseConfig, apiKey: e.target.value })}
-                placeholder="AIzaSy..."
-                className="w-full p-2.5 rounded-xl border border-slate-300 font-mono text-xs focus:border-[#2D8659] outline-none"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1">
-                  Auth Domain
-                </label>
-                <input
-                  type="text"
-                  value={firebaseConfig.authDomain || ''}
-                  onChange={(e) => setFirebaseConfig({ ...firebaseConfig, authDomain: e.target.value })}
-                  placeholder="votre-projet.firebaseapp.com"
-                  className="w-full p-2.5 rounded-xl border border-slate-300 font-mono text-xs focus:border-[#2D8659] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1">
-                  Project ID
-                </label>
-                <input
-                  type="text"
-                  value={firebaseConfig.projectId || ''}
-                  onChange={(e) => setFirebaseConfig({ ...firebaseConfig, projectId: e.target.value })}
-                  placeholder="votre-projet-id"
-                  className="w-full p-2.5 rounded-xl border border-slate-300 font-mono text-xs focus:border-[#2D8659] outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1">
-                  Storage Bucket
-                </label>
-                <input
-                  type="text"
-                  value={firebaseConfig.storageBucket || ''}
-                  onChange={(e) => setFirebaseConfig({ ...firebaseConfig, storageBucket: e.target.value })}
-                  placeholder="votre-projet.appspot.com"
-                  className="w-full p-2.5 rounded-xl border border-slate-300 font-mono text-xs focus:border-[#2D8659] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1">
-                  App ID
-                </label>
-                <input
-                  type="text"
-                  value={firebaseConfig.appId || ''}
-                  onChange={(e) => setFirebaseConfig({ ...firebaseConfig, appId: e.target.value })}
-                  placeholder="1:123456:web:abcdef"
-                  className="w-full p-2.5 rounded-xl border border-slate-300 font-mono text-xs focus:border-[#2D8659] outline-none"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={savingConfig}
-              className="w-full py-3.5 rounded-2xl bg-[#2D8659] hover:bg-[#236c47] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              <Check className="w-4 h-4" />
-              <span>{savingConfig ? "Enregistrement..." : "Sauvegarder les clés Firebase"}</span>
-            </button>
-          </form>
-        </div>
-      )}
+      }
 
     </div>
   );
