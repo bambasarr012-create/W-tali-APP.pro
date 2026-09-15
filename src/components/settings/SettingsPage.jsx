@@ -76,8 +76,6 @@ export default function SettingsPage() {
             Gérez votre compte Wétali, vos informations personnelles et votre configuration cloud.
           </p>
         </div>
-
-        </div>
       </div>
 
       {/* ========================================== */}
