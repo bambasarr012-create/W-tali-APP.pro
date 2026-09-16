@@ -2,13 +2,15 @@
 // Supporte à la fois les identifiants en direct et la persistance locale transparente
 
 export function getStoredFirebaseConfig() {
+  const cleanEnv = (val) => val ? val.replace(/['"]/g, '').trim() : undefined;
+  
   return {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID
+    apiKey: cleanEnv(import.meta.env.VITE_FIREBASE_API_KEY),
+    authDomain: cleanEnv(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN),
+    projectId: cleanEnv(import.meta.env.VITE_FIREBASE_PROJECT_ID),
+    storageBucket: cleanEnv(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET),
+    messagingSenderId: cleanEnv(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID),
+    appId: cleanEnv(import.meta.env.VITE_FIREBASE_APP_ID)
   };
 }
 
