@@ -112,10 +112,10 @@ export async function loginWithGoogle() {
 
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
     return user;
-  } catch (error) {
+    } catch (error) {
     console.error("Firebase Google Auth Error", error);
     // Gestion spécifique des erreurs
-    let message = "Échec de la connexion avec Google.";
+    let message = "Échec de la connexion avec Google : " + error.message;
     if (error.code === 'auth/popup-closed-by-user') {
       message = "La fenêtre de connexion a été fermée avant la fin.";
     } else if (error.code === 'auth/account-exists-with-different-credential') {
