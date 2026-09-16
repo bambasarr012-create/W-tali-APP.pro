@@ -6,14 +6,14 @@ export async function uploadProfilePhoto(file, userId = "user") {
       return reject(new Error("Aucun fichier sélectionné"));
     }
 
-    // Compression et conversion optimisée en Base64 / Data URL
+    // Compression forte pour éviter le dépassement de quota du localStorage (Base64)
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1000;
-        const MAX_HEIGHT = 1000;
+        const MAX_WIDTH = 400; // Forte réduction pour le localStorage
+        const MAX_HEIGHT = 400;
         let width = img.width;
         let height = img.height;
 
@@ -34,7 +34,8 @@ export async function uploadProfilePhoto(file, userId = "user") {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        // Qualité 0.6 pour réduire drastiquement le poids du base64
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
         resolve(dataUrl);
       };
       img.onerror = () => reject(new Error("Format d'image non valide"));
@@ -44,3 +45,4 @@ export async function uploadProfilePhoto(file, userId = "user") {
     reader.readAsDataURL(file);
   });
 }
+

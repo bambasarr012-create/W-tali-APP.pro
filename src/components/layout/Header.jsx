@@ -5,7 +5,7 @@ import { ShieldCheck, Sparkles, User, Settings as SettingsIcon, Bell } from 'luc
 import WeddingRingLogo from '../common/WeddingRingLogo';
 
 export default function Header() {
-  const { userProfile } = useAuth();
+  const { user, userProfile, logout } = useAuth();
   const { currentView, setCurrentView } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -80,37 +80,50 @@ export default function Header() {
               </div>
 
               <button
-              onClick={() => setCurrentView('settings')}
-              className={`flex items-center gap-2.5 px-3 py-1.5 rounded-full border transition-all ${
-                currentView === 'settings'
-                  ? 'bg-[#2D8659] border-[#2D8659] text-white'
-                  : 'bg-[#0E3B5C] border-[#1E5680] text-white hover:border-[#2D8659]'
-              }`}
-            >
-              {userProfile.photos && userProfile.photos[0] ? (
-                <img
-                  src={userProfile.photos[0]}
-                  alt={userProfile.prenom}
-                  className="w-7 h-7 rounded-full object-cover border border-[#D4AF37]"
-                />
-              ) : (
-                <div className="w-7 h-7 rounded-full bg-[#2D8659] text-white flex items-center justify-center text-xs font-bold">
-                  {userProfile.prenom ? userProfile.prenom[0] : 'W'}
+                onClick={() => setCurrentView('settings')}
+                className={`flex items-center gap-2.5 px-3 py-1.5 rounded-full border transition-all ${
+                  currentView === 'settings'
+                    ? 'bg-[#2D8659] border-[#2D8659] text-white'
+                    : 'bg-[#0E3B5C] border-[#1E5680] text-white hover:border-[#2D8659]'
+                }`}
+              >
+                {userProfile.photos && userProfile.photos[0] ? (
+                  <img
+                    src={userProfile.photos[0]}
+                    alt={userProfile.prenom}
+                    className="w-7 h-7 rounded-full object-cover border border-[#D4AF37]"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-[#2D8659] text-white flex items-center justify-center text-xs font-bold">
+                    {userProfile.prenom ? userProfile.prenom[0] : 'W'}
+                  </div>
+                )}
+                <div className="text-left hidden sm:block">
+                  <div className="text-xs font-semibold leading-tight">{userProfile.prenom}</div>
+                  <div className="text-[10px] text-[#A0C0D6] flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#2D8659]"></span>
+                    {userProfile.ville || 'Profil actif'}
+                  </div>
                 </div>
-              )}
-              <div className="text-left hidden sm:block">
-                <div className="text-xs font-semibold leading-tight">{userProfile.prenom}</div>
-                <div className="text-[10px] text-[#A0C0D6] flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2D8659]"></span>
-                  {userProfile.ville || 'Profil actif'}
-                </div>
-              </div>
-            </button>
+              </button>
             </>
           ) : (
-            <div className="flex items-center gap-1 text-xs text-[#A0C0D6] bg-[#0E3B5C] px-3 py-1.5 rounded-full border border-[#1E5680]">
-              <ShieldCheck className="w-4 h-4 text-[#2D8659]" />
-              <span className="font-medium">Espace Sécurisé</span>
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-1 text-xs text-[#A0C0D6] bg-[#0E3B5C] px-3 py-1.5 rounded-full border border-[#1E5680]">
+                <ShieldCheck className="w-4 h-4 text-[#2D8659]" />
+                <span className="font-medium">Espace Sécurisé</span>
+              </div>
+              {user && (
+                <button
+                  onClick={async () => {
+                    await logout();
+                    setCurrentView('home');
+                  }}
+                  className="text-xs text-white bg-rose-600/80 hover:bg-rose-600 px-3 py-1.5 rounded-full border border-rose-500 transition-colors"
+                >
+                  Déconnexion
+                </button>
+              )}
             </div>
           )}
         </div>
