@@ -55,7 +55,7 @@ function LandingPageGate() {
 }
 
 function MainApp() {
-  const { isAuthenticated, hasProfile, loading } = useAuth();
+  const { isAuthenticated, hasProfile, loading, userProfile } = useAuth();
   const { currentView, toast } = useApp();
 
   if (loading) {
