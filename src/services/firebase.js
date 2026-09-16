@@ -3,12 +3,12 @@
 
 export function getStoredFirebaseConfig() {
   return {
-    apiKey: import.meta.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: import.meta.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.NEXT_PUBLIC_FIREBASE_APP_ID
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
   };
 }
 
@@ -25,6 +25,8 @@ export const firebaseState = {
 // Initialisation conditionnelle
 export async function initializeFirebaseApp() {
   const config = getStoredFirebaseConfig();
+  
+  console.log("Debug Vercel: VITE_FIREBASE_API_KEY est défini ?", !!import.meta.env.VITE_FIREBASE_API_KEY, import.meta.env.VITE_FIREBASE_API_KEY ? "Oui" : "Non");
   
   if (!config.apiKey) {
     console.warn("Firebase configuration is missing! Check your environment variables.");
