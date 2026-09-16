@@ -1,5 +1,7 @@
-// Firebase Configuration & Service Initializer
-// Supporte à la fois les identifiants en direct et la persistance locale transparente
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 export function getStoredFirebaseConfig() {
   const cleanEnv = (val) => val ? val.replace(/['"]/g, '').trim() : undefined;
@@ -14,7 +16,6 @@ export function getStoredFirebaseConfig() {
   };
 }
 
-// État de connexion Firebase
 export const firebaseState = {
   isConfigured: false,
   isLive: false,
@@ -24,36 +25,35 @@ export const firebaseState = {
   storage: null
 };
 
-// Initialisation conditionnelle
 export async function initializeFirebaseApp() {
   const config = getStoredFirebaseConfig();
   
-  console.log("Debug Vercel: VITE_FIREBASE_API_KEY est défini ?", !!import.meta.env.VITE_FIREBASE_API_KEY, import.meta.env.VITE_FIREBASE_API_KEY ? "Oui" : "Non");
-  
   if (!config.apiKey) {
     console.warn("Firebase configuration is missing! Check your environment variables.");
+    firebaseState.isConfigured = false;
+    return firebaseState;
   }
   
-  if (typeof window !== 'undefined' && window.firebaseAppInstance) {
-    return window.firebaseAppInstance;
-  }
-
   try {
-    // Si Firebase SDK est chargé globalement via CDN (ex: ESM ou bundle)
-    if (window.firebase && window.firebase.initializeApp) {
-      const app = window.firebase.initializeApp(config);
-      firebaseState.app = app;
-      firebaseState.auth = window.firebase.auth ? window.firebase.auth() : null;
-      firebaseState.db = window.firebase.firestore ? window.firebase.firestore() : null;
-      firebaseState.storage = window.firebase.storage ? window.firebase.storage() : null;
-      firebaseState.isConfigured = !!config.apiKey;
-      firebaseState.isLive = !!config.apiKey;
-      return firebaseState;
+    let app;
+    if (!getApps().length) {
+      app = initializeApp(config);
+    } else {
+      app = getApp();
     }
+    
+    firebaseState.app = app;
+    firebaseState.auth = getAuth(app);
+    firebaseState.db = getFirestore(app);
+    firebaseState.storage = getStorage(app);
+    firebaseState.isConfigured = true;
+    firebaseState.isLive = true;
+    
+    return firebaseState;
   } catch (err) {
     console.error("Firebase initialization error:", err);
+    firebaseState.isConfigured = false;
+    return firebaseState;
   }
-
-  firebaseState.isConfigured = false;
-  return firebaseState;
 }
+

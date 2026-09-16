@@ -1,5 +1,12 @@
 // Service d'authentification Wétali (Firebase Auth & Local State)
 import { initializeFirebaseApp, firebaseState } from './firebase';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  GoogleAuthProvider, 
+  signInWithPopup 
+} from "firebase/auth";
 
 const AUTH_USER_KEY = 'wetali_auth_user';
 
@@ -26,7 +33,7 @@ export async function signupUser(email, password) {
   }
 
   try {
-    const userCredential = await firebaseState.auth.createUserWithEmailAndPassword(email, password);
+    const userCredential = await createUserWithEmailAndPassword(firebaseState.auth, email, password);
     const fbUser = userCredential.user;
     
     const user = {
@@ -55,7 +62,7 @@ export async function loginUser(email, password) {
   }
 
   try {
-    const userCredential = await firebaseState.auth.signInWithEmailAndPassword(email, password);
+    const userCredential = await signInWithEmailAndPassword(firebaseState.auth, email, password);
     const fbUser = userCredential.user;
     
     const existingProfile = localStorage.getItem('wetali_current_profile');
@@ -83,7 +90,7 @@ export async function forgotPassword(email) {
 export async function logoutUser() {
   await initializeFirebaseApp();
   if (firebaseState.auth) {
-    await firebaseState.auth.signOut();
+    await signOut(firebaseState.auth);
   }
   localStorage.removeItem(AUTH_USER_KEY);
   return true;
@@ -97,8 +104,8 @@ export async function loginWithGoogle() {
   }
 
   try {
-    const provider = new window.firebase.auth.GoogleAuthProvider();
-    const result = await firebaseState.auth.signInWithPopup(provider);
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(firebaseState.auth, provider);
     const fbUser = result.user;
     
     const existingProfile = localStorage.getItem('wetali_current_profile');
@@ -112,7 +119,7 @@ export async function loginWithGoogle() {
 
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
     return user;
-    } catch (error) {
+  } catch (error) {
     console.error("Firebase Google Auth Error", error);
     // Gestion spécifique des erreurs
     let message = "Échec de la connexion avec Google : " + error.message;
@@ -124,3 +131,4 @@ export async function loginWithGoogle() {
     throw new Error(message);
   }
 }
+
