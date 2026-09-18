@@ -1,12 +1,13 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Compass, Heart, UserCheck, MessageCircle, User, Eye, Star } from 'lucide-react';
+import { Compass, Heart, UserCheck, MessageCircle, User, Eye, Star, LayoutGrid } from 'lucide-react';
 
 export default function BottomNav() {
   const { currentView, setCurrentView, pendingRequestsCount, matchesCount } = useApp();
 
   const navItems = [
-    { id: 'home', label: 'Découvrir', icon: Compass },
+    { id: 'home', label: 'Accueil', icon: LayoutGrid },
+    { id: 'discover', label: 'Découvrir', icon: Compass },
     { id: 'matches', label: 'Matchs', icon: Heart, badge: matchesCount > 0 ? matchesCount : null },
     { id: 'requests', label: 'Demandes', icon: UserCheck, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
     { id: 'visitors', label: 'Visiteurs', icon: Eye, badge: 2 },
@@ -20,7 +21,7 @@ export default function BottomNav() {
       <div className="max-w-2xl mx-auto flex items-center justify-between gap-1 overflow-x-auto px-2 py-1.5 md:py-2 no-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
         {navItems.map(item => {
           const Icon = item.icon;
-          const isActive = currentView === item.id || (item.id === 'home' && currentView === 'profile-detail');
+          const isActive = currentView === item.id || (item.id === 'discover' && currentView === 'profile-detail');
 
           return (
             <button

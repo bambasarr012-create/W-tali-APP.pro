@@ -13,6 +13,7 @@ import CityLandingPage from './components/landing/CityLandingPage';
 import CitiesListPage from './components/landing/CitiesListPage';
 import ProfileCreation from './components/profile/ProfileCreation';
 import HomePage from './components/home/HomePage';
+import DiscoverPage from './components/discover/DiscoverPage';
 import ProfileDetailPage from './components/profile/ProfileDetailPage';
 import RequestsPage from './components/requests/RequestsPage';
 import MatchesPage from './components/matches/MatchesPage';
@@ -135,6 +136,7 @@ function MainApp() {
       {/* Dynamic View Router */}
       <main className="flex-1">
         {currentView === 'home' && <HomePage />}
+        {currentView === 'discover' && <DiscoverPage />}
         {currentView === 'profile-detail' && <ProfileDetailPage />}
         {currentView === 'requests' && <RequestsPage />}
         {currentView === 'matches' && <MatchesPage />}
