@@ -1,129 +1,82 @@
-// Service de messagerie instantanée temps réel (Firestore & Realtime Sync)
+import { getFirestore, collection, doc, query, orderBy, onSnapshot, addDoc, getDocs, where, writeBatch, updateDoc } from 'firebase/firestore';
+import { firebaseState } from './firebase';
 
-const CHAT_MESSAGES_KEY_PREFIX = 'wetali_chat_messages_';
-const chatListeners = new Map();
-
-function getChatStorageKey(chatId) {
-  return `${CHAT_MESSAGES_KEY_PREFIX}${chatId}`;
-}
+const getDb = () => {
+  if (!firebaseState.db) {
+    console.warn("Firestore not initialized yet, falling back to getFirestore()");
+    return getFirestore();
+  }
+  return firebaseState.db;
+};
 
 export function initDemoConversation(chatId, otherUserName = "Aïssatou") {
-  const key = getChatStorageKey(chatId);
-  if (!localStorage.getItem(key)) {
-    const demoMsgs = [
-      {
-        id: "msg_1",
-        senderId: "other_user",
-        text: `Assalamu alaikum ! Merci d'avoir accepté mon invitation. J'ai été touché(e) par la clarté de vos intentions.`,
-        timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
-        read: true
-      },
-      {
-        id: "msg_2",
-        senderId: "current_user",
-        text: `Wa alaikum assalam ! Tout le plaisir est pour moi. Bâtir un foyer sur des bases saines est essentiel pour moi.`,
-        timestamp: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-        read: true
-      },
-      {
-        id: "msg_3",
-        senderId: "other_user",
-        text: `Tout à fait. J'ai vu que vous étiez également très attaché(e) aux valeurs de la famille et au respect des principes.`,
-        timestamp: new Date(Date.now() - 3600000 * 0.8).toISOString(),
-        read: true
-      }
-    ];
-    localStorage.setItem(key, JSON.stringify(demoMsgs));
-  }
+  // Optionnel: On pourrait injecter des messages démo dans Firestore si le chat est vide,
+  // mais en production, ce n'est pas nécessaire.
 }
 
 export function subscribeToMessages(chatId, callback) {
-  if (!chatListeners.has(chatId)) {
-    chatListeners.set(chatId, new Set());
-  }
-  chatListeners.get(chatId).add(callback);
+  const db = getDb();
+  const q = query(
+    collection(db, 'chats', chatId, 'messages'),
+    orderBy('timestamp', 'asc')
+  );
 
-  // Initial call with current messages
-  const key = getChatStorageKey(chatId);
-  const raw = localStorage.getItem(key);
-  const msgs = raw ? JSON.parse(raw) : [];
-  callback(msgs);
-
-  // Return unsubscribe function
-  return () => {
-    const subs = chatListeners.get(chatId);
-    if (subs) {
-      subs.delete(callback);
-    }
-  };
-}
-
-function notifyChatSubscribers(chatId) {
-  const subs = chatListeners.get(chatId);
-  if (subs) {
-    const key = getChatStorageKey(chatId);
-    const raw = localStorage.getItem(key);
-    const msgs = raw ? JSON.parse(raw) : [];
-    subs.forEach(cb => {
-      try { cb(msgs); } catch (e) { console.error(e); }
+  return onSnapshot(q, (snapshot) => {
+    const msgs = [];
+    snapshot.forEach(doc => {
+      msgs.push({ id: doc.id, ...doc.data() });
     });
-  }
+    callback(msgs);
+  }, (error) => {
+    console.error("Error subscribing to messages:", error);
+  });
 }
 
 export async function sendMessage(chatId, senderId, text, options = {}) {
   if ((!text || !text.trim()) && !options.audioData) return null;
-
-  const key = getChatStorageKey(chatId);
-  const raw = localStorage.getItem(key);
-  const msgs = raw ? JSON.parse(raw) : [];
+  const db = getDb();
 
   const newMessage = {
-    id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
     senderId: senderId || 'current_user',
     text: text ? text.trim() : '',
     type: options.type || 'text',
     audioData: options.audioData || null,
     timestamp: new Date().toISOString(),
-    read: false // Affiche ✓ puis passe à ✓✓
+    read: false
   };
 
-  msgs.push(newMessage);
-  localStorage.setItem(key, JSON.stringify(msgs));
-  notifyChatSubscribers(chatId);
+  const msgRef = await addDoc(collection(db, 'chats', chatId, 'messages'), newMessage);
+  
+  // Mettre à jour le dernier message dans le document match
+  try {
+    const matchRef = doc(db, 'matches', chatId);
+    await updateDoc(matchRef, {
+      lastMessage: newMessage.type === 'audio' ? '🎵 Message vocal' : newMessage.text,
+      lastMessageAt: newMessage.timestamp,
+    });
+  } catch (err) {
+    console.warn("Could not update match lastMessage", err);
+  }
 
-  // Simulation de lecture automatique par l'interlocuteur après 2.5 secondes
-  setTimeout(() => {
-    const updatedRaw = localStorage.getItem(key);
-    if (updatedRaw) {
-      const updatedMsgs = JSON.parse(updatedRaw);
-      const msg = updatedMsgs.find(m => m.id === newMessage.id);
-      if (msg) {
-        msg.read = true;
-        localStorage.setItem(key, JSON.stringify(updatedMsgs));
-        notifyChatSubscribers(chatId);
-      }
-    }
-  }, 2500);
-
-  return newMessage;
+  return { id: msgRef.id, ...newMessage };
 }
 
 export async function markMessagesAsRead(chatId, currentUserId) {
-  const key = getChatStorageKey(chatId);
-  const raw = localStorage.getItem(key);
-  if (!raw) return;
+  const db = getDb();
+  
+  const q = query(
+    collection(db, 'chats', chatId, 'messages'),
+    where('senderId', '!=', currentUserId),
+    where('read', '==', false)
+  );
 
-  const msgs = JSON.parse(raw);
-  let hasChanges = false;
-  msgs.forEach(m => {
-    if (m.senderId !== currentUserId && !m.read) {
-      m.read = true;
-      hasChanges = true;
-    }
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return;
+
+  const batch = writeBatch(db);
+  snapshot.forEach((messageDoc) => {
+    batch.update(messageDoc.ref, { read: true });
   });
 
-  if (hasChanges) {
-    localStorage.setItem(key, JSON.stringify(msgs));
-    notifyChatSubscribers(chatId);
-  }
+  await batch.commit();
 }

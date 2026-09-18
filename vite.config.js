@@ -8,5 +8,8 @@ export default defineConfig({
     port: 3000,
     open: false
   },
+  build: {
+    sourcemap: false
+  },
   envPrefix: ['VITE_', 'NEXT_PUBLIC_']
 })
