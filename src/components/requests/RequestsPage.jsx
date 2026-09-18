@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getReceivedRequests, getSentRequests, acceptRequest, rejectRequest, subscribeToCollection } from '../../services/firestoreService';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { UserCheck, Check, X, MessageCircle, Clock, Heart, ShieldCheck,  Inbox, 
-  MapPin, 
-  Briefcase 
-} from 'lucide-react';
+import { UserCheck, Check, X, MessageCircle, Clock, Heart, ShieldCheck, Inbox, MapPin, Briefcase, Sparkles } from 'lucide-react';
 import VerifiedBadge from '../common/VerifiedBadge';
 
 export default function RequestsPage() {

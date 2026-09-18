@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { Star, Heart, Lock, ShieldCheck, Sparkles, MapPin } from 'lucide-react';
@@ -9,12 +9,17 @@ export default function FavoritesPage() {
   const { setCurrentView, viewProfileDetail } = useApp();
   
   const [activeTab, setActiveTab] = useState('mes_favoris'); // 'mes_favoris' | 'qui_maime'
+  const [myFavorites, setMyFavorites] = useState([]);
+  const [whoLikesMe, setWhoLikesMe] = useState([]);
 
-  const allProfiles = getAllProfiles();
-  
-  // Simulation de données
-  const myFavorites = allProfiles.slice(0, 3);
-  const whoLikesMe = allProfiles.slice(4, 7);
+  useEffect(() => {
+    const loadData = async () => {
+      const profiles = await getAllProfiles();
+      setMyFavorites(profiles.slice(0, 3));
+      setWhoLikesMe(profiles.slice(4, 7));
+    };
+    loadData();
+  }, []);
 
   // Le palier supérieur débloque la vue "Qui m'aime" (3 mois ou 6 mois)
   const isPremium = userProfile?.subscriptionTier === '3_months' || userProfile?.subscriptionTier === '6_months';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { Eye, Lock, ShieldCheck, Sparkles, User, MapPin } from 'lucide-react';
@@ -8,9 +8,15 @@ export default function VisitorsPage() {
   const { userProfile } = useAuth();
   const { setCurrentView, viewProfileDetail } = useApp();
 
-  const allProfiles = getAllProfiles();
-  // Simulation de quelques visiteurs
-  const visitors = allProfiles.slice(2, 6); 
+  const [visitors, setVisitors] = useState([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const profiles = await getAllProfiles();
+      setVisitors(profiles.slice(2, 6)); // Simulation de quelques visiteurs
+    };
+    loadData();
+  }, []);
 
   // Le palier supérieur débloque la vue (3 mois ou 6 mois)
   const isPremium = userProfile?.subscriptionTier === '3_months' || userProfile?.subscriptionTier === '6_months';
