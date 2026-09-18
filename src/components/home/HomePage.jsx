@@ -3,7 +3,7 @@ import { getAllProfiles } from '../../services/firestoreService';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import AICoachWidget from './AICoachWidget';
-import { Crown, MessageCircle, Heart, Eye, Star, UserCheck, Zap, BarChart2, Power, Quote, MapPin, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Crown, MessageCircle, Heart, Eye, Star, UserCheck, Zap, BarChart2, Power, Quote, MapPin, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function HomePage() {
   const { userProfile } = useAuth();
