@@ -21,7 +21,11 @@ export default function Header() {
         
         {/* Brand Logo */}
         <div 
-          onClick={() => setCurrentView('home')} 
+          onClick={() => {
+            if (window.confirm("Voulez-vous vous déconnecter pour retourner à la page d'accueil (Landing Page) ?")) {
+              logout();
+            }
+          }} 
           className="flex items-center gap-3 cursor-pointer group"
         >
           <WeddingRingLogo size="md" />
