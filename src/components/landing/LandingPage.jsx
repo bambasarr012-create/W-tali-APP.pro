@@ -12,14 +12,27 @@ const landingHtml = `
 <nav id="navbar">
   <div class="nav-inner">
     <a class="logo" href="#">
-      <svg width="44" height="44" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="46" fill="#0F172A" stroke="#D4AF37" stroke-width="4"/>
-        <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5"/>
-        <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5" opacity="0.8"/>
-        <path d="M 37 39 A 18 18 0 0 1 52 43" fill="none" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
-        <polygon points="60,20 66,28 60,34 54,28" fill="#FFFBF0"/>
-        <circle cx="60" cy="27" r="2.5" fill="#D4AF37"/>
-      </svg>
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#2D8659] via-[#38A169] to-[#D4AF37] p-[2px] shadow-md flex-shrink-0">
+        <div class="w-full h-full rounded-full bg-[#0A2F4A] flex items-center justify-center relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-full"></div>
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+            <defs>
+              <linearGradient id="wetaliGoldGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFF2B2" /><stop offset="30%" stop-color="#E5C07B" /><stop offset="70%" stop-color="#D4AF37" /><stop offset="100%" stop-color="#997514" /></linearGradient>
+              <linearGradient id="wetaliGoldGrad2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="25%" stop-color="#F5D77F" /><stop offset="60%" stop-color="#D4AF37" /><stop offset="100%" stop-color="#805C06" /></linearGradient>
+              <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="50%" stop-color="#D8F3FF" /><stop offset="100%" stop-color="#A5D8F3" /></linearGradient>
+              <filter id="ringGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="0.8" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+            </defs>
+            <ellipse cx="14" cy="20" rx="8" ry="8" stroke="url(#wetaliGoldGrad1)" stroke-width="2.5" fill="none" />
+            <ellipse cx="22" cy="16" rx="8" ry="8" stroke="url(#wetaliGoldGrad2)" stroke-width="2.5" fill="none" />
+            <path d="M 14 12 A 8 8 0 0 1 20 14.8" stroke="url(#wetaliGoldGrad1)" stroke-width="2.8" stroke-linecap="round" fill="none" />
+            <g transform="translate(22, 8)">
+              <path d="M -2.5 0 L 0 -2 L 2.5 0 L 1.5 2.5 L -1.5 2.5 Z" fill="url(#diamondGrad)" stroke="#FFFFFF" stroke-width="0.5" filter="url(#ringGlow)" />
+              <path d="M 0 -4.5 L 0.8 -1.2 L 4 -0.5 L 0.8 0.2 L 0 3.5 L -0.8 0.2 L -4 -0.5 L -0.8 -1.2 Z" fill="#FFFFFF" />
+              <circle cx="0" cy="-0.5" r="0.8" fill="#FFF9D2" />
+            </g>
+          </svg>
+        </div>
+      </div>
       <span class="logo-text">Wétali</span>
     </a>
     <div class="nav-menu">
@@ -73,14 +86,27 @@ const landingHtml = `
           <!-- Fallback visuel élégant toujours visible -->
           <div class="hero-img-fallback" id="hero-fallback">
             <div style="text-align:center;padding:2rem">
-              <svg width="120" height="120" viewBox="0 0 100 100" style="margin-bottom:1.5rem">
-                <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(212,175,55,0.3)" stroke-width="2"/>
-                <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="3"/>
-                <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="3" opacity="0.7"/>
-                <path d="M 37 39 A 18 18 0 0 1 52 43" fill="none" stroke="#D4AF37" stroke-width="3.5" stroke-linecap="round"/>
-                <polygon points="60,20 66,28 60,34 54,28" fill="rgba(255,251,240,0.8)"/>
-                <circle cx="60" cy="27" r="2.5" fill="#D4AF37"/>
-              </svg>
+              <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-[#2D8659] via-[#38A169] to-[#D4AF37] p-[3px] shadow-lg flex-shrink-0 mx-auto" style="margin-bottom:1.5rem">
+                <div class="w-full h-full rounded-full bg-[#0A2F4A] flex items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-full"></div>
+                  <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-14 h-14">
+                    <defs>
+                      <linearGradient id="wetaliGoldGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFF2B2" /><stop offset="30%" stop-color="#E5C07B" /><stop offset="70%" stop-color="#D4AF37" /><stop offset="100%" stop-color="#997514" /></linearGradient>
+                      <linearGradient id="wetaliGoldGrad2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="25%" stop-color="#F5D77F" /><stop offset="60%" stop-color="#D4AF37" /><stop offset="100%" stop-color="#805C06" /></linearGradient>
+                      <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="50%" stop-color="#D8F3FF" /><stop offset="100%" stop-color="#A5D8F3" /></linearGradient>
+                      <filter id="ringGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="0.8" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+                    </defs>
+                    <ellipse cx="14" cy="20" rx="8" ry="8" stroke="url(#wetaliGoldGrad1)" stroke-width="2.5" fill="none" />
+                    <ellipse cx="22" cy="16" rx="8" ry="8" stroke="url(#wetaliGoldGrad2)" stroke-width="2.5" fill="none" />
+                    <path d="M 14 12 A 8 8 0 0 1 20 14.8" stroke="url(#wetaliGoldGrad1)" stroke-width="2.8" stroke-linecap="round" fill="none" />
+                    <g transform="translate(22, 8)">
+                      <path d="M -2.5 0 L 0 -2 L 2.5 0 L 1.5 2.5 L -1.5 2.5 Z" fill="url(#diamondGrad)" stroke="#FFFFFF" stroke-width="0.5" filter="url(#ringGlow)" />
+                      <path d="M 0 -4.5 L 0.8 -1.2 L 4 -0.5 L 0.8 0.2 L 0 3.5 L -0.8 0.2 L -4 -0.5 L -0.8 -1.2 Z" fill="#FFFFFF" />
+                      <circle cx="0" cy="-0.5" r="0.8" fill="#FFF9D2" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
               <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#D4AF37;margin-bottom:.5rem">Wétali</div>
               <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:rgba(255,251,240,0.7);font-style:italic">L'union dans la dignité</div>
               <div style="margin-top:1.5rem;display:flex;justify-content:center;gap:1rem">
@@ -395,14 +421,27 @@ const landingHtml = `
       <!-- COL 1 -->
       <div class="lg:col-span-1 flex flex-col items-start">
         <a class="flex items-center gap-2 mb-4" href="#" style="text-decoration:none">
-          <svg width="40" height="40" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#0F172A" stroke="#D4AF37" stroke-width="4"/>
-            <ellipse cx="37" cy="57" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5"/>
-            <ellipse cx="60" cy="44" rx="18" ry="18" fill="none" stroke="#D4AF37" stroke-width="5.5" opacity="0.8"/>
-            <path d="M 37 39 A 18 18 0 0 1 52 43" fill="none" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
-            <polygon points="60,20 66,28 60,34 54,28" fill="#FFFBF0"/>
-            <circle cx="60" cy="27" r="2.5" fill="#D4AF37"/>
-          </svg>
+          <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#2D8659] via-[#38A169] to-[#D4AF37] p-[2px] shadow-md flex-shrink-0">
+            <div class="w-full h-full rounded-full bg-[#0A2F4A] flex items-center justify-center relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-full"></div>
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                <defs>
+                  <linearGradient id="wetaliGoldGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFF2B2" /><stop offset="30%" stop-color="#E5C07B" /><stop offset="70%" stop-color="#D4AF37" /><stop offset="100%" stop-color="#997514" /></linearGradient>
+                  <linearGradient id="wetaliGoldGrad2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="25%" stop-color="#F5D77F" /><stop offset="60%" stop-color="#D4AF37" /><stop offset="100%" stop-color="#805C06" /></linearGradient>
+                  <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" /><stop offset="50%" stop-color="#D8F3FF" /><stop offset="100%" stop-color="#A5D8F3" /></linearGradient>
+                  <filter id="ringGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="0.8" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+                </defs>
+                <ellipse cx="14" cy="20" rx="8" ry="8" stroke="url(#wetaliGoldGrad1)" stroke-width="2.5" fill="none" />
+                <ellipse cx="22" cy="16" rx="8" ry="8" stroke="url(#wetaliGoldGrad2)" stroke-width="2.5" fill="none" />
+                <path d="M 14 12 A 8 8 0 0 1 20 14.8" stroke="url(#wetaliGoldGrad1)" stroke-width="2.8" stroke-linecap="round" fill="none" />
+                <g transform="translate(22, 8)">
+                  <path d="M -2.5 0 L 0 -2 L 2.5 0 L 1.5 2.5 L -1.5 2.5 Z" fill="url(#diamondGrad)" stroke="#FFFFFF" stroke-width="0.5" filter="url(#ringGlow)" />
+                  <path d="M 0 -4.5 L 0.8 -1.2 L 4 -0.5 L 0.8 0.2 L 0 3.5 L -0.8 0.2 L -4 -0.5 L -0.8 -1.2 Z" fill="#FFFFFF" />
+                  <circle cx="0" cy="-0.5" r="0.8" fill="#FFF9D2" />
+                </g>
+              </svg>
+            </div>
+          </div>
           <span class="text-white font-serif font-bold text-2xl tracking-wide">Wétali</span>
         </a>
         <p class="text-sm text-gray-400 leading-relaxed mb-6">
