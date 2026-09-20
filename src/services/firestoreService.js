@@ -16,19 +16,24 @@ const getDb = () => {
 };
 
 export function subscribeToCollection(collectionName, callback) {
-  const db = getDb();
-  const q = query(collection(db, collectionName));
-  return onSnapshot(q, (snapshot) => {
-    const data = [];
-    snapshot.forEach(doc => {
-      data.push({ id: doc.id, ...doc.data() });
+  try {
+    const db = getDb();
+    const q = query(collection(db, collectionName));
+    return onSnapshot(q, (snapshot) => {
+      const data = [];
+      snapshot.forEach(doc => {
+        data.push({ id: doc.id, ...doc.data() });
+      });
+      if (typeof callback === 'function') {
+        callback(data);
+      }
+    }, (error) => {
+      console.error(`Error subscribing to collection ${collectionName}:`, error);
     });
-    if (typeof callback === 'function') {
-      callback(data);
-    }
-  }, (error) => {
-    console.error(`Error subscribing to collection ${collectionName}:`, error);
-  });
+  } catch (error) {
+    console.error(`Error in subscribeToCollection for ${collectionName}:`, error);
+    return () => {}; // Return a no-op function to prevent cleanup errors in useEffect
+  }
 }
 
 // ==========================================
