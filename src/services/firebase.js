@@ -26,7 +26,7 @@ export const firebaseState = {
   storage: null
 };
 
-export async function initializeFirebaseApp() {
+export function initializeFirebaseApp() {
   const config = getStoredFirebaseConfig();
   
   if (!config.apiKey) {
@@ -66,3 +66,5 @@ export async function initializeFirebaseApp() {
   }
 }
 
+// Auto-initialisation au chargement du module
+initializeFirebaseApp();
