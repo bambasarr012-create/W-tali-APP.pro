@@ -59,6 +59,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [customInterest, setCustomInterest] = useState('');
+  const [wasValidated, setWasValidated] = useState(false);
 
   // Initialisation par défaut si photos vide
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
 
     setUploading(true);
     try {
-      const uploadPromises = files.map(file => uploadProfilePhoto(file));
+      const uploadPromises = files.map(file => uploadProfilePhoto(file, userProfile?.id || user?.uid || 'current_user'));
       const uploadedUrls = await Promise.all(uploadPromises);
       setFormData(prev => ({
         ...prev,
@@ -189,7 +190,9 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
   };
 
   const nextStep = () => {
+    setWasValidated(true);
     if (validateStep(step)) {
+      setWasValidated(false);
       if (step === 5 && !formData.bio) {
         setFormData(prev => ({ ...prev, bio: generateBio() }));
         setBioGeneratedAuto(true);
@@ -200,11 +203,13 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
   };
 
   const prevStep = () => {
+    setWasValidated(false);
     setStep(prev => Math.max(prev - 1, 1));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSubmit = async () => {
+    setWasValidated(true);
     if (!validateStep(step)) return;
 
     setSubmitting(true);
@@ -274,7 +279,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
         </div>
       </div>
 
-      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className={`space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ${wasValidated ? 'was-validated' : ''}`}>
         
         {/* ÉTAPE 1 : PHOTOS */}
         {step === 1 && (
