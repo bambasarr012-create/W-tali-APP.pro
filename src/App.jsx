@@ -99,15 +99,19 @@ function MainApp() {
           <main className="flex-1">
             <SettingsPage />
           </main>
+          <BottomNav />
         </div>
       );
     }
     
     // Sinon elle est bloquée sur l'abonnement
     return (
-      <div className="min-h-screen bg-[#F4F7F6]">
+      <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans flex flex-col">
         <Header />
-        <SubscriptionPage />
+        <main className="flex-1">
+          <SubscriptionPage />
+        </main>
+        <BottomNav />
       </div>
     );
   }
