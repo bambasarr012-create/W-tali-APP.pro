@@ -15,6 +15,22 @@ const getDb = () => {
   return firebaseState.db;
 };
 
+export function subscribeToCollection(collectionName, callback) {
+  const db = getDb();
+  const q = query(collection(db, collectionName));
+  return onSnapshot(q, (snapshot) => {
+    const data = [];
+    snapshot.forEach(doc => {
+      data.push({ id: doc.id, ...doc.data() });
+    });
+    if (typeof callback === 'function') {
+      callback(data);
+    }
+  }, (error) => {
+    console.error(`Error subscribing to collection ${collectionName}:`, error);
+  });
+}
+
 // ==========================================
 // GESTION DES PROFILS
 // ==========================================
