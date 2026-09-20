@@ -2,7 +2,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
 export function getStoredFirebaseConfig() {
   const cleanEnv = (val) => val ? val.replace(/['"]/g, '').trim() : undefined;
@@ -46,7 +46,7 @@ export async function initializeFirebaseApp() {
     // Initialize App Check if ReCaptcha site key is provided
     if (import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
       initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
+        provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
         isTokenAutoRefreshEnabled: true
       });
     }
