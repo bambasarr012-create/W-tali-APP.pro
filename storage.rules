@@ -16,5 +16,14 @@ service firebase.storage {
       // Seul le propriétaire peut supprimer ses photos
       allow delete: if request.auth != null && request.auth.uid == userId;
     }
+
+    // Règle pour les messages vocaux
+    match /voice-messages/{chatId}/{fileName} {
+      allow read: if request.auth != null && chatId.matches('.*' + request.auth.uid + '.*');
+      allow write: if request.auth != null 
+                   && chatId.matches('.*' + request.auth.uid + '.*')
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('audio/.*');
+    }
   }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
-import { subscribeToMessages, sendMessage, markMessagesAsRead, initDemoConversation } from '../../services/chatService';
+import { subscribeToMessages, sendMessage, markMessagesAsRead, initDemoConversation, uploadVoiceMessage } from '../../services/chatService';
 import { 
   ArrowLeft, 
   Send, 
@@ -14,9 +14,11 @@ import {
   Heart, 
   Info,
   Mic,
-  Square
+  Square,
+  AlertCircle
 } from 'lucide-react';
 import VerifiedBadge from '../common/VerifiedBadge';
+import VoiceMessagePlayer from './VoiceMessagePlayer';
 
 export default function ChatPage() {
   const { activeMatch, setCurrentView, viewProfileDetail } = useApp();
@@ -31,6 +33,7 @@ export default function ChatPage() {
   const [recordingTime, setRecordingTime] = useState(0);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const [audioError, setAudioError] = useState('');
 
   const partner = activeMatch?.otherUser || {
     id: "partner_demo",
@@ -73,6 +76,12 @@ export default function ChatPage() {
     return () => clearInterval(interval);
   }, [isRecording]);
 
+  useEffect(() => {
+    if (recordingTime >= 60 && isRecording) {
+      stopRecording();
+    }
+  }, [recordingTime, isRecording]);
+
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -81,6 +90,7 @@ export default function ChatPage() {
 
   const startRecording = async () => {
     try {
+      setAudioError('');
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.ondataavailable = (e) => {
@@ -90,13 +100,16 @@ export default function ChatPage() {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         audioChunksRef.current = [];
         
-        const reader = new FileReader();
-        reader.readAsDataURL(audioBlob);
-        reader.onloadend = async () => {
+        try {
           setIsSending(true);
-          await sendMessage(chatId, userProfile?.id || 'current_user', '', { type: 'audio', audioData: reader.result });
+          const downloadUrl = await uploadVoiceMessage(chatId, audioBlob);
+          await sendMessage(chatId, userProfile?.id || 'current_user', '', { type: 'audio', url: downloadUrl });
+        } catch (uploadErr) {
+          console.error("Erreur lors de l'envoi vocal:", uploadErr);
+          setAudioError("Erreur lors de l'envoi du message vocal.");
+        } finally {
           setIsSending(false);
-        };
+        }
       };
       
       audioChunksRef.current = [];
@@ -105,6 +118,7 @@ export default function ChatPage() {
       setRecordingTime(0);
     } catch (err) {
       console.error("Microphone access denied", err);
+      setAudioError("Accès au microphone refusé ou indisponible.");
     }
   };
 
@@ -221,7 +235,7 @@ export default function ChatPage() {
                 }`}
               >
                 {msg.type === 'audio' ? (
-                  <audio src={msg.audioData} controls className="h-10 w-48 max-w-full" />
+                  <VoiceMessagePlayer url={msg.url} audioData={msg.audioData} />
                 ) : (
                   <p className="whitespace-pre-wrap">{msg.text}</p>
                 )}
@@ -266,7 +280,17 @@ export default function ChatPage() {
       </div>
 
       {/* Input Bar */}
-      <form onSubmit={handleSend} className="flex items-center gap-2 pt-1 flex-shrink-0">
+      <div className="flex flex-col gap-2 pt-1 flex-shrink-0">
+        {audioError && (
+          <div className="flex items-center justify-between text-rose-600 text-[11px] bg-rose-50 px-3 py-2 rounded-xl">
+            <div className="flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              <span>{audioError}</span>
+            </div>
+            <button onClick={() => setAudioError('')} className="font-bold text-rose-800 p-1">✕</button>
+          </div>
+        )}
+        <form onSubmit={handleSend} className="flex items-center gap-2">
         {isRecording ? (
           <div className="flex-1 flex items-center justify-between p-3.5 rounded-2xl bg-rose-50 border border-rose-200 shadow-sm text-rose-600 font-medium text-sm animate-pulse">
             <div className="flex items-center gap-2">
@@ -308,7 +332,8 @@ export default function ChatPage() {
             <Send className="w-5 h-5" />
           </button>
         )}
-      </form>
+        </form>
+      </div>
 
     </div>
   );

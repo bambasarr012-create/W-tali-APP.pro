@@ -1,4 +1,5 @@
 import { getFirestore, collection, doc, query, orderBy, onSnapshot, addDoc, getDocs, where, writeBatch, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { firebaseState } from './firebase';
 
 const getDb = () => {
@@ -32,14 +33,27 @@ export function subscribeToMessages(chatId, callback) {
   });
 }
 
+export async function uploadVoiceMessage(chatId, audioBlob) {
+  if (!firebaseState.storage) {
+    throw new Error("Storage not initialized");
+  }
+  const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.webm`;
+  const audioRef = ref(firebaseState.storage, `voice-messages/${chatId}/${fileName}`);
+  
+  await uploadBytes(audioRef, audioBlob, { contentType: 'audio/webm' });
+  const downloadUrl = await getDownloadURL(audioRef);
+  return downloadUrl;
+}
+
 export async function sendMessage(chatId, senderId, text, options = {}) {
-  if ((!text || !text.trim()) && !options.audioData) return null;
+  if ((!text || !text.trim()) && !options.audioData && !options.url) return null;
   const db = getDb();
 
   const newMessage = {
     senderId: senderId || 'current_user',
     text: text ? text.trim() : '',
     type: options.type || 'text',
+    url: options.url || null,
     audioData: options.audioData || null,
     timestamp: new Date().toISOString(),
     read: false
