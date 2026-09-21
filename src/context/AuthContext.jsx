@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getStoredAuthUser, signupUser, loginUser, logoutUser, loginWithGoogle } from '../services/authService';
-import { getCurrentStoredProfile, saveUserProfile } from '../services/firestoreService';
+import { getCurrentStoredProfile, saveUserProfile, getProfileById } from '../services/firestoreService';
 
 const AuthContext = createContext(null);
 
@@ -14,6 +14,14 @@ export function AuthProvider({ children }) {
     const authUser = getStoredAuthUser();
     const profile = getCurrentStoredProfile();
 
+    if (profile?.suspended) {
+      logoutUser();
+      setUser(null);
+      setUserProfile(null);
+      setLoading(false);
+      return;
+    }
+
     if (authUser) {
       setUser(authUser);
     }
@@ -25,10 +33,15 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const authUser = await loginUser(email, password);
+    const profile = await getProfileById(authUser.uid);
+    if (profile?.suspended) {
+      await logoutUser();
+      throw new Error("Votre compte a été suspendu suite à un signalement. Contactez le support pour plus d'informations.");
+    }
     setUser(authUser);
-    const profile = getCurrentStoredProfile();
     if (profile) {
       setUserProfile(profile);
+      localStorage.setItem('wetali_current_profile', JSON.stringify(profile));
     }
     return authUser;
   };
@@ -47,10 +60,15 @@ export function AuthProvider({ children }) {
 
   const loginGoogle = async () => {
     const authUser = await loginWithGoogle();
+    const profile = await getProfileById(authUser.uid);
+    if (profile?.suspended) {
+      await logoutUser();
+      throw new Error("Votre compte a été suspendu suite à un signalement. Contactez le support pour plus d'informations.");
+    }
     setUser(authUser);
-    const profile = getCurrentStoredProfile();
     if (profile) {
       setUserProfile(profile);
+      localStorage.setItem('wetali_current_profile', JSON.stringify(profile));
     }
     return authUser;
   };

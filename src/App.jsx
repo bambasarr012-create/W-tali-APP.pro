@@ -22,6 +22,7 @@ import SettingsPage from './components/settings/SettingsPage';
 import SubscriptionPage from './components/subscription/SubscriptionPage';
 import VisitorsPage from './components/visitors/VisitorsPage';
 import FavoritesPage from './components/favorites/FavoritesPage';
+import AdminReportsPage from './components/admin/AdminReportsPage';
 
 // Gate component: shows landing page first, then auth when user clicks CTA
 function LandingPageGate() {
@@ -159,6 +160,18 @@ function MainApp() {
 }
 
 export default function App() {
+  const isReportsPage = window.location.pathname === '/admin/reports';
+  
+  if (isReportsPage) {
+    return (
+      <AuthProvider>
+        <AppProvider>
+          <AdminReportsPage />
+        </AppProvider>
+      </AuthProvider>
+    );
+  }
+
   return (
     <AuthProvider>
       <AppProvider>

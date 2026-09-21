@@ -15,10 +15,12 @@ import {
   Info,
   Mic,
   Square,
-  AlertCircle
+  AlertCircle,
+  Flag
 } from 'lucide-react';
 import VerifiedBadge from '../common/VerifiedBadge';
 import VoiceMessagePlayer from './VoiceMessagePlayer';
+import ReportModal from '../common/ReportModal';
 
 export default function ChatPage() {
   const { activeMatch, setCurrentView, viewProfileDetail } = useApp();
@@ -34,6 +36,7 @@ export default function ChatPage() {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const [audioError, setAudioError] = useState('');
+  const [reportedMessageSenderId, setReportedMessageSenderId] = useState(null);
 
   const partner = activeMatch?.otherUser || {
     id: "partner_demo",
@@ -249,6 +252,15 @@ export default function ChatPage() {
                   <span>
                     {new Date(msg.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
+                  {!isMe && (
+                    <button 
+                      onClick={() => setReportedMessageSenderId(msg.senderId)}
+                      className="hover:text-rose-500 transition-colors ml-1"
+                      title="Signaler ce message"
+                    >
+                      <Flag className="w-3 h-3" />
+                    </button>
+                  )}
                   {isMe && (
                     msg.read ? (
                       <CheckCheck className="w-3.5 h-3.5 text-[#2D8659]" title="Lu" />
@@ -334,6 +346,14 @@ export default function ChatPage() {
         )}
         </form>
       </div>
+
+      {reportedMessageSenderId && (
+        <ReportModal 
+          reportedUserId={reportedMessageSenderId}
+          contentType="message"
+          onClose={() => setReportedMessageSenderId(null)}
+        />
+      )}
 
     </div>
   );

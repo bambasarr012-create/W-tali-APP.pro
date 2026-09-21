@@ -5,8 +5,8 @@ service cloud.firestore {
     match /users/{userId} {
       // Tout le monde peut lire les profils pour le matching
       allow read: if request.auth != null;
-      // Seul l'utilisateur peut créer ou modifier son propre profil
-      allow write: if request.auth != null && request.auth.uid == userId;
+      // Seul l'utilisateur peut créer ou modifier son propre profil, l'admin peut aussi modifier (pour suspendre)
+      allow write: if request.auth != null && (request.auth.uid == userId || request.auth.token.email == "bambasarr012@gmail.com");
     }
 
     // Demandes (Requests)
@@ -33,6 +33,12 @@ service cloud.firestore {
     match /chats/{chatId}/messages/{messageId} {
       // Permettre l'accès si l'ID du chat contient l'ID de l'utilisateur (ex: userId1_userId2)
       allow read, write: if request.auth != null && chatId.matches('.*' + request.auth.uid + '.*');
+    }
+
+    // Signalements (Reports)
+    match /reports/{reportId} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.reporterId;
+      allow read, update, delete: if request.auth != null && request.auth.token.email == "bambasarr012@gmail.com";
     }
   }
 }

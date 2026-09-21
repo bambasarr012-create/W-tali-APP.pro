@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { calculatePointsCommuns } from '../../services/firestoreService';
 import VerifiedBadge from '../common/VerifiedBadge';
+import ReportModal from '../common/ReportModal';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -15,13 +16,15 @@ import {
   ChevronLeft, 
   ChevronRight, 
   CheckCircle2, 
-  Tag 
+  Tag,
+  Flag
 } from 'lucide-react';
 
 export default function ProfileDetailPage() {
   const { selectedProfile, setCurrentView, openSendRequestModal } = useApp();
   const { userProfile } = useAuth();
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [isReporting, setIsReporting] = useState(false);
 
   if (!selectedProfile) {
     return (
@@ -129,10 +132,19 @@ export default function ProfileDetailPage() {
           {/* Header Title & Location */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-5">
             <div>
-              <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[#0A2F4A] flex items-center gap-3">
-                <span>{selectedProfile.prenom}, {selectedProfile.age} ans</span>
-                {selectedProfile.profileStatus === 'verified' && <VerifiedBadge size="lg" />}
-              </h1>
+              <div className="flex items-center justify-between">
+                <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[#0A2F4A] flex items-center gap-3">
+                  <span>{selectedProfile.prenom}, {selectedProfile.age} ans</span>
+                  {selectedProfile.profileStatus === 'verified' && <VerifiedBadge size="lg" />}
+                </h1>
+                <button 
+                  onClick={() => setIsReporting(true)}
+                  className="sm:hidden p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
+                  title="Signaler ce profil"
+                >
+                  <Flag className="w-5 h-5" />
+                </button>
+              </div>
               <div className="flex items-center gap-3 text-sm text-slate-600 font-medium mt-1">
                 <span className="flex items-center gap-1 text-[#2D8659] font-semibold">
                   <MapPin className="w-4 h-4" />
@@ -146,14 +158,23 @@ export default function ProfileDetailPage() {
               </div>
             </div>
 
-            {/* Quick Action Button */}
-            <button
-              onClick={() => openSendRequestModal(selectedProfile)}
-              className="px-6 py-3 rounded-2xl bg-[#2D8659] hover:bg-[#236c47] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              <Heart className="w-4 h-4 fill-white" />
-              <span>Envoyer une demande</span>
-            </button>
+            {/* Quick Action Button & Desktop Report */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => openSendRequestModal(selectedProfile)}
+                className="flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-[#2D8659] hover:bg-[#236c47] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
+              >
+                <Heart className="w-4 h-4 fill-white" />
+                <span>Envoyer une demande</span>
+              </button>
+              <button 
+                onClick={() => setIsReporting(true)}
+                className="hidden sm:flex p-3 text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 rounded-2xl transition-colors shadow-sm"
+                title="Signaler ce profil"
+              >
+                <Flag className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* ============================================================ */}
@@ -282,6 +303,14 @@ export default function ProfileDetailPage() {
         </div>
 
       </div>
+
+      {isReporting && (
+        <ReportModal 
+          reportedUserId={selectedProfile.id}
+          contentType="profile"
+          onClose={() => setIsReporting(false)}
+        />
+      )}
 
     </div>
   );
