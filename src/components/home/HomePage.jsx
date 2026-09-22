@@ -3,6 +3,7 @@ import { getAllProfiles } from '../../services/firestoreService';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import AICoachWidget from './AICoachWidget';
+import DailyTip from './DailyTip';
 import { Crown, MessageCircle, Heart, Eye, Star, UserCheck, Zap, BarChart2, Power, Quote, MapPin, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function HomePage() {
@@ -30,6 +31,9 @@ export default function HomePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 pb-28 space-y-6">
       
+      {/* Conseil / Rappel du jour */}
+      <DailyTip />
+
       {/* 1. Bannière Passer Premium */}
       <div className="bg-[#0A2F4A] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg border border-[#134B73]">
         <div className="flex items-center gap-3">
