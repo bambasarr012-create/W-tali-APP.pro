@@ -44,12 +44,19 @@ export function initializeFirebaseApp() {
     }
     
     // Initialize App Check if ReCaptcha site key is provided
+    // DESACTIVE TEMPORAIREMENT car cela peut bloquer Firebase (Firestore/Storage) 
+    // en environnement de développement ou si le domaine n'est pas autorisé dans ReCaptcha.
+    /*
     if (import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      }
       initializeAppCheck(app, {
         provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
         isTokenAutoRefreshEnabled: true
       });
     }
+    */
     
     firebaseState.app = app;
     firebaseState.auth = getAuth(app);
