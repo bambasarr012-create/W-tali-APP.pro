@@ -59,7 +59,7 @@ export default function CookieConsent() {
                 </h3>
               </div>
               <p className="text-slate-600 text-sm md:text-base">
-                Wétali utilise des cookies pour assurer le bon fonctionnement de l'application (cookies essentiels) et pour analyser notre trafic afin d'améliorer votre expérience (cookies analytiques). <a href="/privacy" className="underline font-medium text-wetaliBlue hover:text-wetaliGold transition-colors">En savoir plus dans notre politique de confidentialité.</a>
+                Wétali utilise des cookies pour assurer le bon fonctionnement de l'application (cookies essentiels) et pour analyser notre trafic afin d'améliorer votre expérience (cookies analytiques). <button onClick={() => window.dispatchEvent(new CustomEvent('show-privacy'))} className="underline font-medium text-wetaliBlue hover:text-wetaliGold transition-colors">En savoir plus dans notre politique de confidentialité.</button>
               </p>
             </div>
             

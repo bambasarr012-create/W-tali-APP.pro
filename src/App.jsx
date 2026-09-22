@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppProvider, useApp } from './context/AppContext';
 
@@ -163,10 +163,21 @@ function MainApp() {
 
 export default function App() {
   const isReportsPage = window.location.pathname === '/admin/reports';
-  const isPrivacyPage = window.location.pathname === '/privacy';
+  const [showPrivacy, setShowPrivacy] = useState(window.location.pathname === '/privacy');
   
-  if (isPrivacyPage) {
-    return <PrivacyPage onBack={() => window.location.href = '/'} />;
+  useEffect(() => {
+    const handleShowPrivacy = () => setShowPrivacy(true);
+    window.addEventListener('show-privacy', handleShowPrivacy);
+    return () => window.removeEventListener('show-privacy', handleShowPrivacy);
+  }, []);
+
+  if (showPrivacy) {
+    return <PrivacyPage onBack={() => {
+      setShowPrivacy(false);
+      if (window.location.pathname === '/privacy') {
+        window.history.pushState({}, '', '/');
+      }
+    }} />;
   }
 
   if (isReportsPage) {
