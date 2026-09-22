@@ -88,7 +88,17 @@ export async function saveUserProfile(profileData) {
     dataToSave.createdAt = new Date().toISOString();
   }
 
-  await setDoc(docRef, dataToSave, { merge: true });
+  // Ajout d'un timeout pour éviter que setDoc ne tourne indéfiniment 
+  // en cas de blocage réseau (Adblocker, App Check en cache, etc.)
+  const timeout = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error("Le serveur met trop de temps à répondre. Vérifiez votre connexion ou désactivez votre bloqueur de publicités (Adblock).")), 10000)
+  );
+
+  await Promise.race([
+    setDoc(docRef, dataToSave, { merge: true }),
+    timeout
+  ]);
+
   localStorage.setItem('wetali_current_profile', JSON.stringify(dataToSave)); // Fallback cache local
   return dataToSave;
 }
