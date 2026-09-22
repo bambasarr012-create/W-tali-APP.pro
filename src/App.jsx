@@ -6,6 +6,7 @@ import Header from './components/layout/Header';
 import BottomNav from './components/layout/BottomNav';
 import SendRequestModal from './components/layout/SendRequestModal';
 import WeddingRingLogo from './components/common/WeddingRingLogo';
+import CookieConsent from './components/common/CookieConsent';
 
 import AuthPage from './components/auth/AuthPage';
 import LandingPage from './components/landing/LandingPage';
@@ -167,6 +168,7 @@ export default function App() {
       <AuthProvider>
         <AppProvider>
           <AdminReportsPage />
+          <CookieConsent />
         </AppProvider>
       </AuthProvider>
     );
@@ -176,6 +178,7 @@ export default function App() {
     <AuthProvider>
       <AppProvider>
         <MainApp />
+        <CookieConsent />
       </AppProvider>
     </AuthProvider>
   );
