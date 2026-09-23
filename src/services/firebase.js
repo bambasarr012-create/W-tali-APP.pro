@@ -1,6 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
@@ -60,7 +60,10 @@ export function initializeFirebaseApp() {
     
     firebaseState.app = app;
     firebaseState.auth = getAuth(app);
-    firebaseState.db = getFirestore(app);
+    // Force long-polling to prevent infinite hanging with strict adblockers (Brave Shields, etc.)
+    firebaseState.db = initializeFirestore(app, {
+      experimentalForceLongPolling: true
+    });
     firebaseState.storage = getStorage(app);
     firebaseState.isConfigured = true;
     firebaseState.isLive = true;
