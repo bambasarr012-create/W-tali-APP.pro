@@ -163,7 +163,7 @@ export default function ChatPage() {
       <div className="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200 shadow-sm flex items-center justify-between gap-3 mb-3 flex-shrink-0">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setCurrentView('matches')}
+            onClick={() => setCurrentView('messages')}
             className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors"
             aria-label="Retour"
           >

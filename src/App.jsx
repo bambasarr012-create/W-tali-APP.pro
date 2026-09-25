@@ -18,6 +18,7 @@ import DiscoverPage from './components/discover/DiscoverPage';
 import ProfileDetailPage from './components/profile/ProfileDetailPage';
 import RequestsPage from './components/requests/RequestsPage';
 import MatchesPage from './components/matches/MatchesPage';
+import MessagesListPage from './components/chat/MessagesListPage';
 import ChatPage from './components/chat/ChatPage';
 import SettingsPage from './components/settings/SettingsPage';
 import SubscriptionPage from './components/subscription/SubscriptionPage';
@@ -147,6 +148,7 @@ function MainApp() {
         {currentView === 'profile-detail' && <ProfileDetailPage />}
         {currentView === 'requests' && <RequestsPage />}
         {currentView === 'matches' && <MatchesPage />}
+        {currentView === 'messages' && <MessagesListPage />}
         {currentView === 'chat' && <ChatPage />}
         {currentView === 'settings' && <SettingsPage />}
         {currentView === 'visitors' && <VisitorsPage />}

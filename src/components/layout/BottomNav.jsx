@@ -12,7 +12,7 @@ export default function BottomNav() {
     { id: 'requests', label: 'Demandes', icon: UserCheck, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
     { id: 'visitors', label: 'Visiteurs', icon: Eye, badge: 2 },
     { id: 'favorites', label: 'Favoris', icon: Star },
-    { id: 'chat', label: 'Messages', icon: MessageCircle },
+    { id: 'messages', label: 'Messages', icon: MessageCircle },
     { id: 'settings', label: 'Profil', icon: User }
   ];
 
