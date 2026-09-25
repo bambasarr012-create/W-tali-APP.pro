@@ -257,7 +257,7 @@ export default function CityLandingPage({ ville, onBack, onSignup, onNavCity }) 
               <ul className="space-y-4 text-sm">
                 <li className="flex items-start gap-3">
                   <span className="text-[#D4AF37] mt-0.5 shrink-0">✉️</span>
-                  <a href="mailto:contact@wetali.app" className="hover:text-[#D4AF37] transition-colors">contact@wetali.app</a>
+                  <a href="mailto:wetalidiaspora@gmail.com" className="hover:text-[#D4AF37] transition-colors">wetalidiaspora@gmail.com</a>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-[#D4AF37] mt-0.5 shrink-0">📍</span>

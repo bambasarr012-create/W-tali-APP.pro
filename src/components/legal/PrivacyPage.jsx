@@ -37,7 +37,7 @@ export default function PrivacyPage({ onBack }) {
         <p>
           Vos données sont conservées tant que votre compte est actif. Vous pouvez 
           demander leur suppression à tout moment via les paramètres ou en nous 
-          contactant à <strong>contact@wetali.com</strong>.
+          contactant à <strong>wetalidiaspora@gmail.com</strong>.
         </p>
       </section>
 
@@ -47,7 +47,7 @@ export default function PrivacyPage({ onBack }) {
           Conformément au Règlement Général sur la Protection des Données, vous 
           disposez d'un droit d'accès, de rectification, d'effacement, de limitation 
           et de portabilité de vos données. Vous pouvez exercer ces droits en 
-          nous contactant à <strong>contact@wetali.com</strong>.
+          nous contactant à <strong>wetalidiaspora@gmail.com</strong>.
         </p>
       </section>
 

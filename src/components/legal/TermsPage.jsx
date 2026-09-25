@@ -11,7 +11,7 @@ export default function TermsPage({ onBack }) {
           entrepreneur individuel, domicilié à Issy-les-Moulineaux, France.
         </p>
         <p className="mt-2">
-          <strong>Email de contact :</strong> bambasarr012@gmail.com
+          <strong>Email de contact :</strong> wetalidiaspora@gmail.com
         </p>
       </section>
 

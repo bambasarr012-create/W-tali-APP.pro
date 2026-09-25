@@ -4,6 +4,8 @@ import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc } 
 import { ShieldCheck, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { formatRelativeTime } from '../../services/firestoreService';
 
+const ADMIN_EMAILS = ['bambasarr012@gmail.com', 'wetalidiaspora@gmail.com'];
+
 export default function AdminReportsPage() {
   const { user } = useAuth();
   const [reports, setReports] = useState([]);
@@ -11,13 +13,13 @@ export default function AdminReportsPage() {
 
   // Vérification stricte admin
   useEffect(() => {
-    if (user && user.email !== 'bambasarr012@gmail.com') {
+    if (user && !ADMIN_EMAILS.includes(user.email)) {
       window.location.href = '/';
     }
   }, [user]);
 
   useEffect(() => {
-    if (user?.email !== 'bambasarr012@gmail.com') return;
+    if (!user || !ADMIN_EMAILS.includes(user.email)) return;
 
     const db = getFirestore();
     const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
@@ -60,7 +62,7 @@ export default function AdminReportsPage() {
     }
   };
 
-  if (!user || user.email !== 'bambasarr012@gmail.com') return null;
+  if (!user || !ADMIN_EMAILS.includes(user.email)) return null;
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 font-sans">
