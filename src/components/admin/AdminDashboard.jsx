@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, getDocs } from 'firebase/firestore';
-import { ShieldCheck, ShieldAlert, AlertTriangle, LayoutDashboard, Users, Flag, Settings, Activity, TrendingUp, Ban } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, AlertTriangle, LayoutDashboard, Users, Flag, Settings, Activity, TrendingUp, Ban, CreditCard, DollarSign } from 'lucide-react';
 import { formatRelativeTime } from '../../services/firestoreService';
 
 const ADMIN_EMAILS = ['bambasarr012@gmail.com', 'wetalidiaspora@gmail.com'];
@@ -128,6 +128,10 @@ export default function AdminDashboard() {
             badge={pendingReports > 0 ? pendingReports : null}
             active={activeTab === 'reports'} onClick={() => setActiveTab('reports')} 
           />
+          <NavItem 
+            icon={<CreditCard />} label="Abonnements" 
+            active={activeTab === 'finances'} onClick={() => setActiveTab('finances')} 
+          />
         </nav>
 
         <div className="p-4 border-t border-slate-100">
@@ -159,6 +163,7 @@ export default function AdminDashboard() {
             <option value="overview">Vue d'ensemble</option>
             <option value="users">Utilisateurs</option>
             <option value="reports">Signalements</option>
+            <option value="finances">Abonnements</option>
           </select>
         </header>
 
@@ -172,11 +177,13 @@ export default function AdminDashboard() {
                 {activeTab === 'overview' && "Vue d'ensemble"}
                 {activeTab === 'users' && "Gestion des Utilisateurs"}
                 {activeTab === 'reports' && "Modération & Signalements"}
+                {activeTab === 'finances' && "Revenus & Abonnements"}
               </h1>
               <p className="text-slate-500">
                 {activeTab === 'overview' && "Statistiques et état global de la plateforme."}
                 {activeTab === 'users' && "Consultez, recherchez et modérez les comptes utilisateurs."}
                 {activeTab === 'reports' && "Traitez les signalements de la communauté."}
+                {activeTab === 'finances' && "Suivi du MRR, des abonnements actifs et des revenus."}
               </p>
             </div>
 
@@ -208,6 +215,9 @@ export default function AdminDashboard() {
                     onResolve={handleResolveReport} 
                     onSuspend={handleSuspendUser} 
                   />
+                )}
+                {activeTab === 'finances' && (
+                  <FinancesTab users={users} />
                 )}
               </>
             )}
@@ -479,6 +489,77 @@ function ReportsTab({ reports, onResolve, onSuspend }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function FinancesTab({ users }) {
+  // Simulation de calcul des revenus basés sur le statut d'abonnement des utilisateurs
+  const activeSubscribers = users.filter(u => u.subscriptionStatus === 'active' || u.isPremium);
+  
+  // Prix fictif moyen d'un abonnement Wétali (ex: 15€/mois)
+  const AVERAGE_SUB_PRICE = 15; 
+  
+  const mrr = activeSubscribers.length * AVERAGE_SUB_PRICE;
+  const arr = mrr * 12;
+
+  return (
+    <div className="space-y-6">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-6 rounded-3xl border border-slate-200 bg-white shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 rounded-bl-3xl bg-emerald-50">
+            <DollarSign className="w-6 h-6 text-emerald-600" />
+          </div>
+          <h3 className="text-sm font-semibold text-slate-500 mb-2">MRR (Revenu Mensuel Récurrent)</h3>
+          <div className="text-4xl font-black text-slate-800 mb-2">{mrr} €</div>
+          <div className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+            <TrendingUp className="w-3 h-3" /> +0% ce mois
+          </div>
+        </div>
+
+        <div className="p-6 rounded-3xl border border-slate-200 bg-white shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 rounded-bl-3xl bg-blue-50">
+            <CreditCard className="w-6 h-6 text-blue-600" />
+          </div>
+          <h3 className="text-sm font-semibold text-slate-500 mb-2">Abonnés Actifs</h3>
+          <div className="text-4xl font-black text-slate-800 mb-2">{activeSubscribers.length}</div>
+          <div className="text-xs font-semibold text-slate-400">Sur {users.length} inscrits</div>
+        </div>
+      </div>
+
+      {/* Détails financiers */}
+      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mt-8">
+        <h3 className="text-xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Projections & Métriques</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div className="text-sm text-slate-500 mb-1">ARR (Revenu Annuel)</div>
+            <div className="text-2xl font-bold text-slate-800">{arr} €</div>
+            <p className="text-xs text-slate-400 mt-1">Projection sur 12 mois</p>
+          </div>
+          
+          <div>
+            <div className="text-sm text-slate-500 mb-1">ARPU</div>
+            <div className="text-2xl font-bold text-slate-800">{activeSubscribers.length > 0 ? AVERAGE_SUB_PRICE : 0} €</div>
+            <p className="text-xs text-slate-400 mt-1">Revenu moyen par abonné</p>
+          </div>
+
+          <div>
+            <div className="text-sm text-slate-500 mb-1">Taux de Conversion</div>
+            <div className="text-2xl font-bold text-slate-800">
+              {users.length > 0 ? Math.round((activeSubscribers.length / users.length) * 100) : 0}%
+            </div>
+            <p className="text-xs text-slate-400 mt-1">Inscrits devenus payants</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+        <p className="text-sm text-blue-800">
+          <strong>Note technique :</strong> Actuellement, ces revenus sont calculés en se basant sur le nombre d'utilisateurs ayant un statut d'abonnement actif dans la base de données, multiplié par un prix moyen estimé de 15€. Une fois Stripe (ou ton processeur de paiement) pleinement connecté, ces chiffres seront synchronisés en temps réel.
+        </p>
+      </div>
     </div>
   );
 }
