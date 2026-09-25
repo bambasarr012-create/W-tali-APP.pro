@@ -23,7 +23,7 @@ import SettingsPage from './components/settings/SettingsPage';
 import SubscriptionPage from './components/subscription/SubscriptionPage';
 import VisitorsPage from './components/visitors/VisitorsPage';
 import FavoritesPage from './components/favorites/FavoritesPage';
-import AdminReportsPage from './components/admin/AdminReportsPage';
+import AdminDashboard from './components/admin/AdminDashboard';
 import PrivacyPage from './components/legal/PrivacyPage';
 
 // Gate component: shows landing page first, then auth when user clicks CTA
@@ -162,7 +162,7 @@ function MainApp() {
 }
 
 export default function App() {
-  const isReportsPage = window.location.pathname === '/admin/reports';
+  const isAdminPage = window.location.pathname.startsWith('/admin');
   const [showPrivacy, setShowPrivacy] = useState(window.location.pathname === '/privacy');
   
   useEffect(() => {
@@ -180,11 +180,11 @@ export default function App() {
     }} />;
   }
 
-  if (isReportsPage) {
+  if (isAdminPage) {
     return (
       <AuthProvider>
         <AppProvider>
-          <AdminReportsPage />
+          <AdminDashboard />
           <CookieConsent />
         </AppProvider>
       </AuthProvider>

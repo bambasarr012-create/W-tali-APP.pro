@@ -19,8 +19,11 @@ import {
   EyeOff
 } from 'lucide-react';
 
+const ADMIN_EMAILS = ['bambasarr012@gmail.com', 'wetalidiaspora@gmail.com'];
+
 export default function SettingsPage() {
   const { user, userProfile, logout, updateProfile } = useAuth();
+  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
   const { showToast, setCurrentView } = useApp();
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -201,6 +204,27 @@ export default function SettingsPage() {
                 </button>
               </div>
             </div>
+
+            {/* Admin Zone */}
+            {isAdmin && (
+              <div className="bg-[#0A2F4A] rounded-3xl p-6 shadow-md space-y-3">
+                <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-[#D4AF37]" />
+                  Espace Administration
+                </h3>
+                <p className="text-xs text-[#A0C0D6]">
+                  Accédez au tableau de bord pour modérer la plateforme.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => window.location.href = '/admin'}
+                  className="w-full mt-2 py-3 px-4 rounded-2xl bg-[#D4AF37] hover:bg-[#c39e31] text-[#0A2F4A] text-xs font-bold transition-all flex items-center justify-center gap-2"
+                >
+                  <SettingsIcon className="w-4 h-4" />
+                  Ouvrir le Tableau de Bord
+                </button>
+              </div>
+            )}
 
             {/* Account Danger Zone / Actions */}
             <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
