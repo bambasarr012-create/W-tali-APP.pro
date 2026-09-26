@@ -5,7 +5,7 @@ import { Eye, Lock, ShieldCheck, Sparkles, User, MapPin } from 'lucide-react';
 import { getAllProfiles } from '../../services/firestoreService';
 
 export default function VisitorsPage() {
-  const { userProfile } = useAuth();
+  const { userProfile, isPremium } = useAuth();
   const { setCurrentView, viewProfileDetail } = useApp();
 
   const [visitors, setVisitors] = useState([]);
@@ -18,8 +18,7 @@ export default function VisitorsPage() {
     loadData();
   }, []);
 
-  // Le palier supérieur débloque la vue (3 mois ou 6 mois)
-  const isPremium = userProfile?.subscriptionTier === '3_months' || userProfile?.subscriptionTier === '6_months';
+  // isPremium est récupéré directement depuis useAuth()
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 sm:py-10 pb-28">
@@ -45,24 +44,33 @@ export default function VisitorsPage() {
             </h2>
             <p className="text-slate-700 max-w-md mx-auto mb-8 font-medium">
               Ton abonnement actuel ne te permet pas de voir qui consulte ton profil. 
-              Passe à un palier supérieur (3 mois ou 6 mois) pour révéler tes admirateurs secrets.
+              Passe Premium pour révéler tes admirateurs secrets.
             </p>
             <button
-              onClick={() => setCurrentView('settings')}
+              onClick={() => setCurrentView('subscription')}
               className="px-8 py-3.5 bg-[#D4AF37] hover:bg-[#c4a133] text-white font-bold rounded-2xl shadow-lg transition-all flex items-center gap-2"
             >
               <Sparkles className="w-5 h-5" />
-              Gérer mon abonnement
+              Voir les offres Premium
             </button>
           </div>
 
-          {/* Grille Floutée */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 filter blur-xl opacity-60 pointer-events-none select-none">
-            {visitors.map((visitor, idx) => (
-              <div key={idx} className="bg-white rounded-3xl p-4 border border-slate-200">
-                <div className="w-full h-40 bg-slate-200 rounded-2xl mb-4"></div>
-                <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+          {/* Grille Floutée Réaliste (Images floutées pour plus de FOMO) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 pointer-events-none select-none overflow-hidden h-[60vh]">
+            {visitors.map((profile, idx) => (
+              <div key={idx} className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm relative">
+                <div className="absolute inset-0 z-0 bg-white/20 backdrop-blur-[24px]"></div>
+                <div className="h-64">
+                  <img 
+                    src={profile.photos && profile.photos[0] ? profile.photos[0] : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"} 
+                    alt="Visiteur flouté" 
+                    className="w-full h-full object-cover blur-2xl scale-110 opacity-70"
+                  />
+                </div>
+                <div className="absolute bottom-4 left-4 right-4 z-10">
+                  <div className="h-6 bg-slate-800/40 rounded-lg w-2/3 mb-2 backdrop-blur-md"></div>
+                  <div className="h-4 bg-slate-800/30 rounded-lg w-1/3 backdrop-blur-md"></div>
+                </div>
               </div>
             ))}
           </div>
