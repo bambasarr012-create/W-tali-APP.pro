@@ -5,7 +5,7 @@ import { Check, ShieldCheck, Lock, Smartphone, CreditCard, Sparkles, ChevronRigh
 import WeddingRingLogo from '../common/WeddingRingLogo';
 
 export default function SubscriptionPage() {
-  const { userProfile, updateSubscription } = useAuth();
+  const { userProfile, updateSubscription, isPremium } = useAuth();
   const { setCurrentView, showToast } = useApp();
   
   const [selectedTier, setSelectedTier] = useState('6_months');
@@ -70,8 +70,38 @@ export default function SubscriptionPage() {
 
   const isSenegal = userProfile?.pays === 'Sénégal';
 
+  if (isPremium) {
+    return (
+      <div className="min-h-screen bg-[#F4F7F6] flex flex-col items-center justify-center py-10 px-4 sm:px-6">
+        <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-slate-200 p-10 text-center animate-fadeIn">
+          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Sparkles className="w-10 h-10 text-emerald-600" />
+          </div>
+          <h1 className="font-serif text-3xl font-bold text-[#0A2F4A] mb-4">
+            Vous êtes membre Premium !
+          </h1>
+          <p className="text-slate-600 mb-8 leading-relaxed">
+            Profitez de tous vos avantages Wétali en illimité : messages, découverte de profils sans restriction et badge de confiance.
+          </p>
+          <div className="p-4 bg-slate-50 rounded-2xl mb-8 border border-slate-100 text-sm font-medium text-slate-700">
+            Abonnement Actif jusqu'au : <br/>
+            <span className="text-[#2D8659] text-lg font-bold">
+              {userProfile?.subscriptionEnd ? new Date(userProfile.subscriptionEnd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Illimité'}
+            </span>
+          </div>
+          <button 
+            onClick={() => setCurrentView('home')}
+            className="w-full py-4 rounded-2xl bg-[#0A2F4A] hover:bg-[#062033] text-white font-bold text-base shadow-lg transition-all"
+          >
+            Retourner aux profils
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#F4F7F6] flex flex-col items-center py-10 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#F4F7F6] flex flex-col items-center py-10 px-4 sm:px-6 animate-fadeIn">
       
       {/* Header */}
       <div className="w-full max-w-4xl flex items-center justify-center mb-8">

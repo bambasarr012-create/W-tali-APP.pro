@@ -117,7 +117,8 @@ export function AuthProvider({ children }) {
       updateProfile,
       updateSubscription,
       isAuthenticated: !!user,
-      hasProfile: !!userProfile
+      hasProfile: !!userProfile,
+      isPremium: userProfile?.subscriptionStatus === 'active'
     }}>
       {children}
     </AuthContext.Provider>
