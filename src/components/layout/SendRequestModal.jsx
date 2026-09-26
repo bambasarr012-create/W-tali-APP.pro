@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { sendRequest, getDailyRequestCount } from '../../services/firestoreService';
-import { X, Send, Sparkles, ShieldCheck, Heart, Crown, Eye, MessageCircle } from 'lucide-react';
+import { X, Send, Sparkles, ShieldCheck, Heart, Crown, Eye, MessageCircle, Zap } from 'lucide-react';
 
 export default function SendRequestModal() {
   const { requestModalState, closeSendRequestModal, showToast, setCurrentView } = useApp();
@@ -154,28 +154,57 @@ export default function SendRequestModal() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider">
-                Votre message d'introduction
-              </label>
+          {!isPremium ? (
+            <div className="bg-[#FFFBF0] border border-[#D4AF37]/40 rounded-2xl p-5 mb-2 relative overflow-hidden group">
+              <div className="absolute -top-4 -right-4 p-3 opacity-10 group-hover:scale-110 transition-transform">
+                <Zap className="w-24 h-24 text-[#D4AF37]" />
+              </div>
+              <div className="flex items-center gap-2 mb-3 relative z-10">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#b8942b] flex items-center justify-center shadow-sm">
+                  <Zap className="w-4 h-4 text-white fill-white" />
+                </div>
+                <h4 className="font-bold text-[#0A2F4A]">Le Message Flash</h4>
+              </div>
+              <p className="text-sm text-slate-700 mb-4 relative z-10 font-medium">
+                Démarque-toi ! Écris un message personnalisé avant même l'acceptation et multiplie tes chances par 2.
+              </p>
               <button
                 type="button"
-                onClick={() => setMessage(defaultMessage)}
-                className="text-[11px] text-[#2D8659] hover:underline font-medium"
+                onClick={() => {
+                  closeSendRequestModal();
+                  setTimeout(() => setCurrentView('subscription'), 50);
+                }}
+                className="w-full py-3 bg-[#D4AF37] hover:bg-[#c4a133] text-white rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
               >
-                Texte suggéré
+                Débloquer Premium
+                <Sparkles className="w-4 h-4" />
               </button>
             </div>
-            <textarea
-              rows={4}
-              required
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full p-3.5 rounded-2xl border border-slate-300 focus:border-[#2D8659] focus:ring-2 focus:ring-[#2D8659]/20 text-sm text-slate-800 outline-none leading-relaxed transition-all resize-none"
-              placeholder="Écrivez un message respectueux et sincère..."
-            />
-          </div>
+          ) : (
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-[#D4AF37] fill-[#D4AF37]" />
+                  Votre Message Flash
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setMessage(defaultMessage)}
+                  className="text-[11px] text-[#2D8659] hover:underline font-medium"
+                >
+                  Texte suggéré
+                </button>
+              </div>
+              <textarea
+                rows={4}
+                required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full p-3.5 rounded-2xl border-2 border-[#D4AF37]/30 focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 text-sm text-slate-800 outline-none leading-relaxed transition-all resize-none bg-[#FFFBF0]/30"
+                placeholder="Écrivez un message respectueux et sincère..."
+              />
+            </div>
+          )}
 
           <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200">
             <ShieldCheck className="w-4 h-4 text-[#2D8659] flex-shrink-0" />
@@ -193,10 +222,18 @@ export default function SendRequestModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-2/3 py-3 rounded-2xl bg-[#2D8659] text-white font-bold text-sm shadow-md hover:bg-[#236c47] transition-all flex items-center justify-center gap-2"
+              className={`w-2/3 py-3 rounded-2xl text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 ${
+                isPremium ? 'bg-[#D4AF37] hover:bg-[#c4a133]' : 'bg-[#2D8659] hover:bg-[#236c47]'
+              }`}
             >
-              <Send className="w-4 h-4" />
-              <span>{isSubmitting ? "Envoi en cours..." : "Envoyer la demande"}</span>
+              {isPremium ? <Zap className="w-4 h-4 fill-white" /> : <Send className="w-4 h-4" />}
+              <span>
+                {isSubmitting 
+                  ? "Envoi en cours..." 
+                  : isPremium 
+                    ? "Envoyer le Message Flash" 
+                    : "Envoyer une demande simple"}
+              </span>
             </button>
           </div>
         </form>
