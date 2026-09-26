@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
-import { calculatePointsCommuns } from '../../services/firestoreService';
+import { calculatePointsCommuns, checkRelationshipStatus, acceptRequest, rejectRequest } from '../../services/firestoreService';
 import VerifiedBadge from '../common/VerifiedBadge';
 import ReportModal from '../common/ReportModal';
 import { 
@@ -17,14 +17,102 @@ import {
   ChevronRight, 
   CheckCircle2, 
   Tag,
-  Flag
+  Flag,
+  MessageCircle,
+  Clock,
+  Check,
+  X
 } from 'lucide-react';
 
 export default function ProfileDetailPage() {
-  const { selectedProfile, setCurrentView, openSendRequestModal } = useApp();
+  const { selectedProfile, setCurrentView, openSendRequestModal, openChatWithMatch, showToast, refreshCounts } = useApp();
   const { userProfile } = useAuth();
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isReporting, setIsReporting] = useState(false);
+  const [relStatus, setRelStatus] = useState({ status: 'loading', data: null });
+
+  React.useEffect(() => {
+    if (userProfile && selectedProfile) {
+      setRelStatus({ status: 'loading', data: null });
+      checkRelationshipStatus(userProfile.id, selectedProfile.id).then(res => {
+        setRelStatus({ status: res.status, data: res });
+      });
+    }
+  }, [userProfile, selectedProfile]);
+
+  const handleAcceptRequest = async () => {
+    if (!relStatus.data?.request?.id) return;
+    try {
+      const newMatch = await acceptRequest(relStatus.data.request.id, userProfile);
+      showToast("Félicitations ! Demande acceptée.", "success");
+      refreshCounts();
+      openChatWithMatch(newMatch);
+    } catch (e) {
+      showToast("Erreur lors de l'acceptation.", "error");
+    }
+  };
+
+  const handleRejectRequest = async () => {
+    if (!relStatus.data?.request?.id) return;
+    try {
+      await rejectRequest(relStatus.data.request.id);
+      showToast("Demande déclinée avec respect.", "info");
+      refreshCounts();
+      setCurrentView('requests');
+    } catch (e) {
+      showToast("Erreur lors du refus.", "error");
+    }
+  };
+
+  const renderActionButton = (baseClassName) => {
+    const defaultClasses = "px-6 py-3 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 " + baseClassName;
+    
+    if (relStatus.status === 'loading') {
+      return (
+        <button disabled className={`${defaultClasses} bg-slate-100 text-slate-500 cursor-not-allowed`}>
+          <div className="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin" />
+          <span>Chargement...</span>
+        </button>
+      );
+    }
+    if (relStatus.status === 'matched') {
+      return (
+        <button onClick={() => openChatWithMatch(relStatus.data.match)} className={`${defaultClasses} bg-[#0A2F4A] hover:bg-[#062033] text-white shadow-md`}>
+          <MessageCircle className="w-4 h-4" />
+          <span>Envoyer un message</span>
+        </button>
+      );
+    }
+    if (relStatus.status === 'request_sent') {
+      return (
+        <button disabled className={`${defaultClasses} bg-amber-100 text-amber-800 cursor-not-allowed`}>
+          <Clock className="w-4 h-4" />
+          <span>Demande en attente</span>
+        </button>
+      );
+    }
+    if (relStatus.status === 'request_received') {
+      return (
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <button onClick={handleRejectRequest} className="flex-1 sm:flex-none px-4 py-3 rounded-2xl border border-slate-300 hover:bg-slate-50 text-slate-600 font-bold text-sm transition-all flex justify-center items-center gap-1.5">
+            <X className="w-4 h-4" />
+            <span>Refuser</span>
+          </button>
+          <button onClick={handleAcceptRequest} className={`${defaultClasses.replace('w-full', 'flex-1 sm:flex-none')} bg-[#2D8659] hover:bg-[#236c47] text-white shadow-md`}>
+            <Check className="w-4 h-4" />
+            <span>Accepter</span>
+          </button>
+        </div>
+      );
+    }
+    return (
+      <button onClick={() => openSendRequestModal(selectedProfile)} className={`${defaultClasses} bg-[#2D8659] hover:bg-[#236c47] text-white shadow-md`}>
+        <Heart className="w-4 h-4 fill-white" />
+        <span>Envoyer une demande</span>
+      </button>
+    );
+  };
+
 
   if (!selectedProfile) {
     return (
@@ -160,13 +248,7 @@ export default function ProfileDetailPage() {
 
             {/* Quick Action Button & Desktop Report */}
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => openSendRequestModal(selectedProfile)}
-                className="flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-[#2D8659] hover:bg-[#236c47] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
-              >
-                <Heart className="w-4 h-4 fill-white" />
-                <span>Envoyer une demande</span>
-              </button>
+              {renderActionButton("flex-1 sm:flex-none")}
               <button 
                 onClick={() => setIsReporting(true)}
                 className="hidden sm:flex p-3 text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 rounded-2xl transition-colors shadow-sm"
@@ -289,15 +371,12 @@ export default function ProfileDetailPage() {
           {/* Bottom Call to Action Bar */}
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs text-slate-500 font-medium">
-              Envoyez une salutation respectueuse pour entamer le dialogue.
+              {relStatus.status === 'none' && "Envoyez une salutation respectueuse pour entamer le dialogue."}
+              {relStatus.status === 'request_sent' && "Votre demande est en attente de réponse."}
+              {relStatus.status === 'request_received' && "Cette personne souhaite faire votre connaissance."}
+              {relStatus.status === 'matched' && "Vous pouvez discuter avec cette personne."}
             </div>
-            <button
-              onClick={() => openSendRequestModal(selectedProfile)}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#2D8659] hover:bg-[#236c47] text-white font-bold text-sm shadow-lg shadow-[#2D8659]/25 transition-all flex items-center justify-center gap-2"
-            >
-              <Heart className="w-4 h-4 fill-white" />
-              <span>Envoyer une demande</span>
-            </button>
+            {renderActionButton("w-full sm:w-auto px-8 py-3.5")}
           </div>
 
         </div>

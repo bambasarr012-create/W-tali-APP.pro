@@ -34,9 +34,9 @@ export function AppProvider({ children }) {
 
   const refreshCounts = async () => {
     try {
-      const reqs = await getReceivedRequests();
+      const reqs = await getReceivedRequests(userProfile?.id);
       setPendingRequestsCount(reqs.length);
-      const matches = await getMatches();
+      const matches = await getMatches(userProfile?.id);
       setMatchesCount(matches.length);
     } catch (e) {
       console.error(e);

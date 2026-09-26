@@ -262,6 +262,33 @@ export async function rejectRequest(requestId) {
   return true;
 }
 
+export async function checkRelationshipStatus(myUserId, targetUserId) {
+  if (!myUserId || !targetUserId) return { status: 'none' };
+  const db = getDb();
+  
+  // 1. Check if matched
+  const matchQuery = query(collection(db, 'matches'), where('users', 'array-contains', myUserId));
+  const matchSnap = await getDocs(matchQuery);
+  for (const d of matchSnap.docs) {
+    if (d.data().users.includes(targetUserId)) {
+      return { status: 'matched', match: { id: d.id, ...d.data() } };
+    }
+  }
+
+  // 2. Check if I sent a request
+  const sentQuery = query(collection(db, 'requests'), where('fromUserId', '==', myUserId), where('toUserId', '==', targetUserId), where('status', '==', 'pending'));
+  const sentSnap = await getDocs(sentQuery);
+  if (!sentSnap.empty) return { status: 'request_sent', request: { id: sentSnap.docs[0].id, ...sentSnap.docs[0].data() } };
+
+  // 3. Check if they sent me a request
+  const receivedQuery = query(collection(db, 'requests'), where('fromUserId', '==', targetUserId), where('toUserId', '==', myUserId), where('status', '==', 'pending'));
+  const receivedSnap = await getDocs(receivedQuery);
+  if (!receivedSnap.empty) return { status: 'request_received', request: { id: receivedSnap.docs[0].id, ...receivedSnap.docs[0].data() } };
+
+  return { status: 'none' };
+}
+
+
 // ==========================================
 // GESTION DES MATCHES
 // ==========================================
