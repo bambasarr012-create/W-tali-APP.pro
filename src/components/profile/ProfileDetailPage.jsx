@@ -337,6 +337,16 @@ export default function ProfileDetailPage() {
             <p className="text-sm text-slate-700 leading-relaxed font-medium">
               {selectedProfile.bio ? selectedProfile.bio : `Je recherche un mariage basé sur le respect mutuel, la complicité et nos valeurs communes. Je souhaite fonder un foyer stable, où la communication et le soutien sont au centre de la relation. (${selectedProfile.visionMariageLabel || 'Court terme'})`}
             </p>
+            {/* Tags Valeurs */}
+            {selectedProfile.valeurs && selectedProfile.valeurs.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                {selectedProfile.valeurs.map((tag, idx) => (
+                  <span key={idx} className="px-3 py-1.5 bg-slate-50 text-slate-700 text-xs font-semibold rounded-full border border-slate-200">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Card: Ce que je recherche */}
@@ -347,11 +357,40 @@ export default function ProfileDetailPage() {
               Ce que je recherche
             </h3>
             <p className="text-sm text-slate-700 leading-relaxed font-medium">
-              {selectedProfile.criteres && selectedProfile.criteres.length > 0 
-                ? `Une personne sincère et bienveillante, qui partage mes critères : ${selectedProfile.criteres.join(', ')}.`
-                : "Une personne sincère, pratiquante et bienveillante, avec qui construire un équilibre dans la foi. Quelqu'un d'ambitieux dans sa vie comme dans son dîn, qui valorise la communication et avec qui je pourrai évoluer pas à pas."}
+              Je sais que la clé, c'est une personne engagée, pratiquante et qui veut avancer de manière saine et bienveillante.
             </p>
+            {/* Tags Critères */}
+            {selectedProfile.criteres && selectedProfile.criteres.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                {selectedProfile.criteres.map((tag, idx) => (
+                  <span key={idx} className="px-3 py-1.5 bg-[#EAF5EF] text-[#2D8659] text-xs font-bold rounded-full border border-[#2D8659]/20">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Card: Personnalité & Intérêts */}
+          {selectedProfile.interets && selectedProfile.interets.length > 0 && (
+            <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-[#0A2F4A]"></div>
+              <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
+                <span className="text-xl">✨</span>
+                Personnalité & Intérêts
+              </h3>
+              <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                Mes hobbies, passions et activités au quotidien.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                {selectedProfile.interets.map((tag, idx) => (
+                  <span key={idx} className="px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-full shadow-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Card: Projet de vie */}
           <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4 relative overflow-hidden">
@@ -383,12 +422,8 @@ export default function ProfileDetailPage() {
                 <span className="text-sm font-semibold text-slate-800">{selectedProfile.etudes || 'Non spécifié'}</span>
               </div>
               <div>
-                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Centres d'intérêt</span>
-                <span className="text-sm font-semibold text-slate-800">
-                  {selectedProfile.interets && selectedProfile.interets.length > 0 
-                    ? selectedProfile.interets.slice(0, 2).join(', ') 
-                    : 'Divers'}
-                </span>
+                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Taille</span>
+                <span className="text-sm font-semibold text-slate-800">{selectedProfile.taille ? `${selectedProfile.taille} cm` : 'Non spécifié'}</span>
               </div>
             </div>
           </div>
