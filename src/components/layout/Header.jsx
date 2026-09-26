@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { ShieldCheck, Sparkles, User, Settings as SettingsIcon, Bell } from 'lucide-react';
+import { ShieldCheck, Sparkles, User, Settings as SettingsIcon, Bell, Camera, Volume2, HelpCircle, LogOut, Send } from 'lucide-react';
 import WeddingRingLogo from '../common/WeddingRingLogo';
 
 export default function Header() {
   const { user, userProfile, logout } = useAuth();
   const { currentView, setCurrentView } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const notifications = [
     { id: 1, type: 'visit', text: 'Aïssatou a consulté ton profil', time: 'il y a 2h', isRead: false },
@@ -83,33 +96,105 @@ export default function Header() {
                 )}
               </div>
 
-              <button
-                onClick={() => setCurrentView('settings')}
-                className={`flex items-center gap-2.5 px-3 py-1.5 rounded-full border transition-all ${
-                  currentView === 'settings'
-                    ? 'bg-[#2D8659] border-[#2D8659] text-white'
-                    : 'bg-[#0E3B5C] border-[#1E5680] text-white hover:border-[#2D8659]'
-                }`}
-              >
-                {userProfile.photos && userProfile.photos[0] ? (
-                  <img
-                    src={userProfile.photos[0]}
-                    alt={userProfile.prenom}
-                    className="w-7 h-7 rounded-full object-cover border border-[#D4AF37]"
-                  />
-                ) : (
-                  <div className="w-7 h-7 rounded-full bg-[#2D8659] text-white flex items-center justify-center text-xs font-bold">
-                    {userProfile.prenom ? userProfile.prenom[0] : 'W'}
+              <div className="relative" ref={menuRef}>
+                <button
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className={`flex items-center gap-2.5 px-3 py-1.5 rounded-full border transition-all ${
+                    showProfileMenu || currentView === 'settings'
+                      ? 'bg-[#2D8659] border-[#2D8659] text-white'
+                      : 'bg-[#0E3B5C] border-[#1E5680] text-white hover:border-[#2D8659]'
+                  }`}
+                >
+                  {userProfile.photos && userProfile.photos[0] ? (
+                    <img
+                      src={userProfile.photos[0]}
+                      alt={userProfile.prenom}
+                      className="w-7 h-7 rounded-full object-cover border border-[#D4AF37]"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-[#2D8659] text-white flex items-center justify-center text-xs font-bold">
+                      {userProfile.prenom ? userProfile.prenom[0] : 'W'}
+                    </div>
+                  )}
+                  <div className="text-left hidden sm:block">
+                    <div className="text-xs font-semibold leading-tight">{userProfile.prenom}</div>
+                    <div className="text-[10px] text-[#A0C0D6] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#2D8659]"></span>
+                      {userProfile.ville || 'Profil actif'}
+                    </div>
+                  </div>
+                </button>
+
+                {/* Profile Dropdown Menu (Farata Style) */}
+                {showProfileMenu && (
+                  <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                    <div className="p-4 border-b border-slate-100">
+                      <h3 className="font-bold text-slate-800 text-lg">
+                        {userProfile.prenom} {userProfile.nom ? `${userProfile.nom[0]}.` : ''}
+                      </h3>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <button className="flex items-center justify-between px-4 py-3 bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <Send className="w-5 h-5" />
+                          <span className="text-sm font-medium">Demandes restantes</span>
+                        </div>
+                        <span className="text-sm font-bold">0/5</span>
+                      </button>
+
+                      <button 
+                        onClick={() => {
+                          setCurrentView('profile');
+                          setShowProfileMenu(false);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        <User className="w-5 h-5 text-slate-500" />
+                        <span className="text-sm font-medium">Mon profil</span>
+                      </button>
+
+                      <button 
+                        onClick={() => {
+                          setCurrentView('settings');
+                          setShowProfileMenu(false);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100"
+                      >
+                        <SettingsIcon className="w-5 h-5 text-slate-500" />
+                        <span className="text-sm font-medium">Paramètres</span>
+                      </button>
+
+                      <button className="flex items-center gap-3 px-4 py-3 bg-orange-50/50 hover:bg-orange-50 text-slate-700 transition-colors border-b border-slate-100">
+                        <Camera className="w-5 h-5 text-orange-500" />
+                        <span className="text-sm font-medium">Déflouter mes photos</span>
+                      </button>
+
+                      <button className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100">
+                        <Volume2 className="w-5 h-5 text-[#2D8659]" />
+                        <span className="text-sm font-medium">Sons activés</span>
+                      </button>
+
+                      <button className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100">
+                        <HelpCircle className="w-5 h-5 text-slate-500" />
+                        <span className="text-sm font-medium">Aide & FAQ</span>
+                      </button>
+
+                      <button 
+                        onClick={async () => {
+                          await logout();
+                          setCurrentView('home');
+                          setShowProfileMenu(false);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 transition-colors"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        <span className="text-sm font-medium">Déconnexion</span>
+                      </button>
+                    </div>
                   </div>
                 )}
-                <div className="text-left hidden sm:block">
-                  <div className="text-xs font-semibold leading-tight">{userProfile.prenom}</div>
-                  <div className="text-[10px] text-[#A0C0D6] flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#2D8659]"></span>
-                    {userProfile.ville || 'Profil actif'}
-                  </div>
-                </div>
-              </button>
+              </div>
             </>
           ) : (
             <div className="flex items-center gap-3">
