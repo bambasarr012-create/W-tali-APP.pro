@@ -259,16 +259,34 @@ export default function ProfileDetailPage() {
                   <Flag className="w-5 h-5" />
                 </button>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-600 font-medium mt-1">
-                <span className="flex items-center gap-1 text-[#2D8659] font-semibold">
+              <div className="flex flex-col gap-2 mt-1">
+                <span className="flex items-center gap-1 text-[#2D8659] text-sm font-semibold">
                   <MapPin className="w-4 h-4" />
                   {selectedProfile.ville} {selectedProfile.pays ? `(${selectedProfile.pays})` : ''}
                 </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <Briefcase className="w-4 h-4 text-[#D4AF37]" />
-                  {selectedProfile.profession}
-                </span>
+                
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                  {selectedProfile.etatCivil && (
+                    <span className="px-2.5 py-1 bg-[#EAF5EF] text-[#2D8659] text-xs font-bold rounded-full border border-[#2D8659]/20">
+                      {selectedProfile.etatCivil}
+                    </span>
+                  )}
+                  {selectedProfile.profession && (
+                    <span className="px-2.5 py-1 bg-[#F4F9F6] text-slate-700 text-xs font-medium rounded-full border border-slate-200">
+                      {selectedProfile.profession}
+                    </span>
+                  )}
+                  {selectedProfile.etudes && (
+                    <span className="px-2.5 py-1 bg-[#F4F9F6] text-slate-700 text-xs font-medium rounded-full border border-slate-200">
+                      {selectedProfile.etudes}
+                    </span>
+                  )}
+                  {selectedProfile.taille && (
+                    <span className="px-2.5 py-1 bg-[#F4F9F6] text-slate-700 text-xs font-medium rounded-full border border-slate-200">
+                      {selectedProfile.taille} cm
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 

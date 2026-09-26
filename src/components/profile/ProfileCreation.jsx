@@ -40,11 +40,13 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
     nom: userProfile?.nom || (user?.displayName ? user.displayName.split(' ').slice(1).join(' ') : ''),
     age: userProfile?.age || '',
     genre: userProfile?.genre || 'H',
+    etatCivil: userProfile?.etatCivil || '',
     ville: userProfile?.ville || '',
     pays: userProfile?.pays || 'France',
     email: userProfile?.email || user?.email || '',
     telephone: userProfile?.telephone || '',
     profession: userProfile?.profession || '',
+    taille: userProfile?.taille || '',
     visionMariage: userProfile?.visionMariage || 'court_terme',
     etudes: userProfile?.etudes || '',
     ecole: userProfile?.ecole || '',
@@ -405,6 +407,26 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
 
               <div>
                 <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
+                  État civil <span className="text-rose-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {['Célibataire', 'Marié (polygamie)', 'Divorcé', 'Veuf'].map((status) => (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, etatCivil: status })}
+                      className={`py-2.5 rounded-xl font-bold text-xs border transition-all ${
+                        formData.etatCivil === status ? 'bg-[#0A2F4A] text-white border-[#0A2F4A]' : 'bg-white text-slate-700 border-slate-300 hover:border-[#D4AF37]'
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
                   Pays de résidence <span className="text-rose-500">*</span>
                 </label>
                 <select
@@ -581,11 +603,31 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
                 <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
                   Niveau d'études
                 </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {['Bac', 'Bac+2', 'Bac+3', 'Bac+5', 'Doctorat', 'Autre'].map(niv => (
+                    <button
+                      key={niv}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, etudes: niv })}
+                      className={`py-2.5 rounded-xl font-bold text-xs border transition-all ${
+                        formData.etudes === niv ? 'bg-[#0A2F4A] text-white border-[#0A2F4A]' : 'bg-white text-slate-700 border-slate-300 hover:border-[#D4AF37]'
+                      }`}
+                    >
+                      {niv}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
+                  Taille en cm
+                </label>
                 <input
-                  type="text"
-                  value={formData.etudes}
-                  onChange={(e) => setFormData({ ...formData, etudes: e.target.value })}
-                  placeholder="Ex: Bac+5 (Master / Ingénieur)"
+                  type="number"
+                  value={formData.taille}
+                  onChange={(e) => setFormData({ ...formData, taille: e.target.value })}
+                  placeholder="Ex: 170"
                   className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none"
                 />
               </div>
