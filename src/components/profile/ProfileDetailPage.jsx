@@ -214,6 +214,32 @@ export default function ProfileDetailPage() {
           </div>
         </div>
 
+        {/* Thumbnails Row (Farata style diaporama) */}
+        <div className="px-5 py-4 border-b border-slate-100 bg-white">
+          <div className="flex items-center gap-2 mb-3">
+            <h3 className="text-xs font-bold text-[#0A2F4A]">Photos ({photos.length})</h3>
+          </div>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            {photos.map((photo, idx) => (
+              <button
+                key={idx}
+                onClick={() => setPhotoIndex(idx)}
+                className={`relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
+                  photoIndex === idx ? 'border-[#D4AF37] scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'
+                }`}
+              >
+                <img src={photo} alt={`Miniature ${idx + 1}`} className="w-full h-full object-cover" />
+              </button>
+            ))}
+            {/* Empty placeholders to match Farata's look */}
+            {[...Array(Math.max(0, 5 - photos.length))].map((_, i) => (
+              <div key={`empty-${i}`} className="flex-shrink-0 w-16 h-16 rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center">
+                <span className="text-slate-300 text-xs">vide</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Profile Content */}
         <div className="p-6 sm:p-8 space-y-6">
           
@@ -283,90 +309,83 @@ export default function ProfileDetailPage() {
             </div>
           </div>
 
-          {/* Bio Section */}
-          {selectedProfile.bio && (
-            <div className="space-y-2">
-              <h3 className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider">
-                Démarche & Présentation
-              </h3>
-              <p className="text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 font-normal">
-                "{selectedProfile.bio}"
-              </p>
-            </div>
-          )}
-
-          {/* Repères Clés Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            
-            {/* Vision Mariage */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#0A2F4A]">
-                <CalendarCheck className="w-4 h-4 text-[#2D8659]" />
-                <span>Vision du Mariage</span>
-              </div>
-              <div className="text-sm font-semibold text-slate-800">
-                {selectedProfile.visionMariageLabel || selectedProfile.visionMariage || 'Court terme (< 6 mois)'}
-              </div>
-            </div>
-
-            {/* Dahira / Confrérie */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#0A2F4A]">
-                <Heart className="w-4 h-4 text-[#2D8659]" />
-                <span>Dahira / Repère Spirituel</span>
-              </div>
-              <div className="text-sm font-semibold text-slate-800">
-                {selectedProfile.dahira || 'Non spécifié'}
-              </div>
-            </div>
-
-            {/* Études */}
-            {selectedProfile.etudes && (
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#0A2F4A]">
-                  <GraduationCap className="w-4 h-4 text-[#2D8659]" />
-                  <span>Niveau d'études</span>
-                </div>
-                <div className="text-sm font-semibold text-slate-800">
-                  {selectedProfile.etudes}
-                </div>
-              </div>
-            )}
-
-            {/* École / Université */}
-            {selectedProfile.ecole && (
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#0A2F4A]">
-                  <Briefcase className="w-4 h-4 text-[#2D8659]" />
-                  <span>École / Université</span>
-                </div>
-                <div className="text-sm font-semibold text-slate-800">
-                  {selectedProfile.ecole}
-                </div>
-              </div>
-            )}
-
+          {/* Card: Ma vision du mariage */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#D4AF37]"></div>
+            <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
+              <span className="text-xl">💍</span>
+              Ma vision du mariage
+            </h3>
+            <p className="text-sm text-slate-700 leading-relaxed font-medium">
+              {selectedProfile.bio ? selectedProfile.bio : `Je recherche un mariage basé sur le respect mutuel, la complicité et nos valeurs communes. Je souhaite fonder un foyer stable, où la communication et le soutien sont au centre de la relation. (${selectedProfile.visionMariageLabel || 'Court terme'})`}
+            </p>
           </div>
 
-          {/* Centres d'Intérêt */}
-          {selectedProfile.interets && selectedProfile.interets.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5 text-[#2D8659]" />
-                <span>Centres d'intérêt</span>
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {selectedProfile.interets.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#F0F4F2] text-[#0A2F4A] border border-slate-200"
-                  >
-                    {tag}
-                  </span>
-                ))}
+          {/* Card: Ce que je recherche */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#2D8659]"></div>
+            <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
+              <span className="text-xl">👤</span>
+              Ce que je recherche
+            </h3>
+            <p className="text-sm text-slate-700 leading-relaxed font-medium">
+              {selectedProfile.criteres && selectedProfile.criteres.length > 0 
+                ? `Une personne sincère et bienveillante, qui partage mes critères : ${selectedProfile.criteres.join(', ')}.`
+                : "Une personne sincère, pratiquante et bienveillante, avec qui construire un équilibre dans la foi. Quelqu'un d'ambitieux dans sa vie comme dans son dîn, qui valorise la communication et avec qui je pourrai évoluer pas à pas."}
+            </p>
+          </div>
+
+          {/* Card: Projet de vie */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#0A2F4A]"></div>
+            <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2 mb-2">
+              <span className="text-xl">🏠</span>
+              Projet de vie
+            </h3>
+            
+            <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+              <div>
+                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Dahira / Repère</span>
+                <span className="text-sm font-semibold text-slate-800">{selectedProfile.dahira || 'Non spécifié'}</span>
+              </div>
+              <div>
+                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Finance dans le couple</span>
+                <span className="text-sm font-semibold text-slate-800">À discuter</span>
+              </div>
+              <div>
+                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Polygamie</span>
+                <span className="text-sm font-semibold text-slate-800">Non</span>
+              </div>
+              <div>
+                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Déménagement</span>
+                <span className="text-sm font-semibold text-slate-800">Ouvert(e)</span>
+              </div>
+              <div>
+                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Niveau d'études</span>
+                <span className="text-sm font-semibold text-slate-800">{selectedProfile.etudes || 'Non spécifié'}</span>
+              </div>
+              <div>
+                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Centres d'intérêt</span>
+                <span className="text-sm font-semibold text-slate-800">
+                  {selectedProfile.interets && selectedProfile.interets.length > 0 
+                    ? selectedProfile.interets.slice(0, 2).join(', ') 
+                    : 'Divers'}
+                </span>
               </div>
             </div>
-          )}
+          </div>
+
+          {/* Card: Critères rédhibitoires */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
+            <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
+              <span className="text-xl">🛡️</span>
+              Critères rédhibitoires
+            </h3>
+            <p className="text-sm text-slate-700 leading-relaxed font-medium">
+              Le manque de respect, le manque d'honnêteté et l'incapacité à communiquer de manière constructive. La violence physique ou verbale est totalement exclue.
+            </p>
+          </div>
 
           {/* Bottom Call to Action Bar */}
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
