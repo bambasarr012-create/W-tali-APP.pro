@@ -357,7 +357,9 @@ export default function ProfileDetailPage() {
               Ce que je recherche
             </h3>
             <p className="text-sm text-slate-700 leading-relaxed font-medium">
-              Je sais que la clé, c'est une personne engagée, pratiquante et qui veut avancer de manière saine et bienveillante.
+              {selectedProfile.rechercheText 
+                ? selectedProfile.rechercheText
+                : "Je sais que la clé, c'est une personne engagée, pratiquante et qui veut avancer de manière saine et bienveillante."}
             </p>
             {/* Tags Critères */}
             {selectedProfile.criteres && selectedProfile.criteres.length > 0 && (
@@ -436,7 +438,9 @@ export default function ProfileDetailPage() {
               Critères rédhibitoires
             </h3>
             <p className="text-sm text-slate-700 leading-relaxed font-medium">
-              Le manque de respect, le manque d'honnêteté et l'incapacité à communiquer de manière constructive. La violence physique ou verbale est totalement exclue.
+              {selectedProfile.redhibitoireText
+                ? selectedProfile.redhibitoireText
+                : "Le manque de respect, le manque d'honnêteté et l'incapacité à communiquer de manière constructive. La violence physique ou verbale est totalement exclue."}
             </p>
           </div>
 

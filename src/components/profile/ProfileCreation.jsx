@@ -23,7 +23,8 @@ import {
   Briefcase, 
   GraduationCap, 
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  Wand2
 } from 'lucide-react';
 
 export default function ProfileCreation({ isEditing = false, onComplete }) {
@@ -52,6 +53,8 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
     ecole: userProfile?.ecole || '',
     dahira: userProfile?.dahira || 'Touba Mouride',
     bio: userProfile?.bio || '',
+    rechercheText: userProfile?.rechercheText || '',
+    redhibitoireText: userProfile?.redhibitoireText || '',
     interets: userProfile?.interets || [],
     valeurs: userProfile?.valeurs || [],
     criteres: userProfile?.criteres || [],
@@ -141,6 +144,36 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
       }));
     }
     setCustomInterest('');
+  };
+
+  const handleGenerateText = (type) => {
+    if (type === 'vision') {
+      if (formData.valeurs.length === 0) {
+        showToast("Sélectionnez d'abord quelques thèmes !", "error");
+        return;
+      }
+      setFormData(prev => ({
+        ...prev,
+        bio: `Je rêve d'avoir quelqu'un avec qui construire une vie solide, basée sur : ${prev.valeurs.join(', ')}.`
+      }));
+      showToast("Texte généré magiquement ✨", "success");
+    } else if (type === 'recherche') {
+      if (formData.criteres.length === 0) {
+        showToast("Sélectionnez d'abord quelques thèmes !", "error");
+        return;
+      }
+      setFormData(prev => ({
+        ...prev,
+        rechercheText: `Je sais que la clé, c'est une personne qui incarne : ${prev.criteres.join(', ')}.`
+      }));
+      showToast("Texte généré magiquement ✨", "success");
+    } else if (type === 'redhibitoire') {
+      setFormData(prev => ({
+        ...prev,
+        redhibitoireText: `Je n'accepte sous aucun prétexte l'infidélité, le manque de respect ou la violence.`
+      }));
+      showToast("Texte généré magiquement ✨", "success");
+    }
   };
 
   // Validation
@@ -648,75 +681,148 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
           </div>
         )}
 
-        {/* ÉTAPE 5 : VALEURS & CRITÈRES */}
+        {/* ÉTAPE 5 : VISION DU MARIAGE & ATTENTES */}
         {step === 5 && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-8">
             <div className="border-b border-slate-100 pb-3">
               <h2 className="font-bold text-base text-[#0A2F4A] flex items-center gap-2">
                 <Heart className="w-5 h-5 text-[#D4AF37]" />
-                <span>Vos Valeurs & Critères</span>
+                <span>Vision du mariage & Attentes</span>
               </h2>
-              <p className="text-xs text-slate-500 mt-1">Sélectionnez jusqu'à 3 tags par catégorie pour affiner votre profil.</p>
             </div>
             
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider">
-                    Vos Valeurs Principales
+            <div className="space-y-8">
+              {/* BLOCK 1: VISION */}
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-2">
+                    Ta vision du mariage
                   </label>
-                  <span className="text-xs font-mono text-[#D4AF37] font-bold">
-                    {formData.valeurs.length}/3
-                  </span>
+                  <div className="relative">
+                    <textarea
+                      rows={3}
+                      value={formData.bio}
+                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                      placeholder="Comment envisages-tu le mariage ?"
+                      className="w-full p-3.5 pb-10 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none resize-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleGenerateText('vision')}
+                      className="absolute bottom-3 right-3 p-1.5 rounded-lg bg-[#F0F4F2] text-[#2D8659] hover:bg-[#EAF5EF] transition-colors shadow-sm border border-[#2D8659]/20"
+                      title="Générer avec l'IA"
+                    >
+                      <Wand2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {VALEURS_OPTIONS.map(tag => {
-                    const isSelected = formData.valeurs.includes(tag);
-                    return (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => toggleTag('valeurs', tag, 3)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                          isSelected
-                            ? 'bg-[#0A2F4A] text-[#D4AF37] border-[#0A2F4A]'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300'
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
+
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                    <label className="text-xs font-bold text-[#0A2F4A]">
+                      Thèmes (Vos valeurs) <span className="text-[#D4AF37] ml-2">{formData.valeurs.length}/3 max</span>
+                    </label>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {VALEURS_OPTIONS.map(tag => {
+                      const isSelected = formData.valeurs.includes(tag);
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => toggleTag('valeurs', tag, 3)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                            isSelected
+                              ? 'bg-[#0A2F4A] text-[#D4AF37] border-[#0A2F4A]'
+                              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider">
-                    Critères recherchés chez l'autre
+              {/* BLOCK 2: RECHERCHE */}
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-2">
+                    Ce que tu recherches
                   </label>
-                  <span className="text-xs font-mono text-[#D4AF37] font-bold">
-                    {formData.criteres.length}/3
-                  </span>
+                  <div className="relative">
+                    <textarea
+                      rows={3}
+                      value={formData.rechercheText}
+                      onChange={(e) => setFormData({ ...formData, rechercheText: e.target.value })}
+                      placeholder="Les qualités importantes pour toi..."
+                      className="w-full p-3.5 pb-10 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none resize-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleGenerateText('recherche')}
+                      className="absolute bottom-3 right-3 p-1.5 rounded-lg bg-[#F0F4F2] text-[#2D8659] hover:bg-[#EAF5EF] transition-colors shadow-sm border border-[#2D8659]/20"
+                      title="Générer avec l'IA"
+                    >
+                      <Wand2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {CRITERES_OPTIONS.map(tag => {
-                    const isSelected = formData.criteres.includes(tag);
-                    return (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => toggleTag('criteres', tag, 3)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                          isSelected
-                            ? 'bg-[#0A2F4A] text-[#D4AF37] border-[#0A2F4A]'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300'
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
+
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                    <label className="text-xs font-bold text-[#0A2F4A]">
+                      Thèmes (Critères) <span className="text-[#D4AF37] ml-2">{formData.criteres.length}/3 max</span>
+                    </label>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {CRITERES_OPTIONS.map(tag => {
+                      const isSelected = formData.criteres.includes(tag);
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => toggleTag('criteres', tag, 3)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                            isSelected
+                              ? 'bg-[#0A2F4A] text-[#D4AF37] border-[#0A2F4A]'
+                              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* BLOCK 3: LIGNES ROUGES */}
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-2">
+                    Ce que tu n'acceptes pas
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      rows={3}
+                      value={formData.redhibitoireText}
+                      onChange={(e) => setFormData({ ...formData, redhibitoireText: e.target.value })}
+                      placeholder="Tes limites et lignes rouges..."
+                      className="w-full p-3.5 pb-10 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none resize-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleGenerateText('redhibitoire')}
+                      className="absolute bottom-3 right-3 p-1.5 rounded-lg bg-[#F0F4F2] text-[#2D8659] hover:bg-[#EAF5EF] transition-colors shadow-sm border border-[#2D8659]/20"
+                      title="Générer avec l'IA"
+                    >
+                      <Wand2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -749,32 +855,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
                 </select>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-bold text-[#0A2F4A] uppercase tracking-wider">
-                    Présentation personnelle (Bio)
-                  </label>
-                  <span className={`text-[11px] font-mono ${formData.bio.length > 200 ? 'text-rose-600 font-bold' : 'text-slate-400'}`}>
-                    {formData.bio.length}/200
-                  </span>
-                </div>
-                {bioGeneratedAuto && (
-                  <div className="bg-[#FFFBF0] border border-[#D4AF37]/30 text-[#0A2F4A] text-xs p-3 rounded-xl mb-3 flex gap-2 items-start shadow-sm">
-                    <Sparkles className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                    <p>
-                      <strong>On a généré automatiquement ta bio</strong> à partir de tes choix ! Tu peux la modifier librement pour la rendre encore plus personnelle.
-                    </p>
-                  </div>
-                )}
-                <textarea
-                  rows={3}
-                  maxLength={200}
-                  value={formData.bio}
-                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  placeholder="Quelques mots sur vos valeurs, votre personnalité..."
-                  className="w-full p-3.5 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none resize-none"
-                />
-              </div>
+
 
               <div>
                 <div className="flex items-center justify-between mb-2">
