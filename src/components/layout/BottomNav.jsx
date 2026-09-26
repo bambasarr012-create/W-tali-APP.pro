@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Compass, Heart, UserCheck, MessageCircle, User, Eye, Star, LayoutGrid } from 'lucide-react';
+import { Compass, Heart, UserCheck, MessageCircle, User, Eye, Star, LayoutGrid, Crown } from 'lucide-react';
 
 export default function BottomNav() {
   const { currentView, setCurrentView, pendingRequestsCount, matchesCount } = useApp();
@@ -12,6 +12,7 @@ export default function BottomNav() {
     { id: 'requests', label: 'Demandes', icon: UserCheck, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
     { id: 'visitors', label: 'Visiteurs', icon: Eye, badge: 2 },
     { id: 'favorites', label: 'Favoris', icon: Star },
+    { id: 'subscription', label: 'Premium', icon: Crown, isPremiumTab: true },
     { id: 'messages', label: 'Messages', icon: MessageCircle },
     { id: 'settings', label: 'Profil', icon: User }
   ];
@@ -32,8 +33,8 @@ export default function BottomNav() {
               }}
               className={`relative flex-shrink-0 flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ${
                 isActive
-                  ? 'text-[#2D8659] font-bold scale-105'
-                  : 'text-slate-500 hover:text-[#0A2F4A]'
+                  ? item.isPremiumTab ? 'text-[#D4AF37] font-bold scale-105' : 'text-[#2D8659] font-bold scale-105'
+                  : item.isPremiumTab ? 'text-[#D4AF37]/80 hover:text-[#D4AF37]' : 'text-slate-500 hover:text-[#0A2F4A]'
               }`}
             >
               <div className="relative">
@@ -44,11 +45,11 @@ export default function BottomNav() {
                   </span>
                 )}
               </div>
-              <span className={`text-[11px] mt-0.5 ${isActive ? 'text-[#2D8659]' : 'text-slate-500'}`}>
+              <span className={`text-[11px] mt-0.5 ${isActive ? (item.isPremiumTab ? 'text-[#D4AF37]' : 'text-[#2D8659]') : (item.isPremiumTab ? 'text-[#D4AF37]/80' : 'text-slate-500')}`}>
                 {item.label}
               </span>
               {isActive && (
-                <div className="w-1.5 h-1.5 rounded-full bg-[#2D8659] -mb-1 mt-0.5"></div>
+                <div className={`w-1.5 h-1.5 rounded-full ${item.isPremiumTab ? 'bg-[#D4AF37]' : 'bg-[#2D8659]'} -mb-1 mt-0.5`}></div>
               )}
             </button>
           );
