@@ -1,17 +1,32 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
-import { sendRequest } from '../../services/firestoreService';
-import { X, Send, Sparkles, ShieldCheck, Heart } from 'lucide-react';
+import { sendRequest, getDailyRequestCount } from '../../services/firestoreService';
+import { X, Send, Sparkles, ShieldCheck, Heart, Crown, Eye, MessageCircle } from 'lucide-react';
 
 export default function SendRequestModal() {
-  const { requestModalState, closeSendRequestModal, showToast } = useApp();
-  const { userProfile } = useAuth();
+  const { requestModalState, closeSendRequestModal, showToast, setCurrentView } = useApp();
+  const { userProfile, isPremium } = useAuth();
   const { isOpen, targetProfile } = requestModalState;
 
   const defaultMessage = "Assalamu alaikum, j'ai vu ton profil et ça m'intéresse. J'aimerais faire ta connaissance dans un cadre sérieux et respectueux.";
   const [message, setMessage] = useState(defaultMessage);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dailyCount, setDailyCount] = useState(0);
+  const [isLoadingCount, setIsLoadingCount] = useState(false);
+  const REQUEST_LIMIT = 3;
+
+  React.useEffect(() => {
+    if (isOpen && userProfile && !isPremium) {
+      setIsLoadingCount(true);
+      getDailyRequestCount(userProfile.id).then(count => {
+        setDailyCount(count);
+        setIsLoadingCount(false);
+      });
+    } else {
+      setDailyCount(0);
+    }
+  }, [isOpen, userProfile, isPremium]);
 
   if (!isOpen || !targetProfile) return null;
 
@@ -42,8 +57,14 @@ export default function SendRequestModal() {
         {/* Header with Close */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center gap-2 text-[#2D8659]">
-            <Heart className="w-5 h-5 fill-[#2D8659]" />
-            <span className="font-bold text-base text-[#0A2F4A]">Demande de Rencontre d'Honneur</span>
+            {(!isPremium && dailyCount >= REQUEST_LIMIT) ? (
+               <Crown className="w-5 h-5 text-[#D4AF37]" />
+            ) : (
+               <Heart className="w-5 h-5 fill-[#2D8659]" />
+            )}
+            <span className="font-bold text-base text-[#0A2F4A]">
+              {(!isPremium && dailyCount >= REQUEST_LIMIT) ? "Limite atteinte" : "Demande de Rencontre d'Honneur"}
+            </span>
           </div>
           <button
             onClick={closeSendRequestModal}
@@ -52,6 +73,64 @@ export default function SendRequestModal() {
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* LOADING STATE */}
+        {isLoadingCount && (
+          <div className="py-12 flex flex-col items-center justify-center">
+            <div className="w-8 h-8 border-4 border-[#2D8659] border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-xs text-slate-500 mt-3">Vérification de vos demandes...</p>
+          </div>
+        )}
+
+        {/* LIMIT REACHED (PAYWALL) */}
+        {!isLoadingCount && !isPremium && dailyCount >= REQUEST_LIMIT && (
+          <div className="py-6 space-y-6 animate-fadeIn">
+            <div className="text-center space-y-2">
+              <div className="w-16 h-16 bg-[#FFFBF0] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#D4AF37]/30">
+                <Crown className="w-8 h-8 text-[#D4AF37]" />
+              </div>
+              <h3 className="font-serif font-bold text-xl text-[#0A2F4A]">
+                Tu as utilisé tes {REQUEST_LIMIT} demandes du jour.
+              </h3>
+              <p className="text-sm text-slate-600">
+                Avec Premium, tu peux contacter sans attendre demain et tu verras qui s'intéresse à toi.
+              </p>
+            </div>
+            
+            <div className="bg-[#FFFBF0] border border-[#D4AF37]/40 rounded-2xl p-5 space-y-3">
+              <div className="text-xs font-bold text-[#D4AF37] uppercase tracking-wider mb-2">Avec Premium :</div>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2 text-sm text-slate-700 font-medium">
+                  <Heart className="w-4 h-4 text-[#D4AF37]" /> Demandes illimitées
+                </li>
+                <li className="flex items-center gap-2 text-sm text-slate-700 font-medium">
+                  <Eye className="w-4 h-4 text-[#D4AF37]" /> Voir tes visiteurs
+                </li>
+                <li className="flex items-center gap-2 text-sm text-slate-700 font-medium">
+                  <MessageCircle className="w-4 h-4 text-[#D4AF37]" /> Échanges débloqués
+                </li>
+              </ul>
+            </div>
+
+            <button
+              onClick={() => {
+                closeSendRequestModal();
+                setCurrentView('settings'); // Fallback if subscription view is nested there, but let's assume 'subscription' or 'settings'
+                // Based on standard navigation, let's just trigger a navigation. The user might need a specific view name.
+                // Assuming we can trigger subscription via settings or dedicated view.
+                setTimeout(() => setCurrentView('subscription'), 50); // Let's try 'subscription'
+              }}
+              className="w-full py-4 rounded-2xl bg-[#D4AF37] hover:bg-[#c4a133] text-white font-bold text-base shadow-lg shadow-[#D4AF37]/30 transition-all flex items-center justify-center gap-2"
+            >
+              <span>Passer Premium</span>
+              <Sparkles className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* NORMAL FORM */}
+        {!isLoadingCount && (isPremium || dailyCount < REQUEST_LIMIT) && (
+          <>
 
         {/* Recipient Snapshot */}
         <div className="flex items-center gap-4 my-5 p-3.5 rounded-2xl bg-[#F4F7F6] border border-[#E2E8F0]">
@@ -121,6 +200,9 @@ export default function SendRequestModal() {
             </button>
           </div>
         </form>
+
+        </>
+        )}
 
       </div>
     </div>

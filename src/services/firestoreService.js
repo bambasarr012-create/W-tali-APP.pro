@@ -231,6 +231,23 @@ export async function getSentRequests(userId) {
   return requests;
 }
 
+export async function getDailyRequestCount(userId) {
+  if (!userId) return 0;
+  const db = getDb();
+  
+  // Obtenir le début de la journée courante
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  
+  const q = query(
+    collection(db, 'requests'), 
+    where('fromUserId', '==', userId),
+    where('createdAt', '>=', startOfDay.toISOString())
+  );
+  const snap = await getDocs(q);
+  return snap.size;
+}
+
 export async function acceptRequest(requestId, currentProfile) {
   const db = getDb();
   const requestRef = doc(db, 'requests', requestId);
