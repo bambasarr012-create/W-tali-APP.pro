@@ -91,34 +91,7 @@ function MainApp() {
     );
   }
 
-  // 3. Authentifié avec Profil mais PAS d'abonnement actif -> Bloquer sur Abonnement
-  const hasActiveSubscription = userProfile?.subscriptionStatus === 'active';
-  
-  if (hasProfile && !hasActiveSubscription) {
-    // Si la personne clique sur Paramètres depuis le header on peut la laisser y accéder pour se déconnecter
-    if (currentView === 'settings') {
-      return (
-        <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans flex flex-col">
-          <Header />
-          <main className="flex-1">
-            <SettingsPage />
-          </main>
-          <BottomNav />
-        </div>
-      );
-    }
-    
-    // Sinon elle est bloquée sur l'abonnement
-    return (
-      <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans flex flex-col">
-        <Header />
-        <main className="flex-1">
-          <SubscriptionPage />
-        </main>
-        <BottomNav />
-      </div>
-    );
-  }
+  // (La logique de blocage total de l'abonnement a été retirée pour passer au modèle Freemium)
 
   // 4. Authentifié avec Profil ET Abonnement -> Afficher vue active + navigation
   return (
@@ -153,6 +126,7 @@ function MainApp() {
         {currentView === 'settings' && <SettingsPage />}
         {currentView === 'visitors' && <VisitorsPage />}
         {currentView === 'favorites' && <FavoritesPage />}
+        {currentView === 'subscription' && <SubscriptionPage />}
         {currentView === 'profile-create' && <ProfileCreation />}
       </main>
 
