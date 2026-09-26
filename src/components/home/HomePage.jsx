@@ -7,7 +7,7 @@ import DailyTip from './DailyTip';
 import { Crown, MessageCircle, Heart, Eye, Star, UserCheck, Zap, BarChart2, Power, Quote, MapPin, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function HomePage() {
-  const { userProfile } = useAuth();
+  const { userProfile, isPremium } = useAuth();
   const { setCurrentView } = useApp();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,27 +34,29 @@ export default function HomePage() {
       {/* Conseil / Rappel du jour */}
       <DailyTip />
 
-      {/* 1. Bannière Passer Premium */}
-      <div className="bg-[#0A2F4A] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg border border-[#134B73]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#D4AF37]/20 rounded-full flex items-center justify-center border border-[#D4AF37]/30 shrink-0">
-            <Crown className="w-5 h-5 text-[#D4AF37]" />
+      {/* 1. Bannière Passer Premium (Uniquement si pas premium) */}
+      {!isPremium && (
+        <div className="bg-[#0A2F4A] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg border border-[#134B73] animate-fadeIn">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#D4AF37]/20 rounded-full flex items-center justify-center border border-[#D4AF37]/30 shrink-0">
+              <Crown className="w-5 h-5 text-[#D4AF37]" />
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-sm sm:text-base flex items-center flex-wrap gap-2">
+                Passez Premium
+                <span className="bg-[#D4AF37] text-[#0A2F4A] text-[9px] px-2 py-0.5 rounded-full uppercase font-black tracking-wider">Offre</span>
+              </h3>
+              <p className="text-[#A0C0D6] text-xs mt-0.5">Démarquez-vous, parlez en priorité, naviguez Premium</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-white font-bold text-sm sm:text-base flex items-center flex-wrap gap-2">
-              Passez Premium
-              <span className="bg-[#D4AF37] text-[#0A2F4A] text-[9px] px-2 py-0.5 rounded-full uppercase font-black tracking-wider">Offre</span>
-            </h3>
-            <p className="text-[#A0C0D6] text-xs mt-0.5">Démarquez-vous, parlez en priorité, naviguez Premium</p>
-          </div>
+          <button 
+            onClick={() => setCurrentView('subscription')}
+            className="w-full sm:w-auto shrink-0 px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#c4a133] hover:from-[#c4a133] hover:to-[#b39129] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md"
+          >
+            S'abonner →
+          </button>
         </div>
-        <button 
-          onClick={() => setCurrentView('settings')}
-          className="w-full sm:w-auto shrink-0 px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#c4a133] hover:from-[#c4a133] hover:to-[#b39129] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md"
-        >
-          S'abonner →
-        </button>
-      </div>
+      )}
 
       {/* 2. Barre de Complétion de Profil */}
       <div className="bg-[#2D8659] rounded-2xl p-5 sm:p-6 shadow-sm text-white">
@@ -174,25 +176,28 @@ export default function HomePage() {
 
       {/* 5. Grille Raccourcis */}
       <div className="bg-white rounded-[2rem] p-5 sm:p-6 shadow-sm border border-slate-200 space-y-6">
-        <div className="bg-[#2D8659] text-white p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm relative overflow-hidden">
-          <div className="relative z-10 flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0 border border-white/30">
-              <UserCheck className="w-6 h-6 text-white" />
+        
+        {!isPremium && (
+          <div className="bg-[#2D8659] text-white p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm relative overflow-hidden">
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0 border border-white/30">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-base">S'abonner, {userProfile?.prenom} !</h3>
+                <p className="text-[11px] text-white/90 mt-0.5 font-medium">Prenez en charge votre destin amoureux, passez Premium.</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-bold text-base">S'abonner, {userProfile?.prenom} !</h3>
-              <p className="text-[11px] text-white/90 mt-0.5 font-medium">Prenez en charge votre destin amoureux, passez Premium.</p>
-            </div>
+            <button 
+              onClick={() => setCurrentView('subscription')}
+              className="relative z-10 w-full sm:w-auto px-6 py-3 bg-white text-[#2D8659] text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
+            >
+              S'abonner →
+            </button>
+            
+            <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
           </div>
-          <button 
-            onClick={() => setCurrentView('settings')}
-            className="relative z-10 w-full sm:w-auto px-6 py-3 bg-white text-[#2D8659] text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
-          >
-            S'abonner →
-          </button>
-          
-          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-        </div>
+        )}
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <div 
