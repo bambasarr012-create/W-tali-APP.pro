@@ -350,11 +350,11 @@ export default function ProfileDetailPage() {
               </div>
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Finance dans le couple</span>
-                <span className="text-sm font-semibold text-slate-800">À discuter</span>
+                <span className="text-sm font-semibold text-slate-800">{selectedProfile.financeCouple || 'À discuter'}</span>
               </div>
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Polygamie</span>
-                <span className="text-sm font-semibold text-slate-800">Non</span>
+                <span className="text-sm font-semibold text-slate-800">{selectedProfile.polygamie || 'Non'}</span>
               </div>
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Déménagement</span>

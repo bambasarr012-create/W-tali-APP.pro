@@ -53,6 +53,8 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
     interets: userProfile?.interets || [],
     valeurs: userProfile?.valeurs || [],
     criteres: userProfile?.criteres || [],
+    financeCouple: userProfile?.financeCouple || 'À discuter',
+    polygamie: userProfile?.polygamie || 'Non',
     photos: userProfile?.photos || (user?.photoURL ? [user.photoURL] : [])
   });
 
@@ -518,7 +520,7 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
                 <select
                   value={formData.visionMariage}
                   onChange={(e) => setFormData({ ...formData, visionMariage: e.target.value })}
-                  className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none bg-white font-medium"
+                  className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none bg-white font-medium mb-4"
                 >
                   {VISION_MARIAGE_OPTIONS.map(opt => (
                     <option key={opt.value} value={opt.value}>
@@ -526,6 +528,39 @@ export default function ProfileCreation({ isEditing = false, onComplete }) {
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
+                    Finance dans le couple
+                  </label>
+                  <select
+                    value={formData.financeCouple}
+                    onChange={(e) => setFormData({ ...formData, financeCouple: e.target.value })}
+                    className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none bg-white"
+                  >
+                    <option value="L'homme gère à 100%">L'homme gère à 100%</option>
+                    <option value="50/50">50/50</option>
+                    <option value="Participation selon revenus">Participation selon revenus</option>
+                    <option value="À discuter">À discuter</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
+                    Polygamie
+                  </label>
+                  <select
+                    value={formData.polygamie}
+                    onChange={(e) => setFormData({ ...formData, polygamie: e.target.value })}
+                    className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none bg-white"
+                  >
+                    <option value="Non">Non</option>
+                    <option value="Oui">Oui</option>
+                    <option value="À discuter">À discuter</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
