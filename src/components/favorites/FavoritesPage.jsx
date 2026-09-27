@@ -71,8 +71,25 @@ export default function FavoritesPage() {
           </div>
         </div>
         <div className="p-4 bg-white">
-          <div className="flex items-center justify-between text-xs font-medium">
+          <div className="flex items-center justify-between text-xs font-medium mb-2.5">
             <span className="text-slate-500 line-clamp-1">{profile.profession}</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {profile.dahira && (
+              <span className="inline-block text-[9px] font-bold bg-[#EAF5EF] text-[#2D8659] px-2 py-1 rounded-md">
+                {profile.dahira}
+              </span>
+            )}
+            {profile.financeCouple && (
+              <span className="inline-block text-[9px] font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded-md truncate max-w-[80px]">
+                💰 {profile.financeCouple}
+              </span>
+            )}
+            {profile.polygamie && (
+              <span className="inline-block text-[9px] font-bold bg-[#F8FAF9] border border-slate-200 text-slate-500 px-2 py-1 rounded-md truncate max-w-[80px]">
+                👨‍👩‍👧‍👦 {profile.polygamie}
+              </span>
+            )}
           </div>
         </div>
       </div>

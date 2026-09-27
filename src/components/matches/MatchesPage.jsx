@@ -122,11 +122,23 @@ export default function MatchesPage() {
                       <span className="truncate">{partner.profession}</span>
                     </div>
 
-                    {partner.dahira && (
-                      <span className="inline-block text-[10px] font-medium bg-[#F0F4F2] text-[#0A2F4A] px-2 py-0.5 rounded-md mt-1.5">
-                        {partner.dahira}
-                      </span>
-                    )}
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {partner.dahira && (
+                        <span className="inline-block text-[9px] font-bold bg-[#EAF5EF] text-[#2D8659] px-2 py-1 rounded-md">
+                          {partner.dahira}
+                        </span>
+                      )}
+                      {partner.financeCouple && (
+                        <span className="inline-block text-[9px] font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded-md">
+                          💰 {partner.financeCouple}
+                        </span>
+                      )}
+                      {partner.polygamie && (
+                        <span className="inline-block text-[9px] font-bold bg-[#F8FAF9] border border-slate-200 text-slate-500 px-2 py-1 rounded-md">
+                          👨‍👩‍👧‍👦 {partner.polygamie}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
