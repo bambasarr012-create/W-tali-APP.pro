@@ -231,10 +231,10 @@ export default function ChatPage() {
               className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
             >
               <div
-                className={`max-w-[85%] sm:max-w-[70%] p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm transition-all ${
+                className={`max-w-[85%] sm:max-w-[70%] p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed transition-all ${
                   isMe
-                    ? 'bg-[#0A2F4A] text-white rounded-tr-none'
-                    : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
+                    ? 'bg-gradient-to-br from-[#0A2F4A] to-[#0E3B5C] text-white rounded-tr-none shadow-md shadow-[#0A2F4A]/10 border border-[#1E5680]'
+                    : 'bg-white text-[#0A2F4A] border border-slate-200 rounded-tl-none shadow-sm'
                 }`}
               >
                 {msg.type === 'audio' ? (

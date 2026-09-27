@@ -65,10 +65,10 @@ export default function VoiceMessagePlayer({ url, audioData }) {
   };
 
   return (
-    <div className="flex items-center gap-3 w-48 sm:w-56 mt-1">
+    <div className="flex items-center gap-3 w-52 sm:w-60 mt-1">
       <button 
         onClick={togglePlay}
-        className="w-8 h-8 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-current transition-colors flex-shrink-0"
+        className="w-10 h-10 flex items-center justify-center rounded-full bg-current/10 border-2 border-current/20 hover:bg-current/20 text-current transition-all flex-shrink-0 backdrop-blur-sm"
       >
         {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
       </button>
@@ -80,9 +80,9 @@ export default function VoiceMessagePlayer({ url, audioData }) {
           max="100" 
           value={progress || 0}
           onChange={handleSeek}
-          className="w-full h-1 bg-black/20 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-current [&::-webkit-slider-thumb]:rounded-full"
+          className="w-full h-1.5 bg-current/20 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-current [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md transition-all"
         />
-        <div className="flex justify-between text-[10px] font-medium opacity-80">
+        <div className="flex justify-between text-[10px] font-bold opacity-75 mt-0.5">
           <span>{formatTime(audioRef.current?.currentTime || 0)}</span>
           <span>{formatTime(duration)}</span>
         </div>
