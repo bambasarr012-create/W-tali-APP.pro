@@ -145,27 +145,67 @@ export default function DiscoverPage() {
             </div>
           )}
 
-          {/* Centres d'intérêt */}
-          {currentProfile.interets && currentProfile.interets.length > 0 && (
-            <div className="space-y-2">
+          {/* Valeurs */}
+          {currentProfile.valeurs && currentProfile.valeurs.length > 0 && (
+            <div className="space-y-3">
               <h3 className="text-[10px] font-bold text-[#2D8659] uppercase tracking-widest flex items-center gap-1.5">
-                <Heart className="w-3.5 h-3.5" /> Centres d'intérêt
+                <CheckCircle2 className="w-3.5 h-3.5" /> Mes valeurs
               </h3>
-              <p className="text-sm text-slate-700 font-medium">
-                {currentProfile.interets.join(', ')}
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {currentProfile.valeurs.map((val, idx) => (
+                  <span key={idx} className="px-3 py-1.5 bg-[#0A2F4A]/5 border border-[#0A2F4A]/10 text-[#0A2F4A] rounded-full text-xs font-semibold">
+                    {val}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Mes Qualités */}
+          {/* Critères */}
+          {currentProfile.criteres && currentProfile.criteres.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-[10px] font-bold text-[#2D8659] uppercase tracking-widest flex items-center gap-1.5">
+                <Navigation className="w-3.5 h-3.5" /> Mes critères
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {currentProfile.criteres.map((crit, idx) => (
+                  <span key={idx} className="px-3 py-1.5 bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#0A2F4A] rounded-full text-xs font-semibold">
+                    {crit}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Centres d'intérêt */}
+          {currentProfile.interets && currentProfile.interets.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-[10px] font-bold text-[#2D8659] uppercase tracking-widest flex items-center gap-1.5">
+                <Heart className="w-3.5 h-3.5" /> Centres d'intérêt
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {currentProfile.interets.map((int, idx) => (
+                  <span key={idx} className="px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-700 rounded-full text-xs font-medium">
+                    {int}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Mes Qualités (Legacy/Fallback) */}
           {currentProfile.qualites && currentProfile.qualites.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <h3 className="text-[10px] font-bold text-[#2D8659] uppercase tracking-widest flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Mes qualités
               </h3>
-              <p className="text-sm text-slate-700 font-medium">
-                {currentProfile.qualites.join(', ')}
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {currentProfile.qualites.map((qual, idx) => (
+                  <span key={idx} className="px-3 py-1.5 bg-[#2D8659]/10 border border-[#2D8659]/20 text-[#2D8659] rounded-full text-xs font-semibold">
+                    {qual}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
@@ -199,6 +239,14 @@ export default function DiscoverPage() {
               <div>
                 <span className="block text-[9px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Polygamie</span>
                 <span className="text-xs text-slate-800 font-semibold">{currentProfile.polygamie || 'À discuter'}</span>
+              </div>
+              <div>
+                <span className="block text-[9px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Finances</span>
+                <span className="text-xs text-slate-800 font-semibold truncate block">{currentProfile.financeCouple || 'À discuter'}</span>
+              </div>
+              <div>
+                <span className="block text-[9px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Dahira</span>
+                <span className="text-xs text-slate-800 font-semibold truncate block" title={currentProfile.dahira || 'Non spécifié'}>{currentProfile.dahira || 'Non spécifié'}</span>
               </div>
             </div>
           </div>
