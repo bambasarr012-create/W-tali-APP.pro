@@ -1,20 +1,20 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Compass, Heart, UserCheck, MessageCircle, User, Eye, Star, LayoutGrid, Crown } from 'lucide-react';
+import { Home, Search, Sparkles, Inbox, Users, Bookmark, Gem, MessageSquare, UserCircle } from 'lucide-react';
 
 export default function BottomNav() {
   const { currentView, setCurrentView, pendingRequestsCount, matchesCount } = useApp();
 
   const navItems = [
-    { id: 'home', label: 'Accueil', icon: LayoutGrid },
-    { id: 'discover', label: 'Explorer', icon: Compass },
-    { id: 'matches', label: 'Affinités', icon: Heart, badge: matchesCount > 0 ? matchesCount : null },
-    { id: 'requests', label: 'Invitations', icon: UserCheck, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
-    { id: 'visitors', label: 'Visites', icon: Eye, badge: 2 },
-    { id: 'favorites', label: 'Sélection', icon: Star },
-    { id: 'subscription', label: 'Premium', icon: Crown, isPremiumTab: true },
-    { id: 'messages', label: 'Échanges', icon: MessageCircle },
-    { id: 'settings', label: 'Espace', icon: User }
+    { id: 'home', label: 'Accueil', icon: Home },
+    { id: 'discover', label: 'Explorer', icon: Search },
+    { id: 'matches', label: 'Affinités', icon: Sparkles, badge: matchesCount > 0 ? matchesCount : null },
+    { id: 'requests', label: 'Invitations', icon: Inbox, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
+    { id: 'visitors', label: 'Visites', icon: Users, badge: 2 },
+    { id: 'favorites', label: 'Sélection', icon: Bookmark },
+    { id: 'subscription', label: 'Premium', icon: Gem, isPremiumTab: true },
+    { id: 'messages', label: 'Échanges', icon: MessageSquare },
+    { id: 'settings', label: 'Espace', icon: UserCircle }
   ];
 
   return (
