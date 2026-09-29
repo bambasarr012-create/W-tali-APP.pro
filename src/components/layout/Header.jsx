@@ -140,10 +140,10 @@ export default function Header() {
                           setCurrentView('subscription');
                           setShowProfileMenu(false);
                         }}
-                        className="flex items-center justify-between px-4 py-3 bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"
+                        className="flex items-center justify-between px-4 py-3 bg-slate-50/80 text-[#0A2F4A] hover:bg-slate-100 transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <Send className="w-5 h-5" />
+                          <Send className="w-5 h-5 text-[#D4AF37]" />
                           <span className="text-sm font-medium">Invitations restantes</span>
                         </div>
                         <span className="text-sm font-bold">0/5</span>
@@ -211,9 +211,9 @@ export default function Header() {
                           setCurrentView('home');
                           setShowProfileMenu(false);
                         }}
-                        className="flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-rose-600 transition-colors group"
                       >
-                        <LogOut className="w-5 h-5" />
+                        <LogOut className="w-5 h-5 text-slate-400 group-hover:text-rose-500 transition-colors" />
                         <span className="text-sm font-medium">Me déconnecter</span>
                       </button>
                     </div>
