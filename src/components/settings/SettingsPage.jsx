@@ -90,7 +90,6 @@ export default function SettingsPage() {
         { icon: User, title: "Informations personnelles", subtitle: "Prénom, nom, âge, situation", isComplete: true, action: () => { setEditingStep(2); setIsEditingProfile(true); } },
         { icon: MapPin, title: "Localisation & Profession", subtitle: "Où tu vis et ce que tu fais", isComplete: !!(userProfile?.ville && userProfile?.profession), action: () => { setEditingStep(3); setIsEditingProfile(true); } },
         { icon: Heart, title: "Vision du mariage", subtitle: "Ce que tu recherches dans le mariage", isComplete: !!userProfile?.visionMariageLabel, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
-        { icon: Smile, title: "Personnalité", subtitle: "Tes centres d'intérêt et traits de caractère", isComplete: !!(userProfile?.interets?.length), action: () => { setEditingStep(6); setIsEditingProfile(true); } },
         { icon: BookOpen, title: "Pratique religieuse", subtitle: "Ta pratique et tes connaissances", isComplete: !!userProfile?.dahira, action: () => { setEditingStep(6); setIsEditingProfile(true); } },
         { icon: Target, title: "Projet de vie", subtitle: "Les projets en espérance", isComplete: !!userProfile?.bio, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
       ]
