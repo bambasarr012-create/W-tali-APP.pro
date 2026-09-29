@@ -124,4 +124,4 @@ export const faqs = [
   }
 ];
 
-export const SUPPORT_EMAIL = "contact@wetali.com";
+export const SUPPORT_EMAIL = "wetalidiaspora@gmail.com";
