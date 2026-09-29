@@ -84,18 +84,18 @@ export default function SettingsPage() {
 
   const settingsGroups = [
     {
-      title: "Profil & Informations",
+      title: "Mon Profil Wétali",
       items: [
-        { icon: Camera, title: "Photo de profil", subtitle: "Ta photo principale visible par les autres membres", isComplete: !!userProfile?.photos?.length, action: () => { setEditingStep(1); setIsEditingProfile(true); } },
-        { icon: User, title: "Informations personnelles", subtitle: "Prénom, nom, âge, situation", isComplete: true, action: () => { setEditingStep(2); setIsEditingProfile(true); } },
-        { icon: MapPin, title: "Localisation & Profession", subtitle: "Où tu vis et ce que tu fais", isComplete: !!(userProfile?.ville && userProfile?.profession), action: () => { setEditingStep(3); setIsEditingProfile(true); } },
-        { icon: Heart, title: "Vision du mariage", subtitle: "Ce que tu recherches dans le mariage", isComplete: !!userProfile?.visionMariageLabel, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
-        { icon: BookOpen, title: "Pratique religieuse", subtitle: "Ta pratique et tes connaissances", isComplete: !!userProfile?.dahira, action: () => { setEditingStep(6); setIsEditingProfile(true); } },
-        { icon: Target, title: "Projet de vie", subtitle: "Les projets en espérance", isComplete: !!userProfile?.bio, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
+        { icon: Camera, title: "Mes Photos", subtitle: "Gérer tes photos et ton apparence publique", isComplete: !!userProfile?.photos?.length, action: () => { setEditingStep(1); setIsEditingProfile(true); } },
+        { icon: User, title: "Mon Identité", subtitle: "Âge, situation familiale et détails de base", isComplete: true, action: () => { setEditingStep(2); setIsEditingProfile(true); } },
+        { icon: MapPin, title: "Situation actuelle", subtitle: "Où tu vis, ton métier et tes études", isComplete: !!(userProfile?.ville && userProfile?.profession), action: () => { setEditingStep(3); setIsEditingProfile(true); } },
+        { icon: Heart, title: "Ma vision de l'union", subtitle: "Ce qui compte vraiment pour toi dans le mariage", isComplete: !!userProfile?.visionMariageLabel, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
+        { icon: BookOpen, title: "Pratique & Foi", subtitle: "Ton socle religieux et tes repères", isComplete: !!userProfile?.dahira, action: () => { setEditingStep(6); setIsEditingProfile(true); } },
+        { icon: Target, title: "Ma présentation (Bio)", subtitle: "Laisse parler ton cœur et tes projets d'avenir", isComplete: !!userProfile?.bio, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
       ]
     },
     {
-      title: "Application & Compte",
+      title: "Préférences & Sécurité",
       items: [
         { icon: Star, title: "Mon abonnement", subtitle: "Gérer ton abonnement et tes demandes", action: () => setCurrentView('subscription'), highlight: true },
         { icon: EyeOff, title: "Flouter mes photos", subtitle: "Cacher tes photos aux non-matchs", isToggle: true, toggleKey: 'blurPhotos' },
