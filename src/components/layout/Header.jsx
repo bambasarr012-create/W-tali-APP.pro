@@ -6,7 +6,7 @@ import WeddingRingLogo from '../common/WeddingRingLogo';
 
 export default function Header() {
   const { user, userProfile, logout } = useAuth();
-  const { currentView, setCurrentView, showToast } = useApp();
+  const { currentView, setCurrentView, showToast, viewProfileDetail } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const menuRef = useRef(null);
@@ -151,7 +151,7 @@ export default function Header() {
 
                       <button 
                         onClick={() => {
-                          setCurrentView('settings');
+                          viewProfileDetail(userProfile);
                           setShowProfileMenu(false);
                         }}
                         className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors"
@@ -195,7 +195,7 @@ export default function Header() {
 
                       <button 
                         onClick={() => {
-                          if (showToast) showToast("La FAQ sera bientôt disponible.", "info");
+                          setCurrentView('help');
                           setShowProfileMenu(false);
                         }}
                         className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100"

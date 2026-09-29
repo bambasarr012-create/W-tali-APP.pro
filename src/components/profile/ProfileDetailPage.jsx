@@ -21,7 +21,9 @@ import {
   MessageCircle,
   Clock,
   Check,
-  X
+  X,
+  Camera,
+  User
 } from 'lucide-react';
 
 export default function ProfileDetailPage() {
@@ -30,15 +32,18 @@ export default function ProfileDetailPage() {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isReporting, setIsReporting] = useState(false);
   const [relStatus, setRelStatus] = useState({ status: 'loading', data: null });
+  const isOwnProfile = userProfile?.id === selectedProfile?.id;
 
   React.useEffect(() => {
-    if (userProfile && selectedProfile) {
+    if (userProfile && selectedProfile && !isOwnProfile) {
       setRelStatus({ status: 'loading', data: null });
       checkRelationshipStatus(userProfile.id, selectedProfile.id).then(res => {
         setRelStatus({ status: res.status, data: res });
       });
+    } else if (isOwnProfile) {
+      setRelStatus({ status: 'own_profile', data: null });
     }
-  }, [userProfile, selectedProfile]);
+  }, [userProfile, selectedProfile, isOwnProfile]);
 
   const handleAcceptRequest = async () => {
     if (!relStatus.data?.request?.id) return;
@@ -105,6 +110,27 @@ export default function ProfileDetailPage() {
         </div>
       );
     }
+    if (relStatus.status === 'own_profile') {
+      return (
+        <div className="flex flex-col gap-3 w-full">
+          <button 
+            onClick={() => { setCurrentView('settings'); showToast("Allez dans Paramètres pour modifier les photos", "info"); }} 
+            className="w-full px-6 py-3 rounded-2xl border border-[#2D8659] text-[#2D8659] font-bold text-sm transition-all hover:bg-[#EAF5EF] flex items-center justify-center gap-2"
+          >
+            <Camera className="w-4 h-4" />
+            <span>Modifier mes images</span>
+          </button>
+          <button 
+            onClick={() => setCurrentView('settings')} 
+            className="w-full px-6 py-3 rounded-2xl bg-[#D4AF37] hover:bg-[#c39e31] text-[#0A2F4A] font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm"
+          >
+            <User className="w-4 h-4" />
+            <span>Réviser mon profil</span>
+          </button>
+        </div>
+      );
+    }
+
     return (
       <button onClick={() => openSendRequestModal(selectedProfile)} className={`${defaultClasses} bg-[#2D8659] hover:bg-[#236c47] text-white shadow-md`}>
         <Heart className="w-4 h-4 fill-white" />
@@ -207,10 +233,12 @@ export default function ProfileDetailPage() {
               <span>Profil Vérifié KYC</span>
             </span>
 
-            <span className="inline-flex items-center gap-1.5 bg-[#2D8659] text-white text-xs font-mono font-bold px-3 py-1.5 rounded-full shadow-sm">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{affinity.score}% Affinité</span>
-            </span>
+            {!isOwnProfile && (
+              <span className="inline-flex items-center gap-1.5 bg-[#2D8659] text-white text-xs font-mono font-bold px-3 py-1.5 rounded-full shadow-sm">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{affinity.score}% Affinité</span>
+              </span>
+            )}
           </div>
         </div>
 
@@ -306,26 +334,28 @@ export default function ProfileDetailPage() {
           {/* ============================================================ */}
           {/* SECTION POINTS COMMUNS (Ce qui match)                         */}
           {/* ============================================================ */}
-          <div className="bg-gradient-to-br from-[#EAF5EF] to-[#F4F9F6] border-2 border-[#2D8659]/30 rounded-2xl p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-[#2D8659] font-bold text-sm">
-                <Sparkles className="w-4 h-4" />
-                <span>POINTS COMMUNS AVEC VOTRE PROFIL</span>
-              </div>
-              <span className="text-xs font-mono font-bold text-[#0A2F4A] bg-white px-2.5 py-1 rounded-full border border-[#2D8659]/30">
-                Score : {affinity.score}%
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-              {affinity.points.map((pt, idx) => (
-                <div key={idx} className="flex items-center gap-2 bg-white/80 p-2.5 rounded-xl border border-[#2D8659]/20 text-xs text-slate-800 font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-[#2D8659] flex-shrink-0" />
-                  <span>{pt.label}</span>
+          {!isOwnProfile && (
+            <div className="bg-gradient-to-br from-[#EAF5EF] to-[#F4F9F6] border-2 border-[#2D8659]/30 rounded-2xl p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-[#2D8659] font-bold text-sm">
+                  <Sparkles className="w-4 h-4" />
+                  <span>POINTS COMMUNS AVEC VOTRE PROFIL</span>
                 </div>
-              ))}
+                <span className="text-xs font-mono font-bold text-[#0A2F4A] bg-white px-2.5 py-1 rounded-full border border-[#2D8659]/30">
+                  Score : {affinity.score}%
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                {affinity.points.map((pt, idx) => (
+                  <div key={idx} className="flex items-center gap-2 bg-white/80 p-2.5 rounded-xl border border-[#2D8659]/20 text-xs text-slate-800 font-medium">
+                    <CheckCircle2 className="w-4 h-4 text-[#2D8659] flex-shrink-0" />
+                    <span>{pt.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Card: Ma vision du mariage */}
           <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">

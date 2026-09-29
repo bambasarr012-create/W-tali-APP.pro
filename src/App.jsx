@@ -26,6 +26,7 @@ import VisitorsPage from './components/visitors/VisitorsPage';
 import FavoritesPage from './components/favorites/FavoritesPage';
 import AdminDashboard from './components/admin/AdminDashboard';
 import PrivacyPage from './components/legal/PrivacyPage';
+import HelpPage from './components/help/HelpPage';
 
 // Gate component: shows landing page first, then auth when user clicks CTA
 function LandingPageGate() {
@@ -128,6 +129,7 @@ function MainApp() {
         {currentView === 'favorites' && <FavoritesPage />}
         {currentView === 'subscription' && <SubscriptionPage />}
         {currentView === 'profile-create' && <ProfileCreation />}
+        {currentView === 'help' && <HelpPage />}
       </main>
 
       {/* Modals & Bottom Navigation */}
