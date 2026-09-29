@@ -7,14 +7,14 @@ export default function BottomNav() {
 
   const navItems = [
     { id: 'home', label: 'Accueil', icon: LayoutGrid },
-    { id: 'discover', label: 'Découvrir', icon: Compass },
-    { id: 'matches', label: 'Matchs', icon: Heart, badge: matchesCount > 0 ? matchesCount : null },
-    { id: 'requests', label: 'Demandes', icon: UserCheck, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
-    { id: 'visitors', label: 'Visiteurs', icon: Eye, badge: 2 },
-    { id: 'favorites', label: 'Favoris', icon: Star },
+    { id: 'discover', label: 'Explorer', icon: Compass },
+    { id: 'matches', label: 'Affinités', icon: Heart, badge: matchesCount > 0 ? matchesCount : null },
+    { id: 'requests', label: 'Invitations', icon: UserCheck, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
+    { id: 'visitors', label: 'Visites', icon: Eye, badge: 2 },
+    { id: 'favorites', label: 'Sélection', icon: Star },
     { id: 'subscription', label: 'Premium', icon: Crown, isPremiumTab: true },
-    { id: 'messages', label: 'Messages', icon: MessageCircle },
-    { id: 'settings', label: 'Profil', icon: User }
+    { id: 'messages', label: 'Échanges', icon: MessageCircle },
+    { id: 'settings', label: 'Espace', icon: User }
   ];
 
   return (
