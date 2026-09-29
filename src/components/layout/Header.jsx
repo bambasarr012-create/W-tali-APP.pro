@@ -6,7 +6,7 @@ import WeddingRingLogo from '../common/WeddingRingLogo';
 
 export default function Header() {
   const { user, userProfile, logout } = useAuth();
-  const { currentView, setCurrentView } = useApp();
+  const { currentView, setCurrentView, showToast } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const menuRef = useRef(null);
@@ -135,7 +135,13 @@ export default function Header() {
                     </div>
 
                     <div className="flex flex-col">
-                      <button className="flex items-center justify-between px-4 py-3 bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">
+                      <button 
+                        onClick={() => {
+                          setCurrentView('subscription');
+                          setShowProfileMenu(false);
+                        }}
+                        className="flex items-center justify-between px-4 py-3 bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"
+                      >
                         <div className="flex items-center gap-3">
                           <Send className="w-5 h-5" />
                           <span className="text-sm font-medium">Demandes restantes</span>
@@ -145,7 +151,7 @@ export default function Header() {
 
                       <button 
                         onClick={() => {
-                          setCurrentView('profile');
+                          setCurrentView('settings');
                           setShowProfileMenu(false);
                         }}
                         className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors"
@@ -165,17 +171,35 @@ export default function Header() {
                         <span className="text-sm font-medium">Paramètres</span>
                       </button>
 
-                      <button className="flex items-center gap-3 px-4 py-3 bg-orange-50/50 hover:bg-orange-50 text-slate-700 transition-colors border-b border-slate-100">
+                      <button 
+                        onClick={() => {
+                          setCurrentView('subscription');
+                          setShowProfileMenu(false);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 bg-orange-50/50 hover:bg-orange-50 text-slate-700 transition-colors border-b border-slate-100"
+                      >
                         <Camera className="w-5 h-5 text-orange-500" />
                         <span className="text-sm font-medium">Déflouter mes photos</span>
                       </button>
 
-                      <button className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100">
+                      <button 
+                        onClick={() => {
+                          setCurrentView('settings');
+                          setShowProfileMenu(false);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100"
+                      >
                         <Volume2 className="w-5 h-5 text-[#2D8659]" />
                         <span className="text-sm font-medium">Sons activés</span>
                       </button>
 
-                      <button className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100">
+                      <button 
+                        onClick={() => {
+                          if (showToast) showToast("La FAQ sera bientôt disponible.", "info");
+                          setShowProfileMenu(false);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100"
+                      >
                         <HelpCircle className="w-5 h-5 text-slate-500" />
                         <span className="text-sm font-medium">Aide & FAQ</span>
                       </button>
@@ -183,6 +207,7 @@ export default function Header() {
                       <button 
                         onClick={async () => {
                           await logout();
+                          if (showToast) showToast("Vous avez été déconnecté.", "info");
                           setCurrentView('home');
                           setShowProfileMenu(false);
                         }}
