@@ -27,11 +27,11 @@ import {
   Wand2
 } from 'lucide-react';
 
-export default function ProfileCreation({ isEditing = false, onComplete }) {
+export default function ProfileCreation({ isEditing = false, initialStep = 1, onComplete }) {
   const { user, userProfile, updateProfile } = useAuth();
   const { showToast, setCurrentView } = useApp();
 
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(initialStep);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bioGeneratedAuto, setBioGeneratedAuto] = useState(false);
   const totalSteps = 7;

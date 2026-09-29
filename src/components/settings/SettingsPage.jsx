@@ -31,6 +31,7 @@ export default function SettingsPage() {
   const { showToast, setCurrentView } = useApp();
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editingStep, setEditingStep] = useState(1);
   const [preferences, setPreferences] = useState({
     blurPhotos: userProfile?.preferences?.blurPhotos || false,
     soundEnabled: userProfile?.preferences?.soundEnabled !== false,
@@ -76,7 +77,7 @@ export default function SettingsPage() {
           <ArrowLeft className="w-5 h-5" />
           Retour aux paramètres
         </button>
-        <ProfileCreation isEditing={true} onComplete={() => setIsEditingProfile(false)} />
+        <ProfileCreation isEditing={true} initialStep={editingStep} onComplete={() => setIsEditingProfile(false)} />
       </div>
     );
   }
@@ -85,13 +86,13 @@ export default function SettingsPage() {
     {
       title: "Profil & Informations",
       items: [
-        { icon: Camera, title: "Photo de profil", subtitle: "Ta photo principale visible par les autres membres", isComplete: !!userProfile?.photos?.length, action: () => setIsEditingProfile(true) },
-        { icon: User, title: "Informations personnelles", subtitle: "Prénom, nom, âge, situation", isComplete: true, action: () => setIsEditingProfile(true) },
-        { icon: MapPin, title: "Localisation & Profession", subtitle: "Où tu vis et ce que tu fais", isComplete: !!(userProfile?.ville && userProfile?.profession), action: () => setIsEditingProfile(true) },
-        { icon: Heart, title: "Vision du mariage", subtitle: "Ce que tu recherches dans le mariage", isComplete: !!userProfile?.visionMariageLabel, action: () => setIsEditingProfile(true) },
-        { icon: Smile, title: "Personnalité", subtitle: "Tes centres d'intérêt et traits de caractère", isComplete: !!(userProfile?.interets?.length), action: () => setIsEditingProfile(true) },
-        { icon: BookOpen, title: "Pratique religieuse", subtitle: "Ta pratique et tes connaissances", isComplete: !!userProfile?.dahira, action: () => setIsEditingProfile(true) },
-        { icon: Target, title: "Projet de vie", subtitle: "Les projets en espérance", isComplete: !!userProfile?.bio, action: () => setIsEditingProfile(true) },
+        { icon: Camera, title: "Photo de profil", subtitle: "Ta photo principale visible par les autres membres", isComplete: !!userProfile?.photos?.length, action: () => { setEditingStep(1); setIsEditingProfile(true); } },
+        { icon: User, title: "Informations personnelles", subtitle: "Prénom, nom, âge, situation", isComplete: true, action: () => { setEditingStep(2); setIsEditingProfile(true); } },
+        { icon: MapPin, title: "Localisation & Profession", subtitle: "Où tu vis et ce que tu fais", isComplete: !!(userProfile?.ville && userProfile?.profession), action: () => { setEditingStep(3); setIsEditingProfile(true); } },
+        { icon: Heart, title: "Vision du mariage", subtitle: "Ce que tu recherches dans le mariage", isComplete: !!userProfile?.visionMariageLabel, action: () => { setEditingStep(4); setIsEditingProfile(true); } },
+        { icon: Smile, title: "Personnalité", subtitle: "Tes centres d'intérêt et traits de caractère", isComplete: !!(userProfile?.interets?.length), action: () => { setEditingStep(5); setIsEditingProfile(true); } },
+        { icon: BookOpen, title: "Pratique religieuse", subtitle: "Ta pratique et tes connaissances", isComplete: !!userProfile?.dahira, action: () => { setEditingStep(6); setIsEditingProfile(true); } },
+        { icon: Target, title: "Projet de vie", subtitle: "Les projets en espérance", isComplete: !!userProfile?.bio, action: () => { setEditingStep(7); setIsEditingProfile(true); } },
       ]
     },
     {
