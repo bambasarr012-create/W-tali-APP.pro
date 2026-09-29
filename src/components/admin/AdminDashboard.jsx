@@ -442,6 +442,11 @@ function ReportsTab({ reports, onResolve, onSuspend }) {
               <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-rose-500" />
                 {report.reason}
+                {report.reason === "Probablement mineur(e)" && (
+                  <span className="ml-2 bg-rose-600 text-white text-[10px] uppercase font-black px-2 py-1 rounded">
+                    URGENT - VÉRIFICATION ÂGE
+                  </span>
+                )}
               </h3>
               
               {report.description && (

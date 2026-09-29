@@ -17,8 +17,14 @@ export default function DiscoverPage() {
     async function load() {
       setLoading(true);
       try {
-        const list = await getAllProfiles(userProfile?.id);
-        setProfiles(list);
+        const list = await getAllProfiles();
+        const filteredList = list.filter(p => 
+          p.id !== userProfile?.id && 
+          p.age >= 18 && 
+          !p.suspended && 
+          !p.hidden
+        );
+        setProfiles(filteredList);
       } catch (e) {
         console.error(e);
       } finally {

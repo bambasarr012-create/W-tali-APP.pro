@@ -13,6 +13,7 @@ export default function ReportModal({ reportedUserId, contentType, onClose }) {
 
   const reasons = [
     "Faux profil",
+    "Probablement mineur(e)",
     "Harcèlement",
     "Contenu inapproprié",
     "Tentative d'arnaque ou de contournement de l'abonnement",

@@ -3,6 +3,18 @@ import {
   onSnapshot, query, where, addDoc, updateDoc 
 } from 'firebase/firestore';
 import { firebaseState } from './firebase';
+import { calculateAge } from '../utils/age';
+
+// Helper to inject calculated age
+const enrichProfile = (data) => {
+  if (data.birthDate) {
+    const calcAge = calculateAge(data.birthDate);
+    if (calcAge !== null) {
+      data.age = calcAge;
+    }
+  }
+  return data;
+};
 
 // ==========================================
 // UTILS
@@ -22,7 +34,9 @@ export function subscribeToCollection(collectionName, callback) {
     return onSnapshot(q, (snapshot) => {
       const data = [];
       snapshot.forEach(doc => {
-        data.push({ id: doc.id, ...doc.data() });
+        let docData = { id: doc.id, ...doc.data() };
+        if (collectionName === 'users') docData = enrichProfile(docData);
+        data.push(docData);
       });
       if (typeof callback === 'function') {
         callback(data);
@@ -46,7 +60,7 @@ export function subscribeToProfiles(callback) {
   return onSnapshot(q, (snapshot) => {
     const profiles = [];
     snapshot.forEach(doc => {
-      profiles.push({ id: doc.id, ...doc.data() });
+      profiles.push(enrichProfile({ id: doc.id, ...doc.data() }));
     });
     callback(profiles);
   }, (error) => {
@@ -59,7 +73,7 @@ export async function getAllProfiles() {
   const snapshot = await getDocs(collection(db, 'users'));
   const profiles = [];
   snapshot.forEach(doc => {
-    profiles.push({ id: doc.id, ...doc.data() });
+    profiles.push(enrichProfile({ id: doc.id, ...doc.data() }));
   });
   return profiles;
 }
@@ -70,7 +84,7 @@ export async function getProfileById(id) {
   const docRef = doc(db, 'users', id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() };
+    return enrichProfile({ id: docSnap.id, ...docSnap.data() });
   }
   return null;
 }

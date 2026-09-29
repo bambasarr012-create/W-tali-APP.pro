@@ -20,8 +20,8 @@ export default function RulesPage({ onBack }) {
             <p>L'utilisation de photos de tiers, d'images floues ou générées par IA n'est pas autorisée. Vos photos doivent vous représenter clairement.</p>
           </li>
           <li className="flex flex-col gap-1">
-            <h3 className="font-serif text-xl font-bold text-[#0F172A]">3. Informations exactes</h3>
-            <p>Votre âge, votre situation personnelle et votre profession doivent correspondre à la réalité.</p>
+            <h3 className="font-serif text-xl font-bold text-[#0F172A]">3. Majorité requise et informations exactes</h3>
+            <p>Wétali est strictement réservé aux personnes majeures (18 ans et plus). Votre date de naissance, votre situation personnelle et votre profession doivent correspondre à la réalité.</p>
           </li>
           <li className="flex flex-col gap-1">
             <h3 className="font-serif text-xl font-bold text-[#0F172A]">4. Respect dans les échanges</h3>

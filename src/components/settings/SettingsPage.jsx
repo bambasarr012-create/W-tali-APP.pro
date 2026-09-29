@@ -87,7 +87,7 @@ export default function SettingsPage() {
       title: "Mon Profil Wétali",
       items: [
         { icon: Camera, title: "Mes Photos", subtitle: "Gérer tes photos et ton apparence publique", isComplete: !!userProfile?.photos?.length, action: () => { setEditingStep(1); setIsEditingProfile(true); } },
-        { icon: User, title: "Mon Identité", subtitle: "Âge, situation familiale et détails de base", isComplete: true, action: () => { setEditingStep(2); setIsEditingProfile(true); } },
+        { icon: User, title: "Mon Identité", subtitle: "Date de naissance, situation familiale et détails de base", isComplete: true, action: () => { setEditingStep(2); setIsEditingProfile(true); } },
         { icon: MapPin, title: "Situation actuelle", subtitle: "Où tu vis, ton métier et tes études", isComplete: !!(userProfile?.ville && userProfile?.profession), action: () => { setEditingStep(3); setIsEditingProfile(true); } },
         { icon: Heart, title: "Ma vision de l'union", subtitle: "Ce qui compte vraiment pour toi dans le mariage", isComplete: !!userProfile?.visionMariageLabel, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
         { icon: BookOpen, title: "Pratique & Foi", subtitle: "Ton socle religieux et tes repères", isComplete: !!userProfile?.dahira, action: () => { setEditingStep(6); setIsEditingProfile(true); } },

@@ -71,6 +71,7 @@ export const faqs = [
   {
     category: "Premiers pas sur Wétali",
     questions: [
+      { q: "Quel est l'âge minimum requis ?", a: "Wétali est strictement réservé aux personnes majeures (18 ans et plus). C'est pour cela que la date de naissance complète t'est demandée à l'inscription, bien que seul ton âge soit visible par les autres membres." },
       { q: "Comment fonctionne Wétali ?", a: "Tu crées ton profil, notre équipe le vérifie, puis tu peux explorer les profils, envoyer des invitations et échanger avec les personnes qui les acceptent. Wétali est pensé pour les Sénégalais de la diaspora et du pays qui cherchent le mariage." },
       { q: "Pourquoi mon profil doit-il être validé ?", a: "Chaque profil est vérifié pour écarter les faux comptes et garder une communauté sérieuse. La validation prend généralement entre 12 et 24 heures." },
       { q: "Je vis à l'étranger, puis-je rencontrer quelqu'un au Sénégal (ou l'inverse) ?", a: "Oui. Wétali réunit des membres en Europe, en Amérique du Nord et au Sénégal. Tu peux filtrer les profils par pays de résidence dans Explorer." },

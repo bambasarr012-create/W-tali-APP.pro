@@ -9,6 +9,7 @@ import {
   VALEURS_OPTIONS,
   CRITERES_OPTIONS
 } from '../../data/mockProfiles';
+import { calculateAge, isAdult } from '../../utils/age';
 import { 
   Camera, 
   Plus, 
@@ -39,7 +40,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
   const [formData, setFormData] = useState({
     prenom: userProfile?.prenom || (user?.displayName ? user.displayName.split(' ')[0] : ''),
     nom: userProfile?.nom || (user?.displayName ? user.displayName.split(' ').slice(1).join(' ') : ''),
-    age: userProfile?.age || '',
+    birthDate: userProfile?.birthDate || '',
     genre: userProfile?.genre || 'H',
     etatCivil: userProfile?.etatCivil || '',
     ville: userProfile?.ville || '',
@@ -60,7 +61,8 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
     criteres: userProfile?.criteres || [],
     financeCouple: userProfile?.financeCouple || 'À discuter',
     polygamie: userProfile?.polygamie || 'Non',
-    photos: userProfile?.photos || (user?.photoURL ? [user.photoURL] : [])
+    photos: userProfile?.photos || (user?.photoURL ? [user.photoURL] : []),
+    certifieMajeur: false
   });
 
   const [uploading, setUploading] = useState(false);
@@ -186,8 +188,12 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
         }
         return true;
       case 2:
-        if (!formData.prenom || !formData.age || !formData.pays || !formData.ville || !formData.telephone || !formData.email) {
+        if (!formData.prenom || !formData.birthDate || !formData.pays || !formData.ville || !formData.telephone || !formData.email) {
           showToast("Veuillez remplir tous les champs obligatoires (Étape 2).", "error");
+          return false;
+        }
+        if (!isAdult(formData.birthDate)) {
+          showToast("Wétali est réservé aux personnes majeures (18 ans et plus).", "error");
           return false;
         }
         return true;
@@ -203,7 +209,13 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
         // Optionnel, ou on pourrait exiger au moins 1 valeur. On laisse libre.
         return true; 
       case 6:
-        return true; // Optionnel
+        return true;
+      case 7:
+        if (!formData.certifieMajeur) {
+          showToast("Vous devez certifier être majeur pour continuer.", "error");
+          return false;
+        }
+        return true;
       default:
         return true;
     }
@@ -255,11 +267,13 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
       const profileToSave = {
         ...formData,
         id: userProfile?.id || user?.uid || 'current_user',
-        age: parseInt(formData.age, 10),
+        birthDate: new Date(formData.birthDate), // Enregistre en tant que Date JS -> Firestore Timestamp
         visionMariageLabel: selectedVision ? selectedVision.label : formData.visionMariage,
         profileStatus: 'pending',
         updatedAt: new Date().toISOString()
       };
+      
+      delete profileToSave.certifieMajeur; // Ne pas sauvegarder la case à cocher elle-même
 
       await updateProfile(profileToSave);
       setShowConfirmation(true);
@@ -398,16 +412,13 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
 
               <div>
                 <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
-                  Âge <span className="text-rose-500">*</span>
+                  Date de naissance <span className="text-rose-500">*</span>
                 </label>
                 <input
-                  type="number"
+                  type="date"
                   required
-                  min="18"
-                  max="85"
-                  value={formData.age}
-                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                  placeholder="Ex: 29"
+                  value={formData.birthDate}
+                  onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
                   className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none"
                 />
               </div>
@@ -937,7 +948,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
                 <div className="grid grid-cols-2 gap-y-3 text-sm">
                   <div>
                     <span className="block text-xs text-slate-500 font-bold uppercase">Prénom & Âge</span>
-                    <span className="font-semibold text-slate-800">{formData.prenom}, {formData.age} ans</span>
+                    <span className="font-semibold text-slate-800">{formData.prenom}, {calculateAge(formData.birthDate)} ans</span>
                   </div>
                   <div>
                     <span className="block text-xs text-slate-500 font-bold uppercase">Ville</span>
@@ -966,6 +977,20 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
                   </div>
                 )}
               </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={formData.certifieMajeur}
+                  onChange={(e) => setFormData({...formData, certifieMajeur: e.target.checked})}
+                  className="mt-1 w-4 h-4 text-[#2D8659] rounded border-slate-300 focus:ring-[#2D8659]"
+                />
+                <span className="text-sm font-semibold text-slate-700">
+                  Je certifie avoir 18 ans ou plus.
+                </span>
+              </label>
             </div>
           </div>
         )}

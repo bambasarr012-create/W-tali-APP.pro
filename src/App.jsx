@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppProvider, useApp } from './context/AppContext';
+import { isAdult } from './utils/age';
 
 import Header from './components/layout/Header';
 import BottomNav from './components/layout/BottomNav';
@@ -61,8 +62,46 @@ function LandingPageGate() {
 }
 
 function MainApp() {
-  const { isAuthenticated, hasProfile, loading, userProfile } = useAuth();
-  const { currentView, toast } = useApp();
+  const { isAuthenticated, hasProfile, loading, userProfile, updateProfile, logout } = useAuth();
+  const { currentView, toast, showToast } = useApp();
+
+  const [missingBirthDate, setMissingBirthDate] = useState(false);
+  const [tempBirthDate, setTempBirthDate] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated && hasProfile && userProfile && !userProfile.birthDate) {
+      setMissingBirthDate(true);
+    }
+  }, [isAuthenticated, hasProfile, userProfile]);
+
+  const handleMissingBirthDateSubmit = async () => {
+    if (!tempBirthDate) {
+      showToast("Veuillez saisir votre date de naissance.", "error");
+      return;
+    }
+
+    if (!isAdult(tempBirthDate)) {
+      await updateProfile({
+        ...userProfile,
+        birthDate: tempBirthDate,
+        suspended: true,
+        hidden: true
+      });
+      await logout();
+      alert("Wétali est réservé aux personnes majeures (18 ans et plus).");
+      window.location.reload();
+      return;
+    }
+
+    await updateProfile({
+      ...userProfile,
+      birthDate: tempBirthDate,
+      // Supprimer l'ancienne propriété age n'est pas strictement nécessaire en NoSQL mais on l'écrase
+      age: null 
+    });
+    setMissingBirthDate(false);
+    showToast("Date de naissance mise à jour avec succès !", "success");
+  };
 
   if (loading) {
     return (
@@ -97,6 +136,29 @@ function MainApp() {
   // 4. Authentifié avec Profil ET Abonnement -> Afficher vue active + navigation
   return (
     <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans flex flex-col">
+      {missingBirthDate && (
+        <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl">
+            <h2 className="text-xl font-bold text-[#0A2F4A] mb-3">Mise à jour importante</h2>
+            <p className="text-sm text-slate-600 mb-5">
+              Wétali est strictement réservé aux personnes majeures. Veuillez confirmer votre date de naissance.
+            </p>
+            <input 
+              type="date"
+              value={tempBirthDate}
+              onChange={(e) => setTempBirthDate(e.target.value)}
+              className="w-full p-3 rounded-xl border border-slate-300 mb-4 focus:border-[#D4AF37] outline-none"
+            />
+            <button 
+              onClick={handleMissingBirthDateSubmit}
+              className="w-full py-3 bg-[#0A2F4A] text-[#D4AF37] rounded-xl font-bold shadow-md"
+            >
+              Confirmer
+            </button>
+          </div>
+        </div>
+      )}
+
       <Header />
 
       {/* Global Toast Alert Notification */}

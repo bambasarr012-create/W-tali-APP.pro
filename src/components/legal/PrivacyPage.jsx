@@ -7,8 +7,8 @@ export default function PrivacyPage({ onBack }) {
       <section>
         <h2 className="font-serif text-2xl font-bold text-[#0F172A] mb-4">1. Données collectées</h2>
         <p>
-          Dans le cadre de la création d'un profil matrimonial, nous collectons : 
-          prénom, âge, genre, ville, email, téléphone, photos, profession, 
+          Dans le cadre de la création d'un profil matrimonial (réservé aux personnes majeures), nous collectons : 
+          prénom, date de naissance (utilisée pour calculer l'âge), genre, ville, email, téléphone, photos, profession, 
           vision du mariage, et les informations optionnelles que vous choisissez 
           de renseigner (études, dahira, bio, centres d'intérêt).
         </p>
