@@ -546,7 +546,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
             <div className="border-b border-slate-100 pb-3">
               <h2 className="font-bold text-base text-[#0A2F4A] flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-[#D4AF37]" />
-                <span>Profession & Vision du mariage</span>
+                <span>Profession & Style de vie</span>
               </h2>
             </div>
             
@@ -570,7 +570,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
 
               <div>
                 <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
-                  Vision du Mariage <span className="text-rose-500">*</span>
+                  Intention de mariage <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={formData.visionMariage}
