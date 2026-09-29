@@ -144,7 +144,7 @@ export default function Header() {
                       >
                         <div className="flex items-center gap-3">
                           <Send className="w-5 h-5" />
-                          <span className="text-sm font-medium">Demandes restantes</span>
+                          <span className="text-sm font-medium">Invitations restantes</span>
                         </div>
                         <span className="text-sm font-bold">0/5</span>
                       </button>
@@ -157,7 +157,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors"
                       >
                         <User className="w-5 h-5 text-slate-500" />
-                        <span className="text-sm font-medium">Mon profil</span>
+                        <span className="text-sm font-medium">Aperçu de mon profil</span>
                       </button>
 
                       <button 
@@ -168,7 +168,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100"
                       >
                         <SettingsIcon className="w-5 h-5 text-slate-500" />
-                        <span className="text-sm font-medium">Paramètres</span>
+                        <span className="text-sm font-medium">Mes Préférences</span>
                       </button>
 
                       <button 
@@ -178,8 +178,8 @@ export default function Header() {
                         }}
                         className="flex items-center gap-3 px-4 py-3 bg-orange-50/50 hover:bg-orange-50 text-slate-700 transition-colors border-b border-slate-100"
                       >
-                        <Camera className="w-5 h-5 text-orange-500" />
-                        <span className="text-sm font-medium">Déflouter mes photos</span>
+                        <Camera className="w-5 h-5 text-[#D4AF37]" />
+                        <span className="text-sm font-medium">Visibilité des photos</span>
                       </button>
 
                       <button 
@@ -190,7 +190,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100"
                       >
                         <Volume2 className="w-5 h-5 text-[#2D8659]" />
-                        <span className="text-sm font-medium">Sons activés</span>
+                        <span className="text-sm font-medium">Effets sonores (ON)</span>
                       </button>
 
                       <button 
@@ -201,7 +201,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100"
                       >
                         <HelpCircle className="w-5 h-5 text-slate-500" />
-                        <span className="text-sm font-medium">Aide & FAQ</span>
+                        <span className="text-sm font-medium">Centre de support</span>
                       </button>
 
                       <button 
@@ -214,7 +214,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 transition-colors"
                       >
                         <LogOut className="w-5 h-5" />
-                        <span className="text-sm font-medium">Déconnexion</span>
+                        <span className="text-sm font-medium">Me déconnecter</span>
                       </button>
                     </div>
                   </div>
