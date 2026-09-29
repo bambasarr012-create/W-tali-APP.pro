@@ -23,10 +23,10 @@ export default function HelpPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const tips = [
-    { icon: Camera, title: "Photo de qualité", desc: "Une photo claire et souriante augmente tes chances de 80%", color: "bg-blue-50", iconColor: "text-blue-500" },
-    { icon: CheckCircle, title: "Profil complet", desc: "Les profils complets reçoivent 5x plus de visites", color: "bg-emerald-50", iconColor: "text-emerald-500" },
-    { icon: MessageSquare, title: "Premier message", desc: "Personnalise ton message en mentionnant un détail du profil", color: "bg-purple-50", iconColor: "text-purple-500" },
-    { icon: Clock, title: "Sois réactif", desc: "Réponds dans les 24h pour garder l'intérêt", color: "bg-amber-50", iconColor: "text-amber-500" },
+    { icon: Camera, title: "Une photo valorisante", desc: "Une photo claire, décente et souriante inspire confiance (floutage possible)", color: "bg-blue-50", iconColor: "text-blue-500" },
+    { icon: CheckCircle, title: "Une bio sincère", desc: "Les profils complétés avec honnêteté génèrent 5x plus d'affinités", color: "bg-emerald-50", iconColor: "text-emerald-500" },
+    { icon: MessageSquare, title: "Le premier pas", desc: "Un premier message respectueux et personnalisé fait toute la différence", color: "bg-purple-50", iconColor: "text-purple-500" },
+    { icon: Clock, title: "Sérieux & courtoisie", desc: "Répondez dans les délais par respect pour vos interlocuteurs", color: "bg-amber-50", iconColor: "text-amber-500" },
   ];
 
   const stats = [
@@ -38,25 +38,25 @@ export default function HelpPage() {
 
   const faqs = [
     {
-      category: "Débuter sur Wétali",
+      category: "Vos premiers pas sur Wétali",
       questions: [
-        { q: "Comment fonctionne Wétali ?", a: "Wétali te met en relation avec des profils compatibles. Tu peux aimer un profil, et si c'est réciproque, c'est un match !" },
-        { q: "Comment mon profil est-il validé ?", a: "Chaque profil est vérifié manuellement par notre équipe pour garantir un environnement sûr et sérieux." },
-        { q: "Wétali est-il vraiment halal ?", a: "Oui, la plateforme est conçue pour respecter les principes islamiques de la rencontre en vue du mariage." }
+        { q: "Comment fonctionne Wétali ?", a: "Wétali vous présente des profils partageant vos valeurs. Si l'intérêt est mutuel, vous pouvez échanger dans le respect de l'éthique musulmane." },
+        { q: "Comment mon profil est-il validé ?", a: "Pour garantir la sécurité et le sérieux de la communauté, chaque profil est examiné et vérifié manuellement par nos modérateurs." },
+        { q: "Wétali est-il vraiment halal ?", a: "Absolument. La plateforme intègre des fonctionnalités (floutage de photos, modération stricte) pensées pour faciliter une rencontre en vue du mariage." }
       ]
     },
     {
-      category: "Photos de profil",
+      category: "Confidentialité & Apparence",
       questions: [
-        { q: "Comment ajouter ma photo ?", a: "Rends-toi dans les paramètres, puis 'Photo de profil' pour ajouter ou modifier tes photos." },
-        { q: "Comment flouter mes photos ?", a: "Dans les paramètres, active l'option 'Flouter mes photos'. Elles ne seront visibles que par tes matchs." }
+        { q: "Comment ajouter ma photo ?", a: "Rendez-vous dans 'Mes Préférences' puis 'Mes Photos' pour gérer votre galerie publique." },
+        { q: "Comment flouter mes photos ?", a: "La fonction de protection des photos vous permet de flouter vos images pour les profils avec lesquels vous n'avez pas de connexion (Fonctionnalité Premium)." }
       ]
     },
     {
-      category: "Premium & Demandes",
+      category: "Invitations & Pass Premium",
       questions: [
-        { q: "Combien de demandes puis-je envoyer ?", a: "Les utilisateurs gratuits ont un nombre limité de demandes par mois. Passe Premium pour en envoyer plus." },
-        { q: "Quels sont les avantages Premium ?", a: "Filtres avancés, demandes supplémentaires, voir qui a visité ton profil, et bien plus encore !" }
+        { q: "Combien d'invitations puis-je envoyer ?", a: "L'accès standard offre un quota limité pour privilégier la qualité à la quantité. Passez Premium pour des invitations illimitées." },
+        { q: "Quels sont les avantages du Premium ?", a: "Filtres avancés sur la pratique religieuse, accès à la liste de vos visiteurs, invitations supplémentaires et gestion de la confidentialité !" }
       ]
     }
   ];
@@ -78,16 +78,16 @@ export default function HelpPage() {
           <ArrowLeft className="w-6 h-6" />
         </button>
         <div>
-          <h1 className="font-bold text-2xl text-[#0A2F4A]">Centre d'aide</h1>
-          <p className="text-xs text-slate-500">Tout ce que tu dois savoir sur Wétali</p>
+          <h1 className="font-bold text-2xl text-[#0A2F4A]">Accompagnement</h1>
+          <p className="text-xs text-slate-500">Votre guide bienveillant sur Wétali</p>
         </div>
       </div>
 
       {/* Conseils rapides */}
       <div className="space-y-4">
         <h2 className="font-bold text-[#0A2F4A] flex items-center gap-2">
-          <Lightbulb className="w-5 h-5 text-amber-500" />
-          Conseils rapides
+          <Lightbulb className="w-5 h-5 text-[#D4AF37]" />
+          Les clés de la réussite
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {tips.map((tip, idx) => (
@@ -116,11 +116,11 @@ export default function HelpPage() {
       {/* Guides rapides */}
       <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
         <h2 className="font-bold text-[#0A2F4A] flex items-center gap-2 mb-3">
-          <BookOpen className="w-5 h-5 text-[#2D8659]" />
-          Guides rapides
+          <BookOpen className="w-5 h-5 text-[#D4AF37]" />
+          Guides pratiques
         </h2>
         <div className="space-y-2">
-          {["Créer un profil attractif", "Trouver son match", "Bons plans mariages", "Avantages Premium"].map((guide, idx) => (
+          {["Rédiger un profil authentique", "Trouver l'âme sœur (Mektoub)", "Préparer sa première rencontre", "Découvrir le Pass Wétali+"].map((guide, idx) => (
             <button key={idx} className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors text-sm font-semibold text-slate-700">
               {guide}
               <ChevronRight className="w-4 h-4 text-slate-400" />
