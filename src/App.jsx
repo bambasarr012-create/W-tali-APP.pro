@@ -8,6 +8,8 @@ import BottomNav from './components/layout/BottomNav';
 import SendRequestModal from './components/layout/SendRequestModal';
 import WeddingRingLogo from './components/common/WeddingRingLogo';
 import CookieConsent from './components/common/CookieConsent';
+import WaitlistPage from './components/prelaunch/WaitlistPage';
+import { IS_PRELAUNCH_MODE, TESTER_EMAILS } from './config/prelaunch';
 
 import AuthPage from './components/auth/AuthPage';
 import LandingPage from './components/landing/LandingPage';
@@ -32,7 +34,17 @@ import HelpPage from './components/help/HelpPage';
 // Gate component: shows landing page first, then auth when user clicks CTA
 function LandingPageGate() {
   const [showAuth, setShowAuth] = useState(false);
+  const [showWaitlist, setShowWaitlist] = useState(false);
   const [activeCity, setActiveCity] = useState(null); // 'paris' etc. or 'all'
+
+  if (showWaitlist) {
+    return (
+      <WaitlistPage 
+        onBack={() => setShowWaitlist(false)} 
+        onTesterLogin={() => { setShowWaitlist(false); setShowAuth(true); }} 
+      />
+    );
+  }
 
   if (showAuth) {
     return (
@@ -43,6 +55,14 @@ function LandingPageGate() {
     );
   }
 
+  const handleOpenAuth = () => {
+    if (IS_PRELAUNCH_MODE) {
+      setShowWaitlist(true);
+    } else {
+      setShowAuth(true);
+    }
+  };
+
   if (activeCity === 'all') {
     return <CitiesListPage onBack={() => setActiveCity(null)} onNavCity={setActiveCity} />;
   }
@@ -52,17 +72,17 @@ function LandingPageGate() {
       <CityLandingPage 
         ville={activeCity} 
         onBack={() => setActiveCity(null)}
-        onSignup={() => setShowAuth(true)}
+        onSignup={handleOpenAuth}
         onNavCity={setActiveCity}
       />
     );
   }
 
-  return <LandingPage onEnterApp={() => setShowAuth(true)} onNavCity={setActiveCity} />;
+  return <LandingPage onEnterApp={handleOpenAuth} onNavCity={setActiveCity} />;
 }
 
 function MainApp() {
-  const { isAuthenticated, hasProfile, loading, userProfile, updateProfile, logout } = useAuth();
+  const { isAuthenticated, hasProfile, loading, userProfile, updateProfile, logout, user } = useAuth();
   const { currentView, toast, showToast } = useApp();
 
   const [missingBirthDate, setMissingBirthDate] = useState(false);
@@ -123,6 +143,15 @@ function MainApp() {
 
   // 2. Authentifié mais profil non complété -> Afficher Création de Profil
   if (!hasProfile && currentView !== 'profile-create') {
+    if (IS_PRELAUNCH_MODE && user && !TESTER_EMAILS.includes(user.email)) {
+      return (
+        <WaitlistPage 
+          isBlockedTester={true} 
+          logout={async () => { await logout(); window.location.reload(); }} 
+        />
+      );
+    }
+
     return (
       <div className="min-h-screen bg-[#F4F7F6]">
         <Header />

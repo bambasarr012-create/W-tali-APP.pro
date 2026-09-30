@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, getDocs } from 'firebase/firestore';
-import { ShieldCheck, ShieldAlert, AlertTriangle, LayoutDashboard, Users, Flag, Settings, Activity, TrendingUp, Ban, CreditCard, DollarSign } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, AlertTriangle, LayoutDashboard, Users, Flag, Settings, Activity, TrendingUp, Ban, CreditCard, DollarSign, Clock, Download } from 'lucide-react';
 import { formatRelativeTime } from '../../services/firestoreService';
 
 const ADMIN_EMAILS = ['bambasarr012@gmail.com', 'wetalidiaspora@gmail.com'];
@@ -13,6 +13,7 @@ export default function AdminDashboard() {
   // Data states
   const [reports, setReports] = useState([]);
   const [users, setUsers] = useState([]);
+  const [waitlist, setWaitlist] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Security check
@@ -45,12 +46,21 @@ export default function AdminDashboard() {
         setUsers(usersData);
       } catch (err) {
         console.error("Erreur chargement utilisateurs:", err);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchUsers();
+    const fetchWaitlist = async () => {
+      try {
+        const waitlistSnapshot = await getDocs(query(collection(db, 'waitlist'), orderBy('createdAt', 'desc')));
+        const waitlistData = [];
+        waitlistSnapshot.forEach(doc => waitlistData.push({ id: doc.id, ...doc.data() }));
+        setWaitlist(waitlistData);
+      } catch (err) {
+        console.error("Erreur chargement waitlist:", err);
+      }
+    };
+
+    Promise.all([fetchUsers(), fetchWaitlist()]).finally(() => setLoading(false));
 
     return () => {
       unsubscribeReports();
@@ -132,6 +142,10 @@ export default function AdminDashboard() {
             icon={<CreditCard />} label="Abonnements" 
             active={activeTab === 'finances'} onClick={() => setActiveTab('finances')} 
           />
+          <NavItem 
+            icon={<Clock />} label="Liste d'attente" 
+            active={activeTab === 'waitlist'} onClick={() => setActiveTab('waitlist')} 
+          />
         </nav>
 
         <div className="p-4 border-t border-slate-100">
@@ -164,6 +178,7 @@ export default function AdminDashboard() {
             <option value="users">Utilisateurs</option>
             <option value="reports">Signalements</option>
             <option value="finances">Abonnements</option>
+            <option value="waitlist">Liste d'attente</option>
           </select>
         </header>
 
@@ -178,12 +193,14 @@ export default function AdminDashboard() {
                 {activeTab === 'users' && "Gestion des Utilisateurs"}
                 {activeTab === 'reports' && "Modération & Signalements"}
                 {activeTab === 'finances' && "Revenus & Abonnements"}
+                {activeTab === 'waitlist' && "Liste d'attente"}
               </h1>
               <p className="text-slate-500">
                 {activeTab === 'overview' && "Statistiques et état global de la plateforme."}
                 {activeTab === 'users' && "Consultez, recherchez et modérez les comptes utilisateurs."}
                 {activeTab === 'reports' && "Traitez les signalements de la communauté."}
                 {activeTab === 'finances' && "Suivi du MRR, des abonnements actifs et des revenus."}
+                {activeTab === 'waitlist' && "Gérez les inscrits de la phase de pré-lancement."}
               </p>
             </div>
 
@@ -218,6 +235,9 @@ export default function AdminDashboard() {
                 )}
                 {activeTab === 'finances' && (
                   <FinancesTab users={users} />
+                )}
+                {activeTab === 'waitlist' && (
+                  <WaitlistTab waitlist={waitlist} />
                 )}
               </>
             )}
@@ -564,6 +584,74 @@ function FinancesTab({ users }) {
         <p className="text-sm text-blue-800">
           <strong>Note technique :</strong> Actuellement, ces revenus sont calculés en se basant sur le nombre d'utilisateurs ayant un statut d'abonnement actif dans la base de données, multiplié par un prix moyen estimé de 15€. Une fois Stripe (ou ton processeur de paiement) pleinement connecté, ces chiffres seront synchronisés en temps réel.
         </p>
+      </div>
+    </div>
+  );
+}
+
+function WaitlistTab({ waitlist }) {
+  const handleExportCSV = () => {
+    if (waitlist.length === 0) return;
+    const headers = ['Prénom', 'Email', 'Pays', 'Ville', 'Date Inscription'];
+    const csvData = waitlist.map(w => [
+      w.firstName, w.email, w.country, w.city, new Date(w.createdAt).toLocaleDateString()
+    ]);
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.map(cell => `"${cell || ''}"`).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `wetali_waitlist_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+          <Clock className="w-5 h-5 text-[#D4AF37]" /> Inscrits ({waitlist.length})
+        </h3>
+        <button 
+          onClick={handleExportCSV}
+          className="px-4 py-2 bg-[#0F172A] hover:bg-[#1E3A8A] text-white text-sm font-semibold rounded-xl flex items-center gap-2 transition-colors"
+        >
+          <Download className="w-4 h-4" /> Exporter en CSV
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-white text-slate-500 font-semibold border-b border-slate-200">
+            <tr>
+              <th className="px-6 py-4">Prénom</th>
+              <th className="px-6 py-4">Email</th>
+              <th className="px-6 py-4">Localisation</th>
+              <th className="px-6 py-4">Date</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {waitlist.map(w => (
+              <tr key={w.id} className="hover:bg-slate-50/50 transition-colors">
+                <td className="px-6 py-4 font-bold text-slate-800">{w.firstName}</td>
+                <td className="px-6 py-4 text-slate-600">{w.email}</td>
+                <td className="px-6 py-4 text-slate-600">{w.city}, {w.country}</td>
+                <td className="px-6 py-4 text-slate-500">{new Date(w.createdAt).toLocaleDateString()}</td>
+              </tr>
+            ))}
+            {waitlist.length === 0 && (
+              <tr>
+                <td colSpan="4" className="px-6 py-8 text-center text-slate-500">
+                  La liste d'attente est vide.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -76,6 +76,18 @@ export default function PrivacyPage({ onBack }) {
           des données (ex : Loi 25 au Québec), en plus du RGPD lorsque applicable.
         </p>
       </section>
+
+      <section>
+        <h2 className="font-serif text-2xl font-bold text-[#0F172A] mb-4">9. Liste d'attente (Pré-lancement)</h2>
+        <p>
+          Lors de notre phase de pré-lancement, nous proposons une inscription sur liste d'attente.
+        </p>
+        <ul className="list-disc pl-5 mt-2 space-y-1">
+          <li><strong>Données collectées :</strong> prénom, email, pays, ville et consentement.</li>
+          <li><strong>Finalité :</strong> ces données sont utilisées uniquement pour vous prévenir officiellement du lancement de la plateforme dans votre région.</li>
+          <li><strong>Suppression :</strong> vous pouvez demander le retrait de la liste d'attente et la suppression immédiate de ces données sur simple demande à <strong>wetalidiaspora@gmail.com</strong>.</li>
+        </ul>
+      </section>
     </LegalLayout>
   );
 }
