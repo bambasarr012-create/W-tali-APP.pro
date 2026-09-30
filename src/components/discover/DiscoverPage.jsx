@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { getAllProfiles } from '../../services/firestoreService';
+import { getAllProfiles, sendRequest, getSentRequests, getReceivedRequests, getMatches, checkRelationshipStatus, acceptRequest } from '../../services/firestoreService';
 import { X, MessageCircle, Plus, Crown, MapPin, Heart, User, CheckCircle2, Navigation, AlertCircle } from 'lucide-react';
 
 export default function DiscoverPage() {
@@ -15,11 +15,23 @@ export default function DiscoverPage() {
 
   useEffect(() => {
     async function load() {
+      if (!userProfile?.id) return;
       setLoading(true);
       try {
-        const list = await getAllProfiles();
+        const [list, sentReqs, receivedReqs, matches] = await Promise.all([
+          getAllProfiles(),
+          getSentRequests(userProfile.id),
+          getReceivedRequests(userProfile.id),
+          getMatches(userProfile.id)
+        ]);
+        
+        const excludedIds = new Set([userProfile.id]);
+        sentReqs.forEach(r => excludedIds.add(r.toUserId));
+        receivedReqs.forEach(r => excludedIds.add(r.fromUserId));
+        matches.forEach(m => m.users.forEach(u => excludedIds.add(u)));
+
         const filteredList = list.filter(p => 
-          p.id !== userProfile?.id && 
+          !excludedIds.has(p.id) && 
           p.age >= 18 && 
           !p.suspended && 
           !p.hidden
@@ -44,9 +56,35 @@ export default function DiscoverPage() {
     }
   };
 
-  const handleAdd = () => {
-    showToast(`Demande envoyée à ${currentProfile.prenom} !`, "success");
-    handleNext();
+  const handleAdd = async () => {
+    try {
+      if (!currentProfile) return;
+      
+      const statusObj = await checkRelationshipStatus(userProfile.id, currentProfile.id);
+      
+      if (statusObj.status === 'matched') {
+        showToast("Vous avez déjà matché !", "info");
+        handleNext();
+        return;
+      }
+      if (statusObj.status === 'request_sent') {
+        showToast("Demande déjà envoyée.", "info");
+        handleNext();
+        return;
+      }
+      if (statusObj.status === 'request_received') {
+        await acceptRequest(statusObj.request.id, userProfile);
+        showToast(`It's a Match avec ${currentProfile.prenom} !`, "success");
+        handleNext();
+        return;
+      }
+
+      await sendRequest(userProfile, currentProfile);
+      showToast(`Demande envoyée à ${currentProfile.prenom} !`, "success");
+      handleNext();
+    } catch (e) {
+      showToast(e.message || "Erreur lors de l'envoi de la demande", "error");
+    }
   };
 
   const handleMessage = () => {

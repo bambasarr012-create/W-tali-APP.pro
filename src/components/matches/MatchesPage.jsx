@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getMatches, subscribeToCollection } from '../../services/firestoreService';
+import { getMatches, subscribeToUserMatches } from '../../services/firestoreService';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { Heart, MessageCircle, MapPin, Sparkles, ShieldCheck, ChevronRight, User } from 'lucide-react';
@@ -25,8 +25,9 @@ export default function MatchesPage() {
   };
 
   useEffect(() => {
+    if (!userProfile?.id) return;
     loadMatches();
-    const unsub = subscribeToCollection('matches', loadMatches);
+    const unsub = subscribeToUserMatches(userProfile.id, loadMatches);
     return () => unsub();
   }, [userProfile]);
 

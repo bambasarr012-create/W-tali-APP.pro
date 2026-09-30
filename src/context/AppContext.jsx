@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getReceivedRequests, getMatches, subscribeToCollection } from '../services/firestoreService';
+import { getReceivedRequests, getMatches, subscribeToUserReceivedRequests, subscribeToUserMatches } from '../services/firestoreService';
 import { useAuth } from './AuthContext';
 
 const AppContext = createContext(null);
@@ -44,15 +44,17 @@ export function AppProvider({ children }) {
   };
 
   useEffect(() => {
+    if (!isAuthenticated || !userProfile?.id) return;
+
     refreshCounts();
-    const unsubReqs = subscribeToCollection('requests', refreshCounts);
-    const unsubMatches = subscribeToCollection('matches', refreshCounts);
+    const unsubReqs = subscribeToUserReceivedRequests(userProfile.id, refreshCounts);
+    const unsubMatches = subscribeToUserMatches(userProfile.id, refreshCounts);
 
     return () => {
       unsubReqs();
       unsubMatches();
     };
-  }, [userProfile]);
+  }, [userProfile, isAuthenticated]);
 
   // Navigate to profile details
   const viewProfileDetail = (profile) => {

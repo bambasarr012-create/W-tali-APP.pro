@@ -50,6 +50,49 @@ export function subscribeToCollection(collectionName, callback) {
   }
 }
 
+export function subscribeToUserReceivedRequests(userId, callback) {
+  if (!userId) return () => {};
+  const db = getDb();
+  const q = query(
+    collection(db, 'requests'), 
+    where('toUserId', '==', userId), 
+    where('status', '==', 'pending')
+  );
+  return onSnapshot(q, () => {
+    if (typeof callback === 'function') callback();
+  }, (error) => {
+    console.error("Error subscribing to received requests:", error);
+  });
+}
+
+export function subscribeToUserSentRequests(userId, callback) {
+  if (!userId) return () => {};
+  const db = getDb();
+  const q = query(
+    collection(db, 'requests'), 
+    where('fromUserId', '==', userId)
+  );
+  return onSnapshot(q, () => {
+    if (typeof callback === 'function') callback();
+  }, (error) => {
+    console.error("Error subscribing to sent requests:", error);
+  });
+}
+
+export function subscribeToUserMatches(userId, callback) {
+  if (!userId) return () => {};
+  const db = getDb();
+  const q = query(
+    collection(db, 'matches'), 
+    where('users', 'array-contains', userId)
+  );
+  return onSnapshot(q, () => {
+    if (typeof callback === 'function') callback();
+  }, (error) => {
+    console.error("Error subscribing to matches:", error);
+  });
+}
+
 // ==========================================
 // GESTION DES PROFILS
 // ==========================================
@@ -215,6 +258,22 @@ export async function sendRequest(fromUser, toUser, customMessage) {
   };
 
   const docRef = await addDoc(collection(db, 'requests'), newRequest);
+
+  // Création de la notification pour le destinataire
+  try {
+    await addDoc(collection(db, 'notifications'), {
+      userId: toUser.id,
+      title: "Nouvelle demande",
+      message: `${fromUser.prenom} souhaite faire ta connaissance.`,
+      type: 'request_received',
+      requestId: docRef.id,
+      createdAt: new Date().toISOString(),
+      isRead: false
+    });
+  } catch (err) {
+    console.error("Erreur lors de la création de la notification:", err);
+  }
+
   return { id: docRef.id, ...newRequest };
 }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getReceivedRequests, getSentRequests, acceptRequest, rejectRequest, subscribeToCollection } from '../../services/firestoreService';
+import { getReceivedRequests, getSentRequests, acceptRequest, rejectRequest, subscribeToUserReceivedRequests } from '../../services/firestoreService';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { UserCheck, Check, X, MessageCircle, Clock, Heart, ShieldCheck, Inbox, MapPin, Briefcase, Sparkles } from 'lucide-react';
@@ -32,8 +32,9 @@ export default function RequestsPage() {
   };
 
   useEffect(() => {
+    if (!userProfile?.id) return;
     loadData();
-    const unsub = subscribeToCollection('requests', loadData);
+    const unsub = subscribeToUserReceivedRequests(userProfile.id, loadData);
     return () => unsub();
   }, [userProfile]);
 
