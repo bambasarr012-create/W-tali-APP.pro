@@ -36,16 +36,6 @@ export default function WaitlistPage({ onBack, onTesterLogin, isBlockedTester, l
 
     try {
       const db = getFirestore();
-      
-      // Check if email already exists
-      const q = query(collection(db, 'waitlist'), where('email', '==', formData.email));
-      const querySnapshot = await getDocs(q);
-      
-      if (!querySnapshot.empty) {
-        setSuccess(true); // Treat as success to not leak info, or just say they are already registered
-        setLoading(false);
-        return;
-      }
 
       await addDoc(collection(db, 'waitlist'), {
         firstName: formData.firstName.trim(),
