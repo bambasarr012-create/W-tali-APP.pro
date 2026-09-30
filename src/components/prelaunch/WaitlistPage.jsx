@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getFirestore, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import WeddingRingLogo from '../common/WeddingRingLogo';
 
 export default function WaitlistPage({ onBack, onTesterLogin, isBlockedTester, logout }) {
@@ -36,20 +36,25 @@ export default function WaitlistPage({ onBack, onTesterLogin, isBlockedTester, l
 
     try {
       const db = getFirestore();
+      const emailNormalise = formData.email.trim().toLowerCase();
 
-      await addDoc(collection(db, 'waitlist'), {
+      await setDoc(doc(db, 'waitlist', emailNormalise), {
         firstName: formData.firstName.trim(),
-        email: formData.email.trim().toLowerCase(),
+        email: emailNormalise,
         country: formData.country.trim(),
         city: formData.city.trim(),
-        consent: formData.consent,
-        createdAt: new Date().toISOString()
+        consent: true,
+        createdAt: serverTimestamp()
       });
 
       setSuccess(true);
     } catch (err) {
-      setError("Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
-      console.error("Waitlist error:", err);
+      if (err.code === 'permission-denied') {
+        setError("Tu es déjà inscrit(e) sur la liste d'attente.");
+      } else {
+        setError("Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
+        console.error("Waitlist error:", err);
+      }
     } finally {
       setLoading(false);
     }
