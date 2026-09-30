@@ -49,7 +49,11 @@ export default function WaitlistPage({ onBack, onTesterLogin, isBlockedTester, l
 
       setSuccess(true);
     } catch (err) {
-      if (err.code === 'permission-denied') {
+      if (
+        err.code === 'permission-denied' || 
+        err.code === 'firestore/permission-denied' ||
+        (err.message && err.message.toLowerCase().includes('permission'))
+      ) {
         setError("Tu es déjà inscrit(e) sur la liste d'attente.");
       } else {
         setError("Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
