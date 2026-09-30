@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '../../services/firebase';
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import WeddingRingLogo from '../common/WeddingRingLogo';
 
 export default function WaitlistPage({ onBack, onTesterLogin, isBlockedTester, logout }) {
@@ -36,6 +35,8 @@ export default function WaitlistPage({ onBack, onTesterLogin, isBlockedTester, l
     setError('');
 
     try {
+      const db = getFirestore();
+      
       // Check if email already exists
       const q = query(collection(db, 'waitlist'), where('email', '==', formData.email));
       const querySnapshot = await getDocs(q);
