@@ -40,5 +40,20 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == request.resource.data.reporterId;
       allow read, update, delete: if request.auth != null && request.auth.token.email == "bambasarr012@gmail.com";
     }
+
+    // Liste d'attente (Pré-lancement)
+    match /waitlist/{docId} {
+      // Tout visiteur (même non connecté) peut s'inscrire
+      allow create: if 
+        request.resource.data.keys().hasAll(['firstName', 'email', 'country', 'city', 'consent', 'createdAt']) &&
+        request.resource.data.firstName is string && request.resource.data.firstName.size() > 0 && request.resource.data.firstName.size() <= 50 &&
+        request.resource.data.email is string && request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+        request.resource.data.country is string && request.resource.data.country.size() > 0 && request.resource.data.country.size() <= 100 &&
+        request.resource.data.city is string && request.resource.data.city.size() > 0 && request.resource.data.city.size() <= 100 &&
+        request.resource.data.consent == true;
+        
+      // Seul l'admin peut lire ou supprimer les inscrits de la liste d'attente
+      allow read, update, delete: if request.auth != null && request.auth.token.email == "bambasarr012@gmail.com";
+    }
   }
 }
