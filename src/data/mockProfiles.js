@@ -23,7 +23,7 @@ export const INITIAL_PROFILES = [
     recherche: "Je recherche un partenaire, chef de famille et soutien moral mutuel. Un mari pieux, responsable et attentionné.",
     visionMariage: "court_terme", // Court terme (< 6 mois)
     visionMariageLabel: "Court terme (< 6 mois)",
-    dahira: "Touba Mouride",
+
     interets: ["Cybersécurité", "Cuisine sénégalaise", "Entrepreneuriat", "Spiritualité", "Randonnée"],
     bio: "Ambitieuse, attachée aux valeurs familiales et spirituelles. Je cherche un homme pieux, respectueux et mature avec qui bâtir un foyer solide sous la bénédiction des familles.",
     photos: [
@@ -57,7 +57,7 @@ export const INITIAL_PROFILES = [
     recherche: "Je recherche une femme pieuse et complice avec qui construire l'avenir.",
     visionMariage: "court_terme",
     visionMariageLabel: "Court terme (< 6 mois)",
-    dahira: "Tivaouane Tidiane",
+
     interets: ["Santé", "Volontariat", "Thiant", "Histoire", "Basket"],
     bio: "Calme, attentionné et rigoureux. Passionné par mon métier et par l'entraide communautaire. En quête d'une union fondée sur la piété, la sérénité et le respect mutuel.",
     photos: [
@@ -90,7 +90,7 @@ export const INITIAL_PROFILES = [
     recherche: "Un homme sur qui je peux compter, ambitieux et attaché à ses origines.",
     visionMariage: "moyen_terme", // Moyen terme (6-12 mois)
     visionMariageLabel: "Moyen terme (6-12 mois)",
-    dahira: "Tivaouane Tidiane",
+
     interets: ["Design", "Art", "Gastronomie", "Spiritualité", "Voyages"],
     bio: "Créative, souriante et équilibrée. J'accorde une grande importance à la communication sincère, au respect des traditions et à l'ambition partagée.",
     photos: [
@@ -123,7 +123,7 @@ export const INITIAL_PROFILES = [
     recherche: "Une épouse pour avancer dans la religion et bâtir un projet de vie.",
     visionMariage: "moyen_terme",
     visionMariageLabel: "Moyen terme (6-12 mois)",
-    dahira: "Touba Mouride",
+
     interets: ["Finance", "Tech", "Course à pied", "Entrepreneuriat", "Philanthropie"],
     bio: "Basé à New York mais profondément attaché à nos racines et à la teranga sénégalaise. Je cherche une femme d'honneur, douce et ambitieuse pour une vie à deux.",
     photos: [
@@ -156,7 +156,7 @@ export const INITIAL_PROFILES = [
     recherche: "Un époux aimant, droit et drôle.",
     visionMariage: "court_terme",
     visionMariageLabel: "Court terme (< 6 mois)",
-    dahira: "Niassène",
+
     interets: ["Droit", "Lecture", "Pâtisserie", "Spiritualité", "Débats"],
     bio: "Femme de principes et de cœur. J'apprécie la droiture, la bonne humeur et l'écoute. Je désire rencontrer un homme responsable prêt à s'engager avec sincérité.",
     photos: [
@@ -189,7 +189,7 @@ export const INITIAL_PROFILES = [
     recherche: "Une partenaire de vie et de projet.",
     visionMariage: "court_terme",
     visionMariageLabel: "Court terme (< 6 mois)",
-    dahira: "Yoff Layène",
+
     interets: ["Entrepreneuriat", "Éducation", "Innovation", "Échecs", "Famille"],
     bio: "Porté par l'innovation et profondément respectueux de nos enseignements spirituels. À la recherche d'une femme vertueuse, intelligente et bienveillante pour fonder un foyer béni.",
     photos: [
@@ -222,7 +222,7 @@ export const INITIAL_PROFILES = [
     recherche: "Un homme mûr, compréhensif et bon musulman.",
     visionMariage: "moyen_terme",
     visionMariageLabel: "Moyen terme (6-12 mois)",
-    dahira: "Ndiassane Khadre",
+
     interets: ["Mode pudique", "Voyages", "Cuisine sénégalaise", "Photographie", "Déco"],
     bio: "Souriante, ouverte d'esprit et respectueuse. J'aime les moments en famille, les projets stimulants et la douceur au quotidien. Hâte de rencontrer ma moitié.",
     photos: [
@@ -255,7 +255,7 @@ export const INITIAL_PROFILES = [
     recherche: "Une femme sénégalaise prête à fonder une belle famille.",
     visionMariage: "court_terme",
     visionMariageLabel: "Court terme (< 6 mois)",
-    dahira: "Touba Mouride",
+
     interets: ["Urbanisme", "Nature", "Écologie", "Sport", "Spiritualité"],
     bio: "Travailleur, équilibré et chaleureux. Ouvert à une rencontre avec une sœur de la diaspora ou du Sénégal prête à construire un avenir harmonieux ensemble.",
     photos: [

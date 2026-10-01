@@ -107,7 +107,7 @@ export default function ProfileDetailPage() {
             <Check className="w-4 h-4" />
             <span>Accepter</span>
           </button>
-        
+        </div>
       );
     }
     if (relStatus.status === 'own_profile') {
@@ -127,7 +127,7 @@ export default function ProfileDetailPage() {
             <User className="w-4 h-4" />
             <span>Réviser mon profil</span>
           </button>
-        
+        </div>
       );
     }
 
@@ -150,7 +150,7 @@ export default function ProfileDetailPage() {
         >
           Retour à l'accueil
         </button>
-      
+      </div>
     );
   }
 
@@ -223,7 +223,7 @@ export default function ProfileDetailPage() {
                   }`}
                 />
               ))}
-            
+            </div>
           )}
 
           {/* Top Badges */}
@@ -239,14 +239,14 @@ export default function ProfileDetailPage() {
                 <span>{affinity.score}% Affinité</span>
               </span>
             )}
-          
-        
+          </div>
+        </div>
 
         {/* Thumbnails Row (Farata style diaporama) */}
         <div className="px-5 py-4 border-b border-slate-100 bg-white">
           <div className="flex items-center gap-2 mb-3">
             <h3 className="text-xs font-bold text-[#0A2F4A]">Photos ({photos.length})</h3>
-          
+          </div>
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             {photos.map((photo, idx) => (
               <button
@@ -263,10 +263,10 @@ export default function ProfileDetailPage() {
             {[...Array(Math.max(0, 5 - photos.length))].map((_, i) => (
               <div key={`empty-${i}`} className="flex-shrink-0 w-16 h-16 rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center">
                 <span className="text-slate-300 text-xs">vide</span>
-              
+              </div>
             ))}
-          
-        
+          </div>
+        </div>
 
         {/* Profile Content */}
         <div className="p-6 sm:p-8 space-y-6">
@@ -286,7 +286,7 @@ export default function ProfileDetailPage() {
                 >
                   <Flag className="w-5 h-5" />
                 </button>
-              
+              </div>
               <div className="flex flex-col gap-2 mt-1">
                 <span className="flex items-center gap-1 text-[#2D8659] text-sm font-semibold">
                   <MapPin className="w-4 h-4" />
@@ -314,12 +314,12 @@ export default function ProfileDetailPage() {
                       {selectedProfile.taille} cm
                     </span>
                   )}
-                
-              
-            
+                </div>
+              </div>
+            </div>
 
             {/* Quick Action Button & Desktop Report */}
-            
+            <div className="flex items-center gap-2">
               {renderActionButton("flex-1 sm:flex-none")}
               <button 
                 onClick={() => setIsReporting(true)}
@@ -328,8 +328,8 @@ export default function ProfileDetailPage() {
               >
                 <Flag className="w-5 h-5" />
               </button>
-            
-          
+            </div>
+          </div>
 
           {/* ============================================================ */}
           {/* SECTION POINTS COMMUNS (Ce qui match)                         */}
@@ -340,26 +340,26 @@ export default function ProfileDetailPage() {
                 <div className="flex items-center gap-2 text-[#2D8659] font-bold text-sm">
                   <Sparkles className="w-4 h-4" />
                   <span>POINTS COMMUNS AVEC VOTRE PROFIL</span>
-                
+                </div>
                 <span className="text-xs font-mono font-bold text-[#0A2F4A] bg-white px-2.5 py-1 rounded-full border border-[#2D8659]/30">
                   Score : {affinity.score}%
                 </span>
-              
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                 {affinity.points.map((pt, idx) => (
                   <div key={idx} className="flex items-center gap-2 bg-white/80 p-2.5 rounded-xl border border-[#2D8659]/20 text-xs text-slate-800 font-medium">
                     <CheckCircle2 className="w-4 h-4 text-[#2D8659] flex-shrink-0" />
                     <span>{pt.label}</span>
-                  
+                  </div>
                 ))}
-              
-            
+              </div>
+            </div>
           )}
 
           {/* Card: Ma vision du mariage */}
           <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-[#D4AF37]">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#D4AF37]"></div>
             <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
               <span className="text-xl">💍</span>
               Ma vision du mariage
@@ -375,13 +375,13 @@ export default function ProfileDetailPage() {
                     {tag}
                   </span>
                 ))}
-              
+              </div>
             )}
-          
+          </div>
 
           {/* Card: Ce que je recherche */}
           <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-[#2D8659]">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#2D8659]"></div>
             <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
               <span className="text-xl">👤</span>
               Ce que je recherche
@@ -399,14 +399,14 @@ export default function ProfileDetailPage() {
                     {tag}
                   </span>
                 ))}
-              
+              </div>
             )}
-          
+          </div>
 
           {/* Card: Personnalité & Intérêts */}
           {selectedProfile.interets && selectedProfile.interets.length > 0 && (
             <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-[#0A2F4A]">
+              <div className="absolute top-0 left-0 w-1 h-full bg-[#0A2F4A]"></div>
               <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
                 <span className="text-xl">✨</span>
                 Personnalité & Intérêts
@@ -420,49 +420,46 @@ export default function ProfileDetailPage() {
                     {tag}
                   </span>
                 ))}
-              
-            
+              </div>
+            </div>
           )}
 
           {/* Card: Projet de vie */}
           <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-[#0A2F4A]">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#0A2F4A]"></div>
             <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2 mb-2">
               <span className="text-xl">🏠</span>
               Projet de vie
             </h3>
             
             <div className="grid grid-cols-2 gap-x-4 gap-y-6">
-              <div>
-                <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Dahira / Repère</span>
-                <span className="text-sm font-semibold text-slate-800">{selectedProfile.dahira || 'Non spécifié'}</span>
-              
+
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Finance dans le couple</span>
                 <span className="text-sm font-semibold text-slate-800">{selectedProfile.financeCouple || 'À discuter'}</span>
-              
+              </div>
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Polygamie</span>
                 <span className="text-sm font-semibold text-slate-800">{selectedProfile.polygamie || 'Non'}</span>
-              
+              </div>
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Déménagement</span>
                 <span className="text-sm font-semibold text-slate-800">Ouvert(e)</span>
-              
+              </div>
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Niveau d'études</span>
                 <span className="text-sm font-semibold text-slate-800">{selectedProfile.etudes || 'Non spécifié'}</span>
-              
+              </div>
               <div>
                 <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Taille</span>
                 <span className="text-sm font-semibold text-slate-800">{selectedProfile.taille ? `${selectedProfile.taille} cm` : 'Non spécifié'}</span>
-              
-            
-          
+              </div>
+            </div>
+          </div>
 
           {/* Card: Critères rédhibitoires */}
           <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-rose-500">
+            <div className="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
             <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
               <span className="text-xl">🛡️</span>
               Critères rédhibitoires
@@ -472,7 +469,7 @@ export default function ProfileDetailPage() {
                 ? selectedProfile.redhibitoireText
                 : "Le manque de respect, le manque d'honnêteté et l'incapacité à communiquer de manière constructive. La violence physique ou verbale est totalement exclue."}
             </p>
-          
+          </div>
 
           {/* Bottom Call to Action Bar */}
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -481,13 +478,13 @@ export default function ProfileDetailPage() {
               {relStatus.status === 'request_sent' && "Votre demande est en attente de réponse."}
               {relStatus.status === 'request_received' && "Cette personne souhaite faire votre connaissance."}
               {relStatus.status === 'matched' && "Vous pouvez discuter avec cette personne."}
-            
+            </div>
             {renderActionButton("w-full sm:w-auto px-8 py-3.5")}
-          
+          </div>
 
-        
+        </div>
 
-      
+      </div>
 
       {isReporting && (
         <ReportModal 
@@ -497,6 +494,6 @@ export default function ProfileDetailPage() {
         />
       )}
 
-    
+    </div>
   );
 }

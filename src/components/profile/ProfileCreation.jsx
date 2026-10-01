@@ -4,7 +4,6 @@ import { useApp } from '../../context/AppContext';
 import { uploadProfilePhoto } from '../../services/storageService';
 import { 
   POPULAR_INTERESTS, 
-  DAHIRA_OPTIONS, 
   VISION_MARIAGE_OPTIONS,
   VALEURS_OPTIONS,
   CRITERES_OPTIONS
@@ -52,7 +51,6 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
     visionMariage: userProfile?.visionMariage || 'court_terme',
     etudes: userProfile?.etudes || '',
     ecole: userProfile?.ecole || '',
-    dahira: userProfile?.dahira || 'Touba Mouride',
     bio: userProfile?.bio || '',
     rechercheText: userProfile?.rechercheText || '',
     redhibitoireText: userProfile?.redhibitoireText || '',
@@ -851,20 +849,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
             </div>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-[#0A2F4A] uppercase tracking-wider mb-1.5">
-                  Dahira / Repère Spirituel
-                </label>
-                <select
-                  value={formData.dahira}
-                  onChange={(e) => setFormData({ ...formData, dahira: e.target.value })}
-                  className="w-full p-3 rounded-xl border border-slate-300 text-sm focus:border-[#D4AF37] outline-none bg-white font-medium"
-                >
-                  {DAHIRA_OPTIONS.map(d => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-              </div>
+
 
 
 
@@ -958,10 +943,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
                     <span className="block text-xs text-slate-500 font-bold uppercase">Profession</span>
                     <span className="font-semibold text-slate-800">{formData.profession}</span>
                   </div>
-                  <div>
-                    <span className="block text-xs text-slate-500 font-bold uppercase">Dahira</span>
-                    <span className="font-semibold text-slate-800">{formData.dahira}</span>
-                  </div>
+
                 </div>
 
                 {formData.valeurs.length > 0 && (
