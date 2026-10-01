@@ -8,7 +8,7 @@ import { Crown, MessageCircle, Heart, Eye, Star, UserCheck, Zap, BarChart2, Powe
 
 export default function HomePage() {
   const { userProfile, isPremium } = useAuth();
-  const { setCurrentView } = useApp();
+  const { setCurrentView, viewProfileDetail } = useApp();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,8 +17,13 @@ export default function HomePage() {
       setLoading(true);
       try {
         const list = await getAllProfiles(userProfile?.id);
-        // Only keep 6-8 profiles for "La sélection Wétali"
-        setProfiles(list.slice(0, 8));
+        const filteredList = list.filter(p => {
+          if (p.id === userProfile?.id) return false;
+          if (p.suspended || p.hidden) return false;
+          if (userProfile?.genre && p.genre && p.genre === userProfile.genre) return false;
+          return true;
+        });
+        setProfiles(filteredList.slice(0, 8));
       } catch (e) {
         console.error(e);
       } finally {
@@ -112,7 +117,7 @@ export default function HomePage() {
             {profiles.map(profile => (
               <div 
                 key={profile.id} 
-                onClick={() => setCurrentView('discover')}
+                onClick={() => viewProfileDetail(profile)}
                 className="relative bg-slate-100 rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer group border border-slate-200 hover:border-[#2D8659] transition-all"
               >
                 <img 
