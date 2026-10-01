@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { getAllProfiles, sendRequest, getSentRequests, getReceivedRequests, getMatches, checkRelationshipStatus, acceptRequest } from '../../services/firestoreService';
-import { X, MessageCircle, Plus, Crown, MapPin, Heart, User, CheckCircle2, Navigation, AlertCircle, Home, SlidersHorizontal, RotateCcw, Layers, Camera } from 'lucide-react';
+import { X, MessageCircle, Plus, Crown, MapPin, Heart, User, CheckCircle2, Navigation, AlertCircle, Home, SlidersHorizontal, RotateCcw, Layers, Camera, Lock, Settings } from 'lucide-react';
 
 export default function DiscoverPage() {
   const { userProfile } = useAuth();
@@ -18,10 +18,10 @@ export default function DiscoverPage() {
   const [showFilters, setShowFilters] = useState(false);
   
   const [filters, setFilters] = useState({
+    ageMin: 18,
+    ageMax: 50,
     pays: '',
-    hasPhoto: false,
-    celibataire: false,
-    ageRange: ''
+    hasPhoto: false
   });
 
   useEffect(() => {
@@ -57,23 +57,17 @@ export default function DiscoverPage() {
     
     const filteredList = allProfiles.filter(p => {
       if (excludedIds.has(p.id)) return false;
-      if (p.age < 18) return false;
       if (p.suspended || p.hidden) return false;
+      if (p.age < 18) return false;
       
-      // Sexe opposé par défaut
+      // Sexe opposé par défaut (pour une app de mariage)
       if (userProfile.genre && p.genre && p.genre === userProfile.genre) return false;
 
-      // Filtres
+      // Filtres avancés
+      if (p.age < filters.ageMin) return false;
+      if (p.age > filters.ageMax) return false;
       if (filters.pays && p.pays !== filters.pays) return false;
       if (filters.hasPhoto && (!p.photos || p.photos.length === 0)) return false;
-      // Pour "Célibataire", on filtre sur un champ si nécessaire. Pour l'instant simulons si on avait statutMatrimonial :
-      // if (filters.celibataire && p.statutMatrimonial !== 'Célibataire') return false; 
-      
-      if (filters.ageRange) {
-        if (filters.ageRange === '18-25' && (p.age < 18 || p.age > 25)) return false;
-        if (filters.ageRange === '26-35' && (p.age < 26 || p.age > 35)) return false;
-        if (filters.ageRange === '36+' && p.age < 36) return false;
-      }
 
       return true;
     });
@@ -149,22 +143,19 @@ export default function DiscoverPage() {
         </button>
         
         <button 
-          onClick={() => setShowFilters(!showFilters)}
-          className="flex-1 bg-white border border-slate-200 rounded-full py-2.5 px-4 flex items-center justify-center gap-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+          onClick={() => setShowFilters(true)}
+          className="flex-1 bg-white border border-slate-200 rounded-full py-2.5 px-4 flex items-center justify-center gap-2 text-sm font-bold text-[#2D8659] shadow-sm hover:bg-slate-50 transition-colors"
         >
           <SlidersHorizontal className="w-4 h-4" />
           Filtres
         </button>
         
         <button 
-          onClick={() => setFilters({ pays: '', hasPhoto: false, celibataire: false, ageRange: '' })}
+          onClick={() => setFilters({ ageMin: 18, ageMax: 50, pays: '', hasPhoto: false })}
           className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 hover:bg-amber-100 transition-colors relative"
           title="Réinitialiser les filtres"
         >
           <RotateCcw className="w-5 h-5" />
-          {Object.values(filters).some(v => v !== '' && v !== false) && (
-            <span className="absolute top-0 right-0 w-3 h-3 bg-rose-500 rounded-full border-2 border-white"></span>
-          )}
         </button>
         
         <button className="w-10 h-10 rounded-full bg-[#EAF5EF] flex items-center justify-center text-[#2D8659] hover:bg-[#d5f0e1] transition-colors">
@@ -172,62 +163,222 @@ export default function DiscoverPage() {
         </button>
       </div>
 
-      {/* FILTRES BOTTOM SHEET / MODAL */}
+      {/* FILTRES AVANCÉS MODAL */}
       {showFilters && (
-        <div className="absolute top-16 left-4 right-4 z-50 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 animate-fade-in">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-sm text-[#0A2F4A]">Filtres de recherche</h3>
-            <button onClick={() => setShowFilters(false)} className="p-1 rounded-full hover:bg-slate-100 text-slate-500 transition-colors">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-2">
-              <button className="px-4 py-2 bg-[#2D8659] text-white rounded-xl text-xs font-bold flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4" />
-                Filtres
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-fade-in">
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-slate-100">
+              <h3 className="font-bold text-[#0A2F4A] flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-[#2D8659]" />
+                Filtres avancés
+              </h3>
+              <button onClick={() => setShowFilters(false)} className="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 transition-colors">
+                <X className="w-5 h-5" />
               </button>
-              
-              <select 
-                value={filters.pays}
-                onChange={(e) => setFilters({...filters, pays: e.target.value})}
-                className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 outline-none focus:border-[#2D8659]"
-              >
-                <option value="">Tous les pays</option>
-                <option value="Sénégal">Sénégal</option>
-                <option value="France">France</option>
-                <option value="Canada">Canada</option>
-                <option value="USA">USA</option>
-                <option value="Belgique">Belgique</option>
-              </select>
             </div>
             
-            <div className="flex flex-wrap gap-2">
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-8 scrollbar-hide">
+              
+              {/* SECTION 1: INFO DE BASE */}
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-bold text-[#2D8659] uppercase flex items-center gap-1.5 tracking-wider">
+                  <User className="w-3.5 h-3.5" /> Informations de base
+                </h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Âge minimum</label>
+                    <select 
+                      value={filters.ageMin}
+                      onChange={(e) => setFilters({...filters, ageMin: parseInt(e.target.value)})}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#2D8659] bg-slate-50 appearance-none"
+                    >
+                      {[...Array(33)].map((_, i) => (
+                        <option key={i} value={18 + i}>{18 + i} ans</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Âge maximum</label>
+                    <select 
+                      value={filters.ageMax}
+                      onChange={(e) => setFilters({...filters, ageMax: parseInt(e.target.value)})}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#2D8659] bg-slate-50 appearance-none"
+                    >
+                      {[...Array(33)].map((_, i) => (
+                        <option key={i} value={18 + i}>{18 + i} ans</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="relative pt-4 pb-2">
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+                  <div className="relative flex justify-center"><span className="bg-white px-3 text-[9px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1"><Crown className="w-3 h-3" /> Réservé Premium</span></div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Situation</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span>Célibataire</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Enfants (Max)</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span>Peu importe</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION 2: LOCALISATION */}
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-bold text-[#2D8659] uppercase flex items-center gap-1.5 tracking-wider">
+                  <MapPin className="w-3.5 h-3.5" /> Localisation
+                </h4>
+                
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Pays</label>
+                  <select 
+                    value={filters.pays}
+                    onChange={(e) => setFilters({...filters, pays: e.target.value})}
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#2D8659] bg-slate-50 appearance-none"
+                  >
+                    <option value="">🌍 Tous les pays</option>
+                    <option value="Sénégal">🇸🇳 Sénégal</option>
+                    <option value="France">🇫🇷 France</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="USA">🇺🇸 USA</option>
+                    <option value="Belgique">🇧🇪 Belgique</option>
+                  </select>
+                </div>
+
+                <div className="relative pt-4 pb-2">
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+                  <div className="relative flex justify-center"><span className="bg-white px-3 text-[9px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1"><Crown className="w-3 h-3" /> Réservé Premium</span></div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Région</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Toutes les régions</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Prêt à déménager</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Peu importe</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                  <div className="relative col-span-2 sm:col-span-1">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Projet Hijra</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Peu importe</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION 3: PRATIQUE */}
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-bold text-[#2D8659] uppercase flex items-center gap-1.5 tracking-wider">
+                  <Navigation className="w-3.5 h-3.5" /> Pratique & Études
+                </h4>
+                
+                <div className="relative pt-2 pb-2">
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+                  <div className="relative flex justify-center"><span className="bg-white px-3 text-[9px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1"><Crown className="w-3 h-3" /> Réservé Premium</span></div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Madhhab</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Tous</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Niveau d'études</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Tous niveaux</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Accepte polygamie</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Peu importe</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Veut des enfants</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Peu importe</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION 4: AUTRES OPTIONS */}
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-bold text-[#2D8659] uppercase flex items-center gap-1.5 tracking-wider">
+                  <Settings className="w-3.5 h-3.5" /> Autres options
+                </h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Photo</label>
+                    <select 
+                      value={filters.hasPhoto ? 'avec' : 'tous'}
+                      onChange={(e) => setFilters({...filters, hasPhoto: e.target.value === 'avec'})}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#2D8659] bg-slate-50 appearance-none"
+                    >
+                      <option value="tous">Tous les profils</option>
+                      <option value="avec">🖼️ Avec photo</option>
+                    </select>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Présence</label>
+                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
+                      <span className="truncate">Tous les profils</span>
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-white gap-4">
               <button 
-                onClick={() => setFilters({...filters, hasPhoto: !filters.hasPhoto})}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors ${filters.hasPhoto ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
+                onClick={() => setFilters({ ageMin: 18, ageMax: 50, pays: '', hasPhoto: false })}
+                className="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-colors flex items-center gap-2"
               >
-                <Camera className="w-3.5 h-3.5" />
-                Photo
+                <RotateCcw className="w-4 h-4" />
+                <span className="hidden sm:inline">Réinitialiser</span>
               </button>
               
               <button 
-                onClick={() => setFilters({...filters, celibataire: !filters.celibataire})}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors ${filters.celibataire ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
+                onClick={() => setShowFilters(false)}
+                className="flex-1 px-6 py-3 rounded-xl bg-amber-400 text-amber-900 font-bold text-sm hover:bg-amber-500 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
-                Célibataire
+                Appliquer les filtres
+                <CheckCircle2 className="w-4 h-4" />
               </button>
-
-              {['18-25', '26-35', '36+'].map(range => (
-                <button 
-                  key={range}
-                  onClick={() => setFilters({...filters, ageRange: filters.ageRange === range ? '' : range})}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors ${filters.ageRange === range ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
-                >
-                  {range}
-                </button>
-              ))}
             </div>
           </div>
         </div>
@@ -244,14 +395,12 @@ export default function DiscoverPage() {
             <p className="text-slate-500 mb-6 max-w-sm mx-auto text-sm">
               Vous avez fait le tour de tous les profils correspondant à vos critères actuels. Revenez plus tard ou élargissez vos filtres !
             </p>
-            {Object.values(filters).some(v => v !== '' && v !== false) && (
-              <button 
-                onClick={() => setFilters({ pays: '', hasPhoto: false, celibataire: false, ageRange: '' })}
-                className="px-6 py-3 bg-[#0A2F4A] text-white font-bold rounded-xl shadow-lg hover:bg-[#061C2C]"
-              >
-                Réinitialiser les filtres
-              </button>
-            )}
+            <button 
+              onClick={() => setFilters({ ageMin: 18, ageMax: 50, pays: '', hasPhoto: false })}
+              className="px-6 py-3 bg-[#0A2F4A] text-white font-bold rounded-xl shadow-lg hover:bg-[#061C2C]"
+            >
+              Réinitialiser les filtres
+            </button>
           </div>
         ) : (
           <div className="h-full bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden flex flex-col relative">
