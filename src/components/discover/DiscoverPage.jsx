@@ -221,14 +221,14 @@ export default function DiscoverPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="relative">
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Situation</label>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Vision du mariage</label>
                     <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
-                      <span>Célibataire</span>
+                      <span>Court/Moyen terme</span>
                       <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
                     </div>
                   </div>
                   <div className="relative">
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Enfants (Max)</label>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Enfants actuels</label>
                     <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
                       <span>Peu importe</span>
                       <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
@@ -266,21 +266,14 @@ export default function DiscoverPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="relative">
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Région</label>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Ville</label>
                     <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
-                      <span className="truncate">Toutes les régions</span>
+                      <span className="truncate">Toutes les villes</span>
                       <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
                     </div>
                   </div>
                   <div className="relative">
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Prêt à déménager</label>
-                    <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
-                      <span className="truncate">Peu importe</span>
-                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
-                    </div>
-                  </div>
-                  <div className="relative col-span-2 sm:col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Projet Hijra</label>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Peut déménager</label>
                     <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
                       <span className="truncate">Peu importe</span>
                       <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
@@ -323,7 +316,7 @@ export default function DiscoverPage() {
                     </div>
                   </div>
                   <div className="relative">
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Veut des enfants</label>
+                    <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Souhaite des enfants</label>
                     <div onClick={() => setShowPremiumModal(true)} className="w-full border border-slate-100 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-400 bg-slate-50 flex justify-between items-center cursor-pointer">
                       <span className="truncate">Peu importe</span>
                       <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0"><Lock className="w-3 h-3 text-amber-500" /></div>
