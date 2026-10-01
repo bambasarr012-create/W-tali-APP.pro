@@ -14,6 +14,7 @@ export default function DiscoverPage() {
   const [profiles, setProfiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   
@@ -43,8 +44,10 @@ export default function DiscoverPage() {
 
         setExcludedIds(excluded);
         setAllProfiles(list);
+        setError(null);
       } catch (e) {
         console.error(e);
+        setError("Impossible de charger les profils. Vérifie que tes règles Firestore sont bien publiées.");
       } finally {
         setLoading(false);
       }
@@ -126,6 +129,18 @@ export default function DiscoverPage() {
       <div className="flex-1 flex flex-col items-center justify-center min-h-[70vh]">
         <div className="w-10 h-10 border-4 border-[#2D8659] border-t-transparent rounded-full animate-spin mb-4"></div>
         <p className="text-slate-500 font-medium">Recherche de profils compatibles...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[70vh] p-6 text-center">
+        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
+          <AlertCircle className="w-8 h-8 text-red-500" />
+        </div>
+        <h2 className="text-xl font-bold text-[#0A2F4A] mb-2">Accès refusé</h2>
+        <p className="text-slate-500 mb-6 max-w-sm mx-auto text-sm">{error}</p>
       </div>
     );
   }
