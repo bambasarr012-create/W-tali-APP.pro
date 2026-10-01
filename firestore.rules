@@ -17,12 +17,13 @@ service cloud.firestore {
           "bambasarr012@gmail.com",
           "wetalidiaspora@gmail.com",
           "khdmsamu@gmail.com",
-          "khadimsarr54@gmail.com"
+          "khadimsarr54@gmail.com",
+          "fatou.sy@example.com"
         ];
     }
 
-    // A passer a false le jour du lancement
-    function prelaunchActive() { return true; }
+    // A passer a false le jour du lancement (désactivé pour que fatou puisse tester)
+    function prelaunchActive() { return false; }
 
     function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
 
