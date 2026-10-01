@@ -127,7 +127,25 @@ export async function getProfileById(id) {
   const docRef = doc(db, 'users', id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    return enrichProfile({ id: docSnap.id, ...docSnap.data() });
+    const profile = { id: docSnap.id, ...docSnap.data() };
+    
+    // Try to fetch private info (will fail if not authorized, i.e., not the owner, but we catch it)
+    try {
+      const privateRef = doc(db, 'users', id, 'private', 'info');
+      const privateSnap = await getDoc(privateRef);
+      if (privateSnap.exists()) {
+        const privateData = privateSnap.data();
+        if (privateData.birthDate) {
+          profile.birthDate = privateData.birthDate.toDate ? privateData.birthDate.toDate().toISOString().split('T')[0] : privateData.birthDate;
+        }
+        if (privateData.telephone) profile.telephone = privateData.telephone;
+        if (privateData.email) profile.email = privateData.email;
+      }
+    } catch (e) {
+      // Ignore if permission denied
+    }
+    
+    return enrichProfile(profile);
   }
   return null;
 }
@@ -207,7 +225,16 @@ export async function saveUserProfile(profileData) {
     timeout
   ]);
 
-  const returnedProfile = { ...dataToSave }; // without private fields to mimic reality
+  // We return the full profile (public + private fields) to update the local state correctly
+  const returnedProfile = { ...dataToSave };
+  if (hasPrivateFields) {
+    if (privateFields.birthDate) {
+      returnedProfile.birthDate = privateFields.birthDate.toDate ? privateFields.birthDate.toDate().toISOString().split('T')[0] : (typeof privateFields.birthDate === 'string' ? privateFields.birthDate : new Date(privateFields.birthDate).toISOString().split('T')[0]);
+    }
+    if (privateFields.telephone) returnedProfile.telephone = privateFields.telephone;
+    if (privateFields.email) returnedProfile.email = privateFields.email;
+  }
+  
   localStorage.setItem('wetali_current_profile', JSON.stringify(returnedProfile)); 
   return returnedProfile;
 }

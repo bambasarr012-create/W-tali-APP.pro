@@ -89,7 +89,7 @@ function MainApp() {
   const [tempBirthDate, setTempBirthDate] = useState('');
 
   useEffect(() => {
-    if (isAuthenticated && hasProfile && userProfile && !userProfile.birthDate) {
+    if (isAuthenticated && hasProfile && userProfile && !userProfile.age && !userProfile.birthDate) {
       setMissingBirthDate(true);
     }
   }, [isAuthenticated, hasProfile, userProfile]);
