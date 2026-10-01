@@ -327,12 +327,16 @@ export async function getReceivedRequests(userId) {
   const db = getDb();
   const q = query(
     collection(db, 'requests'), 
-    where('toUserId', '==', userId), 
-    where('status', '==', 'pending')
+    where('toUserId', '==', userId)
   );
   const snap = await getDocs(q);
   const requests = [];
-  snap.forEach(doc => requests.push({ id: doc.id, ...doc.data() }));
+  snap.forEach(doc => {
+    const data = doc.data();
+    if (data.status === 'pending') {
+      requests.push({ id: doc.id, ...data });
+    }
+  });
   return requests;
 }
 
@@ -356,14 +360,20 @@ export async function getDailyRequestCount(userId) {
   // Obtenir le début de la journée courante
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
+  const startOfDayStr = startOfDay.toISOString();
   
   const q = query(
     collection(db, 'requests'), 
-    where('fromUserId', '==', userId),
-    where('createdAt', '>=', startOfDay.toISOString())
+    where('fromUserId', '==', userId)
   );
   const snap = await getDocs(q);
-  return snap.size;
+  let count = 0;
+  snap.forEach(doc => {
+    if (doc.data().createdAt >= startOfDayStr) {
+      count++;
+    }
+  });
+  return count;
 }
 
 export async function acceptRequest(requestId, currentProfile) {
@@ -411,14 +421,24 @@ export async function checkRelationshipStatus(myUserId, targetUserId) {
   }
 
   // 2. Check if I sent a request
-  const sentQuery = query(collection(db, 'requests'), where('fromUserId', '==', myUserId), where('toUserId', '==', targetUserId), where('status', '==', 'pending'));
+  const sentQuery = query(collection(db, 'requests'), where('fromUserId', '==', myUserId));
   const sentSnap = await getDocs(sentQuery);
-  if (!sentSnap.empty) return { status: 'request_sent', request: { id: sentSnap.docs[0].id, ...sentSnap.docs[0].data() } };
+  for (const doc of sentSnap.docs) {
+    const data = doc.data();
+    if (data.toUserId === targetUserId && data.status === 'pending') {
+      return { status: 'request_sent', request: { id: doc.id, ...data } };
+    }
+  }
 
   // 3. Check if they sent me a request
-  const receivedQuery = query(collection(db, 'requests'), where('fromUserId', '==', targetUserId), where('toUserId', '==', myUserId), where('status', '==', 'pending'));
+  const receivedQuery = query(collection(db, 'requests'), where('toUserId', '==', myUserId));
   const receivedSnap = await getDocs(receivedQuery);
-  if (!receivedSnap.empty) return { status: 'request_received', request: { id: receivedSnap.docs[0].id, ...receivedSnap.docs[0].data() } };
+  for (const doc of receivedSnap.docs) {
+    const data = doc.data();
+    if (data.fromUserId === targetUserId && data.status === 'pending') {
+      return { status: 'request_received', request: { id: doc.id, ...data } };
+    }
+  }
 
   return { status: 'none' };
 }
