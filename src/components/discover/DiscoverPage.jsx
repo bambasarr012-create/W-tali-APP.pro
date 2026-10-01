@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { getAllProfiles, sendRequest, getSentRequests, getReceivedRequests, getMatches, checkRelationshipStatus, acceptRequest } from '../../services/firestoreService';
@@ -110,13 +110,13 @@ export default function DiscoverPage() {
       }
       if (statusObj.status === 'request_received') {
         await acceptRequest(statusObj.request.id, userProfile);
-        showToast(It's a Match avec  !, "success");
+        showToast(`It's a Match avec ${currentProfile.prenom} !`, "success");
         handleNext();
         return;
       }
 
       await sendRequest(userProfile, currentProfile);
-      showToast(Demande envoyée à  !, "success");
+      showToast(`Demande envoyée à ${currentProfile.prenom} !`, "success");
       handleNext();
     } catch (e) {
       showToast(e.message || "Erreur lors de l'envoi de la demande", "error");
@@ -124,7 +124,7 @@ export default function DiscoverPage() {
   };
 
   const handleMessage = () => {
-    showToast(Vous devez d'abord matcher avec  pour envoyer un message., "info");
+    showToast(`Vous devez d'abord matcher avec ${currentProfile.prenom} pour envoyer un message.`, "info");
   };
 
   if (loading) {
@@ -206,7 +206,7 @@ export default function DiscoverPage() {
             <div className="flex flex-wrap gap-2">
               <button 
                 onClick={() => setFilters({...filters, hasPhoto: !filters.hasPhoto})}
-                className={px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors }
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors ${filters.hasPhoto ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
               >
                 <Camera className="w-3.5 h-3.5" />
                 Photo
@@ -214,7 +214,7 @@ export default function DiscoverPage() {
               
               <button 
                 onClick={() => setFilters({...filters, celibataire: !filters.celibataire})}
-                className={px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors }
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors ${filters.celibataire ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
               >
                 Célibataire
               </button>
@@ -223,7 +223,7 @@ export default function DiscoverPage() {
                 <button 
                   key={range}
                   onClick={() => setFilters({...filters, ageRange: filters.ageRange === range ? '' : range})}
-                  className={px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors }
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5 transition-colors ${filters.ageRange === range ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
                 >
                   {range}
                 </button>
