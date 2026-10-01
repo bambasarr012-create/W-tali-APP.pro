@@ -1,6 +1,6 @@
 import { 
   getFirestore, collection, doc, setDoc, getDoc, getDocs, 
-  onSnapshot, query, where, addDoc, updateDoc, deleteField
+  onSnapshot, query, where, addDoc, updateDoc, deleteField, Timestamp
 } from 'firebase/firestore';
 import { firebaseState } from './firebase';
 import { calculateAge } from '../utils/age';
@@ -139,18 +139,36 @@ export async function saveUserProfile(profileData) {
   // 1. Extract private fields
   const privateFields = {};
   let hasPrivateFields = false;
-  ['email', 'telephone', 'phone', 'birthDate', 'consent18', 'consent18Date'].forEach(field => {
+  ['email', 'telephone', 'phone'].forEach(field => {
     if (profileData[field] !== undefined) {
       privateFields[field] = profileData[field];
       hasPrivateFields = true;
     }
   });
 
-  if (profileData.birthDate && !privateFields.consent18Date) {
-    privateFields.consent18 = true;
-    privateFields.consent18Date = new Date().toISOString();
+  if (profileData.birthDate !== undefined) {
+    if (profileData.birthDate instanceof Timestamp) {
+      privateFields.birthDate = profileData.birthDate;
+    } else if (profileData.birthDate instanceof Date) {
+      privateFields.birthDate = Timestamp.fromDate(profileData.birthDate);
+    } else if (typeof profileData.birthDate === 'string' || typeof profileData.birthDate === 'number') {
+      privateFields.birthDate = Timestamp.fromDate(new Date(profileData.birthDate));
+    } else {
+      privateFields.birthDate = profileData.birthDate;
+    }
     hasPrivateFields = true;
   }
+  
+  if (profileData.consent18 !== undefined) {
+    privateFields.consent18 = profileData.consent18;
+    hasPrivateFields = true;
+  }
+  if (profileData.consent18Date !== undefined) {
+    privateFields.consent18Date = profileData.consent18Date;
+    hasPrivateFields = true;
+  }
+
+  // (supprimé, pas d'ajout automatique de consent18)
 
   // 2. Prepare public data
   const dataToSave = { ...profileData, updatedAt: new Date().toISOString() };
@@ -455,11 +473,25 @@ export async function migrateUserPrivacy(userId, profile) {
     // 1. Sauvegarder dans private
     const privateData = {
       email: profile.email || null,
-      telephone: profile.phone || profile.telephone || null,
-      birthDate: profile.birthDate || null,
-      consent18: true,
-      consent18Date: new Date().toISOString()
+      telephone: profile.phone || profile.telephone || null
     };
+
+    let bDate = profile.birthDate || null;
+    if (bDate) {
+      if (bDate.toDate || bDate instanceof Timestamp) {
+        privateData.birthDate = bDate;
+      } else {
+        privateData.birthDate = Timestamp.fromDate(new Date(bDate));
+      }
+    }
+    
+    // N'écris pas consent18 automatiquement
+    if (profile.consent18 !== undefined) {
+      privateData.consent18 = profile.consent18;
+    }
+    if (profile.consent18Date !== undefined) {
+      privateData.consent18Date = profile.consent18Date;
+    }
     
     // Calculate age if not exist
     let age = profile.age;

@@ -1,144 +1,152 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Fonctions utiles
+
+    function signedIn() { return request.auth != null; }
+
     function isAdmin() {
-      return request.auth != null 
-        && request.auth.token.email == "bambasarr012@gmail.com" 
+      return signedIn()
+        && request.auth.token.email == "bambasarr012@gmail.com"
         && request.auth.token.email_verified == true;
     }
 
     function isTester() {
-      return request.auth != null && (
-        request.auth.token.email == "bambasarr012@gmail.com" ||
-        request.auth.token.email == "wetalidiaspora@gmail.com" ||
-        request.auth.token.email == "khdmsamu@gmail.com" ||
-        request.auth.token.email == "khadimsarr54@gmail.com"
-      );
-    }
-    
-    function prelaunchActive() {
-      return true; // À passer à false au lancement
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          "bambasarr012@gmail.com",
+          "wetalidiaspora@gmail.com",
+          "khdmsamu@gmail.com",
+          "khadimsarr54@gmail.com"
+        ];
     }
 
-    function isOwner(uid) {
-      return request.auth != null && request.auth.uid == uid;
-    }
-    
-    // Champs réservés à l'admin qu'un user ne peut pas modifier ni créer à true/valeur spéciale
-    function hasNoAdminFields(data) {
-      return !('suspended' in data) &&
-             !('hidden' in data) &&
-             !('profileStatus' in data) &&
-             !('verified' in data) &&
-             !('isPremium' in data) &&
-             !('subscriptionTier' in data) &&
-             !('abonnementStatut' in data) &&
-             !('abonnementFin' in data) &&
-             !('role' in data);
+    // A passer a false le jour du lancement
+    function prelaunchActive() { return true; }
+
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    function canUseApp() { return signedIn() && (!prelaunchActive() || isTester() || isAdmin()); }
+
+    function adminFieldsAreDefaults(d) {
+      return d.get('suspended', false) == false
+        && d.get('hidden', false) == false
+        && d.get('verified', false) == false
+        && d.get('isPremium', false) == false
+        && d.get('subscriptionTier', null) == null
+        && d.get('abonnementFin', null) == null
+        && d.get('abonnementStatut', 'none') == 'none'
+        && d.get('profileStatus', 'pending') == 'pending'
+        && d.get('role', 'user') == 'user';
     }
 
-    function modifyingOnlyAllowedFields(requestData, resourceData) {
-      return (!('suspended' in requestData) || requestData.suspended == resourceData.suspended) &&
-             (!('hidden' in requestData) || requestData.hidden == resourceData.hidden) &&
-             (!('profileStatus' in requestData) || requestData.profileStatus == resourceData.profileStatus) &&
-             (!('verified' in requestData) || requestData.verified == resourceData.verified) &&
-             (!('isPremium' in requestData) || requestData.isPremium == resourceData.isPremium) &&
-             (!('subscriptionTier' in requestData) || requestData.subscriptionTier == resourceData.subscriptionTier) &&
-             (!('abonnementStatut' in requestData) || requestData.abonnementStatut == resourceData.abonnementStatut) &&
-             (!('abonnementFin' in requestData) || requestData.abonnementFin == resourceData.abonnementFin) &&
-             (!('role' in requestData) || requestData.role == resourceData.role);
+    // 18 ans = 6575 jours (annees bissextiles incluses)
+    function isAdultBirthDate(d) {
+      return d is timestamp && d <= request.time - duration.value(6575, 'd');
     }
 
-    // Profils utilisateurs
     match /users/{userId} {
-      // Lecture par les membres connectés ou admin
-      allow read: if request.auth != null;
-      
-      // Création uniquement par le propriétaire, si prelaunchActive() alors seulement si isTester(), age >= 18
+      allow read: if isOwner(userId) || canUseApp();
+
       allow create: if isOwner(userId)
-                    && (prelaunchActive() ? isTester() : true)
-                    && request.resource.data.age >= 18
-                    && hasNoAdminFields(request.resource.data);
-                    
-      // Modification par le propriétaire
-      allow update: if (isOwner(userId) && modifyingOnlyAllowedFields(request.resource.data, resource.data) && (!('age' in request.resource.data) || request.resource.data.age >= 18)) || isAdmin();
-      
-      allow delete: if isAdmin();
+        && (!prelaunchActive() || isTester())
+        && request.resource.data.age is number
+        && request.resource.data.age >= 18
+        && adminFieldsAreDefaults(request.resource.data);
 
-      // Sous-collection privée
+      allow update: if isAdmin() || (
+        isOwner(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+             'suspended', 'hidden', 'verified', 'isPremium', 'subscriptionTier',
+             'abonnementStatut', 'abonnementFin', 'role'])
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['profileStatus'])
+            || request.resource.data.profileStatus == 'pending')
+        && request.resource.data.get('age', 18) >= 18
+      );
+
+      allow delete: if isOwner(userId) || isAdmin();
+
       match /private/{docId} {
-        // docId sera généralement 'info'
-        allow read, write: if isOwner(userId) || isAdmin();
+        allow read, delete: if isOwner(userId) || isAdmin();
+        allow create, update: if (isOwner(userId) || isAdmin())
+          && (request.resource.data.get('birthDate', null) == null
+              || isAdultBirthDate(request.resource.data.birthDate));
       }
     }
 
-    // Demandes (Requests)
     match /requests/{requestId} {
-      allow read: if request.auth != null && (request.auth.uid == resource.data.fromUserId || request.auth.uid == resource.data.toUserId);
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.fromUserId;
-      // Modification uniquement du statut par le destinataire
-      allow update: if request.auth != null && request.auth.uid == resource.data.toUserId;
-      allow delete: if request.auth != null && (request.auth.uid == resource.data.fromUserId || request.auth.uid == resource.data.toUserId);
+      allow read: if signedIn()
+        && (request.auth.uid == resource.data.fromUserId || request.auth.uid == resource.data.toUserId);
+      allow create: if canUseApp()
+        && request.auth.uid == request.resource.data.fromUserId
+        && request.resource.data.toUserId != request.auth.uid
+        && request.resource.data.status == 'pending';
+      allow update: if signedIn()
+        && request.auth.uid == resource.data.toUserId
+        && request.resource.data.fromUserId == resource.data.fromUserId
+        && request.resource.data.toUserId == resource.data.toUserId;
+      allow delete: if signedIn()
+        && (request.auth.uid == resource.data.fromUserId || request.auth.uid == resource.data.toUserId);
     }
 
-    // Matchs (Connexions établies)
     match /matches/{matchId} {
-      allow read: if request.auth != null && request.auth.uid in resource.data.users;
-      allow write: if request.auth != null && request.auth.uid in request.resource.data.users;
+      allow read: if signedIn() && request.auth.uid in resource.data.users;
+      allow create: if canUseApp()
+        && request.auth.uid in request.resource.data.users
+        && request.resource.data.users.size() == 2;
+      allow update, delete: if signedIn() && request.auth.uid in resource.data.users;
     }
 
-    // Chats / Messages
     match /chats/{chatId} {
-      allow read, write: if request.auth != null && chatId.matches('.*' + request.auth.uid + '.*');
-      
+      allow read, write: if signedIn() && chatId.matches('.*' + request.auth.uid + '.*');
       match /messages/{messageId} {
-        allow read, write: if request.auth != null && chatId.matches('.*' + request.auth.uid + '.*');
+        allow read, write: if signedIn() && chatId.matches('.*' + request.auth.uid + '.*');
       }
     }
 
-    // Notifications
     match /notifications/{notifId} {
-      allow read, delete: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow create: if request.auth != null; // n'importe qui peut créer pour un autre
-      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow read, update, delete: if signedIn() && request.auth.uid == resource.data.userId;
+      allow create: if canUseApp();
     }
 
-    // Favoris
     match /favorites/{favoriteId} {
-      allow read, delete: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if signedIn() && request.auth.uid == resource.data.userId;
+      allow create: if canUseApp() && request.auth.uid == request.resource.data.userId;
     }
 
-    // Visites
     match /visits/{visitId} {
-      allow read: if request.auth != null && request.auth.uid == resource.data.visitedUserId;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.visitorId;
+      allow read: if signedIn()
+        && (request.auth.uid == resource.data.visitedUserId || request.auth.uid == resource.data.visitorId);
+      allow create, update: if canUseApp() && request.auth.uid == request.resource.data.visitorId;
     }
 
-    // Signalements (Reports)
     match /reports/{reportId} {
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.reporterId;
+      allow create: if canUseApp() && request.auth.uid == request.resource.data.reporterId;
       allow read, update, delete: if isAdmin();
     }
 
-    // Liste d'attente (Pré-lancement) - EXACTEMENT LE BLOC ACTUEL
     match /waitlist/{docId} {
-      // Tout visiteur (même non connecté) peut s'inscrire
-      allow create: if 
-        request.resource.data.keys().hasAll(['firstName', 'email', 'country', 'city', 'consent', 'createdAt']) &&
-        request.resource.data.firstName is string && request.resource.data.firstName.size() > 0 && request.resource.data.firstName.size() <= 50 &&
-        request.resource.data.email is string && request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
-        request.resource.data.country is string && request.resource.data.country.size() > 0 && request.resource.data.country.size() <= 100 &&
-        request.resource.data.city is string && request.resource.data.city.size() > 0 && request.resource.data.city.size() <= 100 &&
-        request.resource.data.consent == true;
-        
-      // Seul l'admin peut lire ou supprimer les inscrits de la liste d'attente
-      allow read, update, delete: if request.auth != null && request.auth.token.email == "bambasarr012@gmail.com";
+      allow create: if
+        request.resource.data.keys().hasOnly(['firstName', 'email', 'country', 'city', 'consent', 'createdAt'])
+        && request.resource.data.keys().hasAll(['firstName', 'email', 'country', 'city', 'consent', 'createdAt'])
+        && docId == request.resource.data.email
+        && request.resource.data.firstName is string
+        && request.resource.data.firstName.size() > 0
+        && request.resource.data.firstName.size() <= 50
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.email.matches('^[^@]+@[^@]+[.][^@]+$')
+        && request.resource.data.country is string
+        && request.resource.data.country.size() > 0
+        && request.resource.data.country.size() <= 100
+        && request.resource.data.city is string
+        && request.resource.data.city.size() > 0
+        && request.resource.data.city.size() <= 100
+        && request.resource.data.consent == true
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAdmin();
     }
-    
-    // Strict block for everything else
+
     match /{document=**} {
       allow read, write: if false;
     }

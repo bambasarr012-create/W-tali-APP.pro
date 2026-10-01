@@ -90,7 +90,7 @@ export default function SettingsPage() {
         { icon: User, title: "Mon Identité", subtitle: "Date de naissance, situation familiale et détails de base", isComplete: true, action: () => { setEditingStep(2); setIsEditingProfile(true); } },
         { icon: MapPin, title: "Situation actuelle", subtitle: "Où tu vis, ton métier et tes études", isComplete: !!(userProfile?.ville && userProfile?.profession), action: () => { setEditingStep(3); setIsEditingProfile(true); } },
         { icon: Heart, title: "Ma vision de l'union", subtitle: "Ce qui compte vraiment pour toi dans le mariage", isComplete: !!userProfile?.visionMariageLabel, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
-        { icon: BookOpen, title: "Pratique & Foi", subtitle: "Ton socle religieux et tes repères", isComplete: !!userProfile?.dahira, action: () => { setEditingStep(6); setIsEditingProfile(true); } },
+        { icon: BookOpen, title: "Pratique & Foi", subtitle: "Ton socle religieux et tes repères", isComplete: true, action: () => { setEditingStep(6); setIsEditingProfile(true); } },
         { icon: Target, title: "Ma présentation (Bio)", subtitle: "Laisse parler ton cœur et tes projets d'avenir", isComplete: !!userProfile?.bio, action: () => { setEditingStep(5); setIsEditingProfile(true); } },
       ]
     },
