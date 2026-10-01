@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import ProfileCreation from '../profile/ProfileCreation';
-import { INITIAL_PROFILES } from '../../data/mockProfiles';
-import { getDb } from '../../services/firestoreService';
-import { doc, setDoc } from 'firebase/firestore';
 import { 
   Camera, 
   User, 
@@ -67,24 +64,6 @@ export default function SettingsPage() {
       localStorage.clear();
       showToast("Données réinitialisées.", "info");
       window.location.reload();
-    }
-  };
-
-  const handleInjectMockProfiles = async () => {
-    if (!window.confirm("Voulez-vous vraiment injecter les profils de démonstration dans la base de données ?")) return;
-    
-    try {
-      showToast("Injection en cours...", "info");
-      const db = getDb();
-      for (const profile of INITIAL_PROFILES) {
-        // Enregistrer dans la collection publique (sans infos privées si on voulait être strict, mais ici on pousse tel quel pour le test)
-        const docRef = doc(db, 'users', profile.id);
-        await setDoc(docRef, profile, { merge: true });
-      }
-      showToast("5 profils de test injectés avec succès !", "success");
-    } catch (err) {
-      console.error(err);
-      showToast("Erreur lors de l'injection.", "error");
     }
   };
 
@@ -222,15 +201,6 @@ export default function SettingsPage() {
         >
           <LogOut className="w-5 h-5" />
           Déconnexion
-        </button>
-
-        {/* ADMIN SEED BUTTON */}
-        <button 
-          onClick={handleInjectMockProfiles}
-          className="w-full flex items-center justify-center gap-2 p-4 bg-[#EAF5EF] rounded-3xl border border-[#2D8659] shadow-sm text-[#2D8659] font-bold text-sm hover:bg-[#d8f0e3] transition-colors"
-        >
-          <Users className="w-5 h-5" />
-          Injecter 5 Profils de Test (Démo)
         </button>
 
       </div>
