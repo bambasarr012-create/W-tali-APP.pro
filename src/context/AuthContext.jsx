@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getStoredAuthUser, signupUser, loginUser, logoutUser, loginWithGoogle } from '../services/authService';
-import { getCurrentStoredProfile, saveUserProfile, getProfileById } from '../services/firestoreService';
+import { getCurrentStoredProfile, saveUserProfile, getProfileById, migrateUserPrivacy } from '../services/firestoreService';
 
 const AuthContext = createContext(null);
 
@@ -33,7 +33,8 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const authUser = await loginUser(email, password);
-    const profile = await getProfileById(authUser.uid);
+    let profile = await getProfileById(authUser.uid);
+    profile = await migrateUserPrivacy(authUser.uid, profile);
     if (profile?.suspended) {
       await logoutUser();
       throw new Error("Votre compte a été suspendu suite à un signalement. Contactez le support pour plus d'informations.");
@@ -60,7 +61,8 @@ export function AuthProvider({ children }) {
 
   const loginGoogle = async () => {
     const authUser = await loginWithGoogle();
-    const profile = await getProfileById(authUser.uid);
+    let profile = await getProfileById(authUser.uid);
+    profile = await migrateUserPrivacy(authUser.uid, profile);
     if (profile?.suspended) {
       await logoutUser();
       throw new Error("Votre compte a été suspendu suite à un signalement. Contactez le support pour plus d'informations.");

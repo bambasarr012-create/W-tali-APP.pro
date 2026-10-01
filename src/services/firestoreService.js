@@ -1,6 +1,6 @@
 import { 
   getFirestore, collection, doc, setDoc, getDoc, getDocs, 
-  onSnapshot, query, where, addDoc, updateDoc 
+  onSnapshot, query, where, addDoc, updateDoc, deleteField
 } from 'firebase/firestore';
 import { firebaseState } from './firebase';
 import { calculateAge } from '../utils/age';
@@ -136,28 +136,62 @@ export async function saveUserProfile(profileData) {
   if (!profileData || !profileData.id) throw new Error("Profile ID is required");
   const db = getDb();
   
-  const docRef = doc(db, 'users', profileData.id);
-  const dataToSave = { 
-    ...profileData, 
-    updatedAt: new Date().toISOString() 
-  };
+  // 1. Extract private fields
+  const privateFields = {};
+  let hasPrivateFields = false;
+  ['email', 'telephone', 'phone', 'birthDate', 'consent18', 'consent18Date'].forEach(field => {
+    if (profileData[field] !== undefined) {
+      privateFields[field] = profileData[field];
+      hasPrivateFields = true;
+    }
+  });
+
+  if (profileData.birthDate && !privateFields.consent18Date) {
+    privateFields.consent18 = true;
+    privateFields.consent18Date = new Date().toISOString();
+    hasPrivateFields = true;
+  }
+
+  // 2. Prepare public data
+  const dataToSave = { ...profileData, updatedAt: new Date().toISOString() };
   if (!profileData.createdAt) {
     dataToSave.createdAt = new Date().toISOString();
   }
 
-  // Ajout d'un timeout pour éviter que setDoc ne tourne indéfiniment 
-  // en cas de blocage réseau (Adblocker, App Check en cache, etc.)
+  if (profileData.birthDate) {
+    const age = calculateAge(profileData.birthDate);
+    if (age !== null) dataToSave.age = age;
+  }
+
+  // Remove private fields from public data
+  delete dataToSave.email;
+  delete dataToSave.telephone;
+  delete dataToSave.phone;
+  delete dataToSave.birthDate;
+  delete dataToSave.dahira; // Suppression définitive
+  delete dataToSave.consent18;
+  delete dataToSave.consent18Date;
+
+  const docRef = doc(db, 'users', profileData.id);
+  
   const timeout = new Promise((_, reject) => 
     setTimeout(() => reject(new Error("Le serveur met trop de temps à répondre. Vérifiez votre connexion ou désactivez votre bloqueur de publicités (Adblock).")), 10000)
   );
 
+  const savePromises = [setDoc(docRef, dataToSave, { merge: true })];
+  if (hasPrivateFields) {
+    const privateRef = doc(db, 'users', profileData.id, 'private', 'info');
+    savePromises.push(setDoc(privateRef, privateFields, { merge: true }));
+  }
+
   await Promise.race([
-    setDoc(docRef, dataToSave, { merge: true }),
+    Promise.all(savePromises),
     timeout
   ]);
 
-  localStorage.setItem('wetali_current_profile', JSON.stringify(dataToSave)); // Fallback cache local
-  return dataToSave;
+  const returnedProfile = { ...dataToSave }; // without private fields to mimic reality
+  localStorage.setItem('wetali_current_profile', JSON.stringify(returnedProfile)); 
+  return returnedProfile;
 }
 
 export function getCurrentStoredProfile() {
@@ -184,13 +218,6 @@ export function calculatePointsCommuns(myProfile, targetProfile) {
     if (myProfile.ville.trim().toLowerCase() === targetProfile.ville.trim().toLowerCase()) {
       points.push({ type: 'ville', label: `Même ville de résidence (${targetProfile.ville})`, icon: 'map-pin' });
       score += 15;
-    }
-  }
-
-  if (myProfile?.dahira && targetProfile?.dahira) {
-    if (myProfile.dahira === targetProfile.dahira && myProfile.dahira !== 'Autre Dahira') {
-      points.push({ type: 'dahira', label: `Même repère spirituel (${targetProfile.dahira})`, icon: 'heart' });
-      score += 12;
     }
   }
 
@@ -416,4 +443,59 @@ export function formatRelativeTime(dateString) {
   if (diffInDays < 7) return `Il y a ${diffInDays} jours`;
   
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+
+export async function migrateUserPrivacy(userId, profile) {
+  if (!profile) return null;
+  const db = getDb();
+  const needsMigration = profile.phone || profile.telephone || profile.birthDate || profile.email || profile.dahira;
+  if (!needsMigration) return profile;
+
+  try {
+    // 1. Sauvegarder dans private
+    const privateData = {
+      email: profile.email || null,
+      telephone: profile.phone || profile.telephone || null,
+      birthDate: profile.birthDate || null,
+      consent18: true,
+      consent18Date: new Date().toISOString()
+    };
+    
+    // Calculate age if not exist
+    let age = profile.age;
+    if (!age && privateData.birthDate) {
+      age = calculateAge(privateData.birthDate);
+    }
+    
+    await setDoc(doc(db, 'users', userId, 'private', 'info'), privateData, { merge: true });
+
+    // 2. Nettoyer le document public
+    const publicUpdates = {};
+    if (profile.email) publicUpdates.email = deleteField();
+    if (profile.phone) publicUpdates.phone = deleteField();
+    if (profile.telephone) publicUpdates.telephone = deleteField();
+    if (profile.birthDate) publicUpdates.birthDate = deleteField();
+    if (profile.dahira) publicUpdates.dahira = deleteField();
+    
+    if (age) {
+      publicUpdates.age = age;
+    }
+    
+    if (Object.keys(publicUpdates).length > 0) {
+      await updateDoc(doc(db, 'users', userId), publicUpdates);
+    }
+    
+    // 3. Retourner le nouveau profil
+    const updatedProfile = { ...profile, age };
+    delete updatedProfile.email;
+    delete updatedProfile.phone;
+    delete updatedProfile.telephone;
+    delete updatedProfile.birthDate;
+    delete updatedProfile.dahira;
+    
+    return updatedProfile;
+  } catch (err) {
+    console.error("Erreur lors de la migration privacy:", err);
+    return profile;
+  }
 }
