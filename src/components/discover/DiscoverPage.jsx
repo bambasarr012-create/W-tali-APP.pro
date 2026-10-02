@@ -441,10 +441,10 @@ export default function DiscoverPage() {
               Vous avez fait le tour des profils correspondant à vos critères actuels. Revenez plus tard ou élargissez vos filtres !
             </p>
             <button 
-              onClick={() => setFilters({ ageMin: 18, ageMax: 50, pays: '', hasPhoto: false })}
+              onClick={() => setShowFilters(true)}
               className="px-6 py-3 bg-gradient-to-r from-[#0A2F4A] to-[#1a4a6b] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
-              <RotateCcw className="w-4 h-4" />
+              <SlidersHorizontal className="w-4 h-4" />
               Élargir mes critères
             </button>
           </div>
