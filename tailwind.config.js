@@ -29,6 +29,16 @@ export default {
         'gold-glow': '0 0 35px -5px rgba(212, 175, 55, 0.4)',
         'gold-sm': '0 4px 20px rgba(212, 175, 55, 0.2)',
       },
+      animation: {
+        'ripple': 'ripple 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+        'ripple-delayed': 'ripple 3s cubic-bezier(0.4, 0, 0.2, 1) infinite 1.5s',
+      },
+      keyframes: {
+        ripple: {
+          '0%': { transform: 'scale(1)', opacity: '0.8' },
+          '100%': { transform: 'scale(3.5)', opacity: '0' },
+        }
+      },
     },
   },
   plugins: [],

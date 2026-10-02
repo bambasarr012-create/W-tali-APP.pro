@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { getAllProfiles, sendRequest, getSentRequests, getReceivedRequests, getMatches, checkRelationshipStatus, acceptRequest } from '../../services/firestoreService';
-import { X, MessageCircle, Plus, Crown, MapPin, Heart, User, CheckCircle2, Navigation, AlertCircle, Home, SlidersHorizontal, RotateCcw, Layers, Camera, Lock, Settings } from 'lucide-react';
+import { X, MessageCircle, Plus, Crown, MapPin, Heart, User, CheckCircle2, Navigation, AlertCircle, Home, SlidersHorizontal, RotateCcw, Layers, Camera, Lock, Settings, Search } from 'lucide-react';
 
 export default function DiscoverPage() {
   const { userProfile } = useAuth();
@@ -127,8 +127,34 @@ export default function DiscoverPage() {
   if (loading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[70vh]">
-        <div className="w-10 h-10 border-4 border-[#2D8659] border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-slate-500 font-medium">Recherche de profils compatibles...</p>
+        <div className="relative w-32 h-32 flex items-center justify-center mb-12">
+          {/* Cercles de radar */}
+          <div className="absolute inset-0 rounded-full border-[3px] border-[#D4AF37]/60 animate-ripple"></div>
+          <div className="absolute inset-0 rounded-full border-[3px] border-[#2D8659]/50 animate-ripple-delayed"></div>
+          <div className="absolute inset-[-20px] rounded-full border-[2px] border-[#0A2F4A]/20 animate-ripple" style={{ animationDelay: '0.7s' }}></div>
+          
+          {/* Photo utilisateur au centre */}
+          <div className="relative z-10 w-24 h-24 rounded-full border-4 border-white shadow-xl overflow-hidden bg-slate-100 flex items-center justify-center">
+            {userProfile?.photos?.[0] ? (
+              <img src={userProfile.photos[0]} alt="Vous" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-10 h-10 text-slate-400" />
+            )}
+          </div>
+
+          {/* Petites icônes flottantes (décoration Wétali) */}
+          <div className="absolute top-0 right-[-10px] bg-white p-2 rounded-full shadow-lg z-20 animate-bounce">
+            <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+          </div>
+          <div className="absolute bottom-2 left-[-10px] bg-white p-2 rounded-full shadow-lg z-20 animate-pulse">
+            <Crown className="w-4 h-4 text-[#D4AF37]" />
+          </div>
+        </div>
+        
+        <h2 className="text-xl font-bold text-[#0A2F4A] mb-2 font-serif">Recherche en cours...</h2>
+        <p className="text-slate-500 font-medium text-sm text-center max-w-xs">
+          Nous analysons les profils pour vous trouver les meilleures compatibilités Insha'Allah.
+        </p>
       </div>
     );
   }
@@ -395,19 +421,31 @@ export default function DiscoverPage() {
       {/* Container principal de la carte ou de l'état vide */}
       <div className="flex-1 relative flex flex-col min-h-0">
         {!currentProfile ? (
-          <div className="flex-1 bg-white rounded-[2rem] shadow-sm border border-slate-200 flex flex-col items-center justify-center p-6 text-center h-full">
-            <div className="w-16 h-16 bg-[#F0F4F2] rounded-full flex items-center justify-center mb-4">
-              <AlertCircle className="w-8 h-8 text-[#2D8659]" />
+          <div className="flex-1 bg-white rounded-[2rem] shadow-sm border border-slate-200 flex flex-col items-center justify-center p-6 h-full">
+            <div className="relative w-28 h-28 flex items-center justify-center mb-10 mt-4">
+              <div className="absolute inset-0 rounded-full border-2 border-[#D4AF37]/40 animate-ripple"></div>
+              <div className="absolute inset-0 rounded-full border-2 border-[#2D8659]/30 animate-ripple-delayed"></div>
+              <div className="relative z-10 w-20 h-20 rounded-full border-4 border-white shadow-lg overflow-hidden bg-slate-100 flex items-center justify-center">
+                {userProfile?.photos?.[0] ? (
+                  <img src={userProfile.photos[0]} alt="Vous" className="w-full h-full object-cover grayscale opacity-80" />
+                ) : (
+                  <User className="w-8 h-8 text-slate-400" />
+                )}
+              </div>
+              <div className="absolute -bottom-3 bg-white p-2.5 rounded-full shadow-md z-20">
+                <Search className="w-5 h-5 text-[#0A2F4A]" />
+              </div>
             </div>
-            <h2 className="text-xl font-bold text-[#0A2F4A] mb-2">Plus de profils disponibles</h2>
-            <p className="text-slate-500 mb-6 max-w-sm mx-auto text-sm">
-              Vous avez fait le tour de tous les profils correspondant à vos critères actuels. Revenez plus tard ou élargissez vos filtres !
+            <h2 className="text-xl font-bold text-[#0A2F4A] mb-2 text-center">Plus de profils disponibles</h2>
+            <p className="text-slate-500 mb-6 max-w-sm mx-auto text-sm text-center">
+              Vous avez fait le tour des profils correspondant à vos critères actuels. Revenez plus tard ou élargissez vos filtres !
             </p>
             <button 
               onClick={() => setFilters({ ageMin: 18, ageMax: 50, pays: '', hasPhoto: false })}
-              className="px-6 py-3 bg-[#0A2F4A] text-white font-bold rounded-xl shadow-lg hover:bg-[#061C2C]"
+              className="px-6 py-3 bg-gradient-to-r from-[#0A2F4A] to-[#1a4a6b] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
-              Réinitialiser les filtres
+              <RotateCcw className="w-4 h-4" />
+              Élargir mes critères
             </button>
           </div>
         ) : (
