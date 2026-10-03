@@ -38,10 +38,22 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
   const [bioGeneratedAuto, setBioGeneratedAuto] = useState(false);
   const totalSteps = 7;
 
+  // Helper pour formater la date pour l'input type="date"
+  const getInitialBirthDate = (bd) => {
+    if (!bd) return '';
+    if (typeof bd === 'string' && bd.includes('-')) return bd.split('T')[0];
+    let d;
+    if (bd.toDate && typeof bd.toDate === 'function') d = bd.toDate();
+    else if (bd.seconds) d = new Date(bd.seconds * 1000);
+    else d = new Date(bd);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0];
+  };
+
   const [formData, setFormData] = useState({
     prenom: userProfile?.prenom || (user?.displayName ? user.displayName.split(' ')[0] : ''),
     nom: userProfile?.nom || (user?.displayName ? user.displayName.split(' ').slice(1).join(' ') : ''),
-    birthDate: userProfile?.birthDate || '',
+    birthDate: getInitialBirthDate(userProfile?.birthDate),
     genre: userProfile?.genre || 'H',
     etatCivil: userProfile?.etatCivil || '',
     ville: userProfile?.ville || '',
@@ -268,7 +280,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
       const profileToSave = {
         ...formData,
         id: userProfile?.id || user?.uid || 'current_user',
-        birthDate: new Date(formData.birthDate), // Enregistre en tant que Date JS -> Firestore Timestamp
+        birthDate: formData.birthDate?.seconds ? new Date(formData.birthDate.seconds * 1000) : (formData.birthDate?.toDate ? formData.birthDate.toDate() : new Date(formData.birthDate)), // Enregistre en tant que Date JS -> Firestore Timestamp
         visionMariageLabel: selectedVision ? selectedVision.label : formData.visionMariage,
         profileStatus: 'pending',
         updatedAt: new Date().toISOString()

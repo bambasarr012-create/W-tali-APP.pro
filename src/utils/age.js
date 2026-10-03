@@ -2,10 +2,14 @@ export const calculateAge = (birthDate) => {
   if (!birthDate) return null;
   
   try {
-    // Handle Firestore Timestamp or Date object or ISO string
+    // Handle Firestore Timestamp (with or without .toDate()), Date object, or ISO string
     let dateObj;
-    if (birthDate.toDate && typeof birthDate.toDate === 'function') {
+    if (birthDate instanceof Date) {
+      dateObj = birthDate;
+    } else if (birthDate && typeof birthDate.toDate === 'function') {
       dateObj = birthDate.toDate();
+    } else if (birthDate && birthDate.seconds) {
+      dateObj = new Date(birthDate.seconds * 1000);
     } else {
       dateObj = new Date(birthDate);
     }
