@@ -48,7 +48,7 @@ export default function MessagesListPage() {
     <div className="max-w-2xl mx-auto px-4 py-6 pb-24">
       
       {/* Navigation par Onglets (Tabs) */}
-      <div className="flex items-center justify-between gap-1 mb-6 bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex items-center justify-between gap-2 mb-6 border-b border-slate-200 overflow-x-auto no-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
         {[
           { id: 'tous', label: 'Tous' },
           { id: 'non-lus', label: 'Non lus' },
@@ -58,10 +58,10 @@ export default function MessagesListPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 min-w-[70px] py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap ${
+            className={`py-3 px-2 text-sm font-bold transition-all whitespace-nowrap border-b-2 -mb-[1px] ${
               activeTab === tab.id 
-                ? 'bg-[#2D8659] text-white shadow-sm' 
-                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
+                ? 'border-[#0A2F4A] text-[#0A2F4A]' 
+                : 'border-transparent text-slate-400 hover:text-slate-600'
             }`}
           >
             {tab.label}
@@ -72,21 +72,22 @@ export default function MessagesListPage() {
       {/* Bannière Premium (Messages Vocaux) */}
       <div 
         onClick={() => setCurrentView('subscription')}
-        className="bg-gradient-to-r from-[#D4AF37] to-[#e5c765] rounded-2xl p-4 mb-6 text-white cursor-pointer hover:shadow-lg transition-all flex items-center justify-between shadow-md"
+        className="bg-[#0A2F4A] rounded-2xl p-4 mb-6 text-white cursor-pointer hover:shadow-lg hover:shadow-[#0A2F4A]/20 transition-all flex items-center justify-between relative overflow-hidden"
       >
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-full bg-white/25 flex items-center justify-center backdrop-blur-sm shadow-inner">
-            <Mic className="w-5 h-5 text-white" />
+        <div className="absolute right-0 top-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full -mr-10 -mt-10 blur-xl"></div>
+        <div className="flex items-center gap-3.5 relative z-10">
+          <div className="w-10 h-10 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 flex items-center justify-center">
+            <Mic className="w-4 h-4 text-[#D4AF37]" />
           </div>
           <div>
-            <h3 className="font-bold text-sm flex items-center gap-2 drop-shadow-sm">
-              Messages vocaux 
-              <span className="text-[9px] bg-[#2D8659] text-white px-1.5 py-0.5 rounded shadow-sm uppercase tracking-wider font-black">Nouveau</span>
+            <h3 className="font-serif font-bold text-base flex items-center gap-2 text-white">
+              Notes Vocales
+              <span className="text-[9px] bg-[#D4AF37] text-[#0A2F4A] px-1.5 py-0.5 rounded shadow-sm uppercase tracking-wider font-black font-sans">Premium</span>
             </h3>
-            <p className="text-[11px] text-white/95 font-medium mt-0.5">Fais entendre ta voix ! Exclusif Premium ✨</p>
+            <p className="text-[11px] text-slate-300 font-medium mt-0.5">Faites entendre votre voix pour plus d'authenticité ✨</p>
           </div>
         </div>
-        <ChevronRight className="w-5 h-5 text-white/80" />
+        <ChevronRight className="w-5 h-5 text-[#D4AF37] relative z-10" />
       </div>
 
       {/* Contenu Principal */}
@@ -97,21 +98,24 @@ export default function MessagesListPage() {
             <p className="text-xs text-slate-400 font-medium">Chargement de vos échanges...</p>
           </div>
         ) : matches.length === 0 ? (
-          /* État Vide (Inspiré Farata) */
+          /* État Vide Wétali */
           <div className="flex flex-col items-center justify-center py-20 px-6 text-center h-full">
-            <div className="w-24 h-24 bg-[#EAF5EF] rounded-[2rem] flex items-center justify-center mb-6 shadow-inner">
-              <MessageCircle className="w-10 h-10 text-[#2D8659]" strokeWidth={2.5} />
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-[#D4AF37]/20 rounded-full blur-2xl"></div>
+              <div className="w-20 h-20 bg-white border border-slate-100 rounded-full flex items-center justify-center relative z-10 shadow-sm">
+                <MessageCircle className="w-8 h-8 text-[#0A2F4A]" strokeWidth={1.5} />
+              </div>
             </div>
-            <h2 className="text-xl font-black text-[#0A2F4A] mb-2">Aucune conversation</h2>
+            <h2 className="font-serif text-2xl font-bold text-[#0A2F4A] mb-2">Vos échanges</h2>
             <p className="text-sm text-slate-500 mb-8 max-w-[260px] font-medium leading-relaxed">
-              Envoie une demande de contact pour commencer à échanger.
+              Il n'y a pas encore de conversation ici. Trouvez votre affinité pour commencer à discuter.
             </p>
             <button 
               onClick={() => setCurrentView('discover')} 
-              className="flex items-center gap-2 bg-[#2D8659] text-white px-6 py-3.5 rounded-xl font-bold text-sm hover:bg-[#236c47] hover:shadow-lg transition-all active:scale-95"
+              className="flex items-center gap-2 bg-[#0A2F4A] text-white px-6 py-3.5 rounded-xl font-bold text-sm hover:bg-[#061d2e] hover:shadow-lg hover:shadow-[#0A2F4A]/20 transition-all active:scale-95"
             >
-              <Search className="w-4 h-4" strokeWidth={3} /> 
-              Découvrir des profils
+              <Search className="w-4 h-4" /> 
+              Trouver mon affinité
             </button>
           </div>
         ) : (
