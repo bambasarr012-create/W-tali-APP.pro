@@ -18,7 +18,8 @@ import {
   Flag,
   BookOpen,
   Info,
-  CheckCircle2
+  CheckCircle2,
+  ShieldAlert
 } from 'lucide-react';
 
 export default function ProfileDetailPage() {
@@ -172,6 +173,19 @@ export default function ProfileDetailPage() {
               {selectedProfile.rechercheText || "Une personne engagée, pratiquante et qui veut avancer de manière saine et bienveillante."}
             </p>
           </div>
+
+          {/* Critères rédhibitoires (Dealbreakers) */}
+          {selectedProfile.redhibitoireText && (
+            <div className="bg-[#FFF5F5] border border-[#FFE5E5] p-4 rounded-2xl relative overflow-hidden mt-6">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-rose-100/50 rounded-full -mr-6 -mt-6 blur-xl"></div>
+              <h3 className="flex items-center gap-2 text-[11px] font-black text-rose-600 uppercase tracking-widest mb-2 relative z-10">
+                <ShieldAlert className="w-4 h-4" /> Mes critères rédhibitoires
+              </h3>
+              <p className="text-[13px] text-rose-900/80 leading-relaxed font-semibold relative z-10">
+                {selectedProfile.redhibitoireText}
+              </p>
+            </div>
+          )}
 
           {/* Centres d'intérêt */}
           {(selectedProfile.interets?.length > 0) && (
