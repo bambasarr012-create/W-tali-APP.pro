@@ -218,7 +218,7 @@ export default function HomePage() {
             </div>
           </div>
           <div 
-            onClick={() => setCurrentView('matches')}
+            onClick={() => setCurrentView('messages')}
             className="bg-rose-50/50 hover:bg-rose-50 border border-rose-100 p-5 rounded-2xl flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
           >
             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">

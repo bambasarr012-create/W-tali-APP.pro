@@ -8,12 +8,11 @@ export default function BottomNav() {
   const navItems = [
     { id: 'home', label: 'Accueil', icon: Home },
     { id: 'discover', label: 'Explorer', icon: Search },
-    { id: 'matches', label: 'Affinités', icon: Sparkles, badge: matchesCount > 0 ? matchesCount : null },
     { id: 'requests', label: 'Invitations', icon: Inbox, badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
     { id: 'visitors', label: 'Visites', icon: Users, badge: 2 },
     { id: 'favorites', label: 'Sélection', icon: Bookmark },
     { id: 'subscription', label: 'Premium', icon: Gem, isPremiumTab: true },
-    { id: 'messages', label: 'Échanges', icon: MessageSquare },
+    { id: 'messages', label: 'Échanges', icon: MessageSquare, badge: matchesCount > 0 ? matchesCount : null },
     { id: 'settings', label: 'Espace', icon: UserCircle }
   ];
 
