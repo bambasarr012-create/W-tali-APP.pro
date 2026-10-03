@@ -80,7 +80,6 @@ export async function markMessagesAsRead(chatId, currentUserId) {
   
   const q = query(
     collection(db, 'chats', chatId, 'messages'),
-    where('senderId', '!=', currentUserId),
     where('read', '==', false)
   );
 
@@ -88,9 +87,16 @@ export async function markMessagesAsRead(chatId, currentUserId) {
   if (snapshot.empty) return;
 
   const batch = writeBatch(db);
+  let updated = false;
+  
   snapshot.forEach((messageDoc) => {
-    batch.update(messageDoc.ref, { read: true });
+    if (messageDoc.data().senderId !== currentUserId) {
+      batch.update(messageDoc.ref, { read: true });
+      updated = true;
+    }
   });
 
-  await batch.commit();
+  if (updated) {
+    await batch.commit();
+  }
 }
