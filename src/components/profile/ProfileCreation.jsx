@@ -835,6 +835,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
                       <Wand2 className="w-4 h-4" />
                     </button>
                 </div>
+                </div>
 
                 <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
                   <div className="flex items-center gap-2 mb-3">
