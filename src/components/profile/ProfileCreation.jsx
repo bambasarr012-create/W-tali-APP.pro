@@ -6,7 +6,8 @@ import {
   POPULAR_INTERESTS, 
   VISION_MARIAGE_OPTIONS,
   VALEURS_OPTIONS,
-  CRITERES_OPTIONS
+  CRITERES_OPTIONS,
+  DEALBREAKERS_OPTIONS
 } from '../../data/mockProfiles';
 import { calculateAge, isAdult } from '../../utils/age';
 import { 
@@ -24,7 +25,8 @@ import {
   GraduationCap, 
   ChevronRight,
   ChevronLeft,
-  Wand2
+  Wand2,
+  ShieldAlert
 } from 'lucide-react';
 
 export default function ProfileCreation({ isEditing = false, initialStep = 1, onComplete }) {
@@ -57,6 +59,7 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
     interets: userProfile?.interets || [],
     valeurs: userProfile?.valeurs || [],
     criteres: userProfile?.criteres || [],
+    dealbreakers: userProfile?.dealbreakers || [],
     financeCouple: userProfile?.financeCouple || 'À discuter',
     polygamie: userProfile?.polygamie || 'Non',
     photos: userProfile?.photos || (user?.photoURL ? [user.photoURL] : []),
@@ -831,6 +834,33 @@ export default function ProfileCreation({ isEditing = false, initialStep = 1, on
                     >
                       <Wand2 className="w-4 h-4" />
                     </button>
+                </div>
+
+                <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <ShieldAlert className="w-4 h-4 text-rose-500" />
+                    <label className="text-xs font-bold text-rose-700">
+                      Sélection rapide <span className="text-rose-400 ml-2">{formData.dealbreakers?.length || 0}/3 max</span>
+                    </label>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {DEALBREAKERS_OPTIONS.map(tag => {
+                      const isSelected = formData.dealbreakers?.includes(tag);
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => toggleTag('dealbreakers', tag, 3)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                            isSelected
+                              ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
+                              : 'bg-white text-rose-700 border-rose-200 hover:border-rose-300'
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

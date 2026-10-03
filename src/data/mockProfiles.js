@@ -318,3 +318,13 @@ export const CRITERES_OPTIONS = [
   "Famille d'abord",
   "Cultivé(e)"
 ];
+
+export const DEALBREAKERS_OPTIONS = [
+  "Mensonge",
+  "Infidélité",
+  "Manque de religion",
+  "Polygamie",
+  "Fumer / Alcool",
+  "Manque de respect",
+  "Irresponsabilité"
+];
