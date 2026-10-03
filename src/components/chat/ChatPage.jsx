@@ -55,10 +55,12 @@ export default function ChatPage() {
     // Écouteur temps réel (Firestore onSnapshot / Local sync)
     const unsubscribe = subscribeToMessages(chatId, (newMsgs) => {
       setMessages(newMsgs);
+      // Marquer les nouveaux messages comme lus s'ils ne viennent pas de moi
+      const hasUnreadFromOther = newMsgs.some(m => !m.read && m.senderId !== (userProfile?.id || 'current_user'));
+      if (hasUnreadFromOther) {
+        markMessagesAsRead(chatId, userProfile?.id || 'current_user');
+      }
     });
-
-    // Marquer les messages comme lus
-    markMessagesAsRead(chatId, userProfile?.id || 'current_user');
 
     return () => {
       unsubscribe();
