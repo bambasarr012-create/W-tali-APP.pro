@@ -265,7 +265,7 @@ export default function ChatPage() {
                   )}
                   {isMe && (
                     <CheckCheck 
-                      className={`w-4 h-4 ml-0.5 ${msg.read ? 'text-[#34B7F1]' : 'text-[#A0C0D6] opacity-80'}`} 
+                      className={`w-4 h-4 ml-0.5 ${msg.read ? 'text-white drop-shadow-md' : 'text-[#A0C0D6] opacity-80'}`} 
                       title={msg.read ? "Lu" : "Distribué"} 
                     />
                   )}
