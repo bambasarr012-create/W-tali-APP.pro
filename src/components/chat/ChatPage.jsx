@@ -262,11 +262,10 @@ export default function ChatPage() {
                     </button>
                   )}
                   {isMe && (
-                    msg.read ? (
-                      <CheckCheck className="w-3.5 h-3.5 text-[#2D8659]" title="Lu" />
-                    ) : (
-                      <Check className="w-3.5 h-3.5 text-slate-400" title="Envoyé" />
-                    )
+                    <CheckCheck 
+                      className={`w-4 h-4 ml-0.5 ${msg.read ? 'text-[#34B7F1]' : 'text-[#A0C0D6] opacity-80'}`} 
+                      title={msg.read ? "Lu" : "Distribué"} 
+                    />
                   )}
                 </div>
               </div>
