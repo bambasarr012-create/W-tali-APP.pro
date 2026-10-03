@@ -39,10 +39,10 @@ export default function ChatPage() {
   const [reportedMessageSenderId, setReportedMessageSenderId] = useState(null);
 
   const partner = activeMatch?.otherUser || {
-    id: "partner_demo",
-    prenom: "Aïssatou",
-    ville: "Paris",
-    profession: "Ingénieure Cybersécurité",
+    id: "unknown",
+    prenom: "Utilisateur",
+    ville: "",
+    profession: "",
     photos: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"]
   };
 

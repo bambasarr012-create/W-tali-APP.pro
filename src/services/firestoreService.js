@@ -484,7 +484,23 @@ export async function getMatches(userId) {
   );
   const snap = await getDocs(q);
   const matches = [];
-  snap.forEach(doc => matches.push({ id: doc.id, ...doc.data() }));
+  
+  for (const docSnapshot of snap.docs) {
+    const data = docSnapshot.data();
+    const otherUserId = data.users.find(id => id !== userId);
+    let otherUser = null;
+    
+    if (otherUserId) {
+      const userRef = doc(db, 'users', otherUserId);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        otherUser = { id: userSnap.id, ...enrichProfile(userSnap.data()) };
+      }
+    }
+    
+    matches.push({ id: docSnapshot.id, ...data, otherUser });
+  }
+  
   return matches;
 }
 
