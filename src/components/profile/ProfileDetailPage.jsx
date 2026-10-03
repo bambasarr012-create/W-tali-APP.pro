@@ -17,7 +17,8 @@ import {
   Camera,
   Flag,
   BookOpen,
-  Info
+  Info,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function ProfileDetailPage() {
@@ -26,6 +27,7 @@ export default function ProfileDetailPage() {
   const [isReporting, setIsReporting] = useState(false);
   const [relStatus, setRelStatus] = useState({ status: 'loading', data: null });
   const isOwnProfile = userProfile?.id === selectedProfile?.id;
+  const affinity = calculatePointsCommuns(userProfile, selectedProfile);
 
   React.useEffect(() => {
     if (userProfile && selectedProfile && !isOwnProfile) {
@@ -125,6 +127,32 @@ export default function ProfileDetailPage() {
         {/* Details Content Section */}
         <div className="p-6 sm:p-8 space-y-8 bg-white">
           
+          {/* Section: Pourquoi ça matche ? */}
+          {!isOwnProfile && affinity && affinity.points && affinity.points.length > 0 && (
+            <div className="bg-gradient-to-br from-[#EAF5EF] to-white p-5 rounded-2xl border border-[#2D8659]/20 shadow-sm relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#2D8659]/10 rounded-full blur-2xl"></div>
+              <div className="flex items-center justify-between mb-4 relative z-10">
+                <h3 className="text-sm font-extrabold text-[#0A2F4A] flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#2D8659]" />
+                  Pourquoi ça matche ?
+                </h3>
+                <span className="text-xs font-black bg-white text-[#2D8659] px-3 py-1.5 rounded-full shadow-sm border border-[#2D8659]/10">
+                  {affinity.score}% Affinité
+                </span>
+              </div>
+              <div className="space-y-3 relative z-10">
+                {affinity.points.map((pt, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="mt-0.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#2D8659]" />
+                    </div>
+                    <p className="text-[13px] font-semibold text-slate-700 leading-snug">{pt.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Vision du Mariage */}
           <div className="space-y-2">
             <h3 className="flex items-center gap-2 text-[11px] font-black text-[#2D8659] uppercase tracking-widest">
