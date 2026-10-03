@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { getMatches, subscribeToUserMatches } from '../../services/firestoreService';
 import { MessageCircle, Search, ChevronRight, Sparkles } from 'lucide-react';
 import VerifiedBadge from '../common/VerifiedBadge';
 
 export default function MessagesListPage() {
-  const { matches, setCurrentView, setActiveMatch, viewProfileDetail } = useApp();
+  const { setCurrentView, setActiveMatch, viewProfileDetail } = useApp();
+  const { userProfile } = useAuth();
+  
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadMatches = async () => {
+    setLoading(true);
+    try {
+      const list = await getMatches(userProfile?.id);
+      setMatches(list);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!userProfile?.id) return;
+    loadMatches();
+    const unsub = subscribeToUserMatches(userProfile.id, loadMatches);
+    return () => unsub();
+  }, [userProfile]);
 
   const handleOpenChat = (match) => {
     setActiveMatch(match);
